@@ -155,7 +155,7 @@ body {
     margin: 0;
     padding: 100px 20px 20px;
     overflow: auto;
-    background: linear-gradient(315deg, darkgrey, lightsteelblue, lightslategrey);
+    background: linear-gradient(315deg, black, #0a4148, black,#2a0062);
     animation: gradient 15s ease infinite;
     background-size: 400% 400%;
     background-attachment: fixed;
@@ -254,4 +254,8 @@ h1 {
     text-align: center;
 }
 
+p {
+    font-family: "Times New Roman";
+    color: white;
+}
 
