@@ -42,14 +42,13 @@
 
     align-items: center;
     overflow: hidden;
-    background-color: #a0a0a1;
+    background: linear-gradient(to right, black, #1d5123, #205a27, #25682d, #338c3e);
     display: flex;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 100;
-    background-image: linear-gradient(black, #151515, #262526, #151515, black);
     font-family: "Monaco";
     text-shadow: 1px 2px 2px #3f4748;
 
@@ -109,7 +108,7 @@
 }
 
 .navbar a:hover, .dropdown:hover .dropbtn {
-    background-color: #505050;
+    background-color: rgba(42, 112, 50, 0.5);
     color: white;
     position: relative;
     z-index: 2;
@@ -155,7 +154,7 @@ body {
     margin: 0;
     padding: 100px 20px 20px;
     overflow: auto;
-    background: linear-gradient(315deg, black, #0a4148, black,#2a0062);
+    background: whitesmoke;
     animation: gradient 15s ease infinite;
     background-size: 400% 400%;
     background-attachment: fixed;
@@ -169,86 +168,7 @@ body {
     position: relative;
     z-index: 1;
 }
-@keyframes gradient {
-    0% {
-        background-position: 0% 0%;
-    }
-    50% {
-        background-position: 100% 100%;
-    }
-    100% {
-        background-position: 0% 0%;
-    }
-}
 
-.wave {
-    background: rgb(255 255 255 / 25%);
-    border-radius: 1000% 1000% 0 0;
-    position: fixed;
-    width: 200%;
-    height: 12em;
-    animation: wave 10s -3s linear infinite;
-    transform: translate3d(0, 0, 0);
-    opacity: 0.8;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-}
-
-.wave:nth-of-type(2) {
-    bottom: -1.25em;
-    animation: wave 18s linear reverse infinite;
-    opacity: 0.8;
-}
-
-.wave:nth-of-type(3) {
-    bottom: -2.5em;
-    animation: wave 20s -1s reverse infinite;
-    opacity: 0.9;
-}
-
-@keyframes wave {
-    2% {
-        transform: translateX(1);
-    }
-
-    25% {
-        transform: translateX(-25%);
-    }
-
-    50% {
-        transform: translateX(-50%);
-    }
-
-    75% {
-        transform: translateX(-25%);
-    }
-
-    100% {
-        transform: translateX(1);
-    }
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-}
 
 h1 {
     text-align: center;
@@ -256,6 +176,7 @@ h1 {
 
 p {
     font-family: "Times New Roman";
-    color: white;
+    color: black;
 }
+
 

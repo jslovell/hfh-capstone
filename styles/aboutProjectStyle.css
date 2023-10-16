@@ -1,29 +1,31 @@
 body {
-    background-image: radial-gradient(black, #151515, #505050, #262526 , #262526 ,#151515, black);
+    background: whitesmoke;
     height: 100%;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed
+    background-attachment: fixed;
 }
-
-h1,h2,h3 {
-    font-family: Monaco;
-    color: white;
+h1 {
     text-align: center;
+    font-family: Monaco;
+    color: black;
+}
+h2,h3 {
+    font-family: Monaco;
+    color: black;
 }
 .navbar {
 
     align-items: center;
     overflow: hidden;
-    background-color: #a0a0a1;
+    background: linear-gradient(to right, black, #1d5123, #205a27, #25682d, #338c3e);
     display: flex;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 100;
-    background-image: linear-gradient(black, #151515, #262526, #151515, black);
     font-family: "Monaco";
     text-shadow: 1px 2px 2px #3f4748;
 
@@ -42,7 +44,7 @@ h1,h2,h3 {
 }
 
 .navbar a:first-child {
-    margin-right: 20px; /* Adjust the value as needed */
+    margin-right: 20px;
 }
 
 .navbar a:hover {
@@ -83,7 +85,7 @@ h1,h2,h3 {
 }
 
 .navbar a:hover, .dropdown:hover .dropbtn {
-    background-color: #505050;
+    background-color: rgba(42, 112, 50, 0.5);
     color: white;
     position: relative;
     z-index: 2;
@@ -122,4 +124,18 @@ h1,h2,h3 {
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+h2 {
+    font-size: 18px;
+    padding: 10px 100px 10px;
+}
+
+
+.center {
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
 }

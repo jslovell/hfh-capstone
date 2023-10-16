@@ -15,7 +15,8 @@
     width: var(--size);
     height: var(--size);
     filter: blur(calc(var(--size) / 5));
-    background-image: linear-gradient(hsl(158, 82%, 57%), hsl(252, 82%, 57%));
+    /*  background-image: linear-gradient(hsl(158, 82%, 57%), hsl(252, 82%, 57%)); */
+    background-image: linear-gradient(#282828, #424242);
     animation: rotate var(--speed) var(--easing) alternate infinite;
     border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
     background-position: center;
@@ -119,14 +120,13 @@ body {
 
     align-items: center;
     overflow: hidden;
-    background-color: #a0a0a1;
+    background: linear-gradient(to right, black, #1d5123, #205a27, #25682d, #338c3e);
     display: flex;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 100;
-    background-image: linear-gradient(black, #151515, #262526, #151515, black);
     font-family: "Monaco";
     text-shadow: 1px 2px 2px #3f4748;
 
@@ -186,7 +186,7 @@ body {
 }
 
 .navbar a:hover, .dropdown:hover .dropbtn {
-    background-color: #505050;
+    background-color: rgba(42, 112, 50, 0.5);
     color: white;
     position: relative;
     z-index: 2;
