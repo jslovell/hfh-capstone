@@ -6,10 +6,19 @@ body {
     background-position: center;
     background-attachment: fixed;
 }
+h1 + h1::before {
+    content: "";
+    display: block;
+    border-top: 1px solid black;
+    margin: 20px 0;
+
+}
 h1 {
     text-align: center;
     font-family: Monaco;
     color: black;
+    font-size: 24px;
+    margin: 20px 0;
 }
 h2,h3 {
     font-family: Monaco;
@@ -128,6 +137,7 @@ h2,h3 {
 h2 {
     font-size: 18px;
     padding: 10px 100px 10px;
+    color: grey;
 }
 
 
