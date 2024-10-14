@@ -1,11 +1,8 @@
 <?php
 
-header('Location: https://hfh-capstone.bradley.edu/test_page.phtml');
+header('Location: /hfh-capstone/test_page.phtml');
 
-$servername = "localhost";
-$username = "hfh";
-$password = "hfh";
-$dbname = "hfh";
+require_once "db.php";
 
 $firstname = $_POST['firstname'];
 $lastname = $_POST['lastname'];
@@ -15,14 +12,6 @@ $address = $_POST['address'];
 $city = $_POST['city'];
 $state = $_POST['state'];
 $zip = $_POST['zip'];
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
- // Check connection
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
 
 // Make sure that state is abbreviation
 $state = strtoupper($state);
