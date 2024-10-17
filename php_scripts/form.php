@@ -1,6 +1,6 @@
 <?php
 
-header('Location: /hfh-capstone/test_page.phtml');
+header('Location: ../test_page.phtml');
 
 require_once "db.php";
 
@@ -58,7 +58,7 @@ if(mysqli_num_rows($rs1) == 0){
 #'$row[parcel_number]'
 
 	$sql2 = "INSERT INTO hfh.form_entries (firstname, lastname, email, phone, address, city, state, zip, parcel_number) VALUES ('$firstname', '$lastname', '$email', '$phone', '$address', '$city', '$state', '$zip', '$row[parcel_number]');";
-} 
+}
 
 
 #if(mysqli_num_rows($rs1) == 0) {

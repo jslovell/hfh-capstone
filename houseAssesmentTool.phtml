@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
-	header('Location: /hfh-capstone/login_page.phtml');
+	header('Location: ./login_page.phtml');
 	exit();
 }
 ?>
@@ -25,7 +25,7 @@ if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("assessment-form");
             form.addEventListener("submit", function(event) {
-                event.preventDefault(); 
+                event.preventDefault();
 
                 const formData = new FormData(form);
 
@@ -55,7 +55,7 @@ if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
 </head>
 <body style="margin-top: 8%">
 <h1>House Assessment Tool</h1>
-<form id="assessment-form" action="/hfh-capstone/php_scripts/form.php" method="post">
+<form id="assessment-form" action="./php_scripts/form.php" method="post">
 <!--
     <label for="photoupload">Upload Photo (PNG or JPG):</label>
     <input type="file" name="photoupload" id="photoupload" accept="image/jpeg,image/png" required>
@@ -79,7 +79,7 @@ if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
     <input type="text" name="city" id="city" maxlength="32" required>
     <label for="state">State:</label>
     <input type="text" name="state" id="state" maxlength="32" required>
-    
+
     <label for="zip">Zip Code:</label>
     <input type="text" name="zip" id="zip" maxlength="8" required>
 
@@ -90,4 +90,3 @@ if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
 <div id="output"></div>
 </body>
 </html>
-

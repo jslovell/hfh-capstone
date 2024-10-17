@@ -12,10 +12,10 @@ $sql = "SELECT password FROM hfh.accounts WHERE username='$uname';";
 $result = mysqli_query($conn, $sql);
 
 if(mysqli_num_rows($result) == 0) {
-    
+
     // User does not exist
     // include failure.php
-    header('Location: /hfh-capstone/login_page_failure.phtml');
+    header('Location: ../login_page_failure.phtml');
     exit();
 
 } else {
@@ -30,15 +30,15 @@ if(mysqli_num_rows($result) == 0) {
     if($bool){
 	$_SESSION['authenticated'] = true;
 	// include succes.php
-  	header('Location: /hfh-capstone/appMenu.phtml');
+  	header('Location: ../appMenu.phtml');
 	exit();
     } else {
 	// include failure.php
-	header('Location: /hfh-capstone/login_page_failure.phtml');
+	header('Location: ../login_page_failure.phtml');
 	exit();
     }
 }
 
 mysqli_close($conn);
 
-?>                                                         
+?>

@@ -16,16 +16,16 @@ $hash = password_hash($psw, PASSWORD_DEFAULT);
 $pswLow = strtolower($psw);
 
 
-if($psw != $psw2){ 
-	header('Location: /hfh-capstone/new_user_failure.phtml');
+if($psw != $psw2){
+	header('Location: ../new_user_failure.phtml');
 	exit();
 }
-else if( (strlen($psw) < 8) 
-	or ($pswLow==$psw) 
+else if( (strlen($psw) < 8)
+	or ($pswLow==$psw)
 	or (!(preg_match('~[0-9]+~',$psw)))
 	or (!(preg_match("[[`'\~!@# $*()<>,:;{}\|]]",$psw)))
 ){
-		header('Location: /hfh-capstone/new_user_simple.phtml');
+		header('Location: ../new_user_simple.phtml');
 		exit();
 }
 else {
@@ -33,7 +33,7 @@ else {
 
 	$rs = mysqli_query($conn, $sql);
 
-	header('Location: /hfh-capstone/login_page.phtml');
+	header('Location: ../login_page.phtml');
 	exit();
 }
 
