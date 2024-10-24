@@ -15,7 +15,7 @@ if(mysqli_num_rows($result) == 0) {
 
     // User does not exist
     // include failure.php
-    header('Location: ../login_page_failure.phtml');
+    header('Location: ../login_page_failure.php');
     exit();
 
 } else {
@@ -34,7 +34,7 @@ if(mysqli_num_rows($result) == 0) {
 	exit();
     } else {
 	// include failure.php
-	header('Location: ../login_page_failure.phtml');
+	header('Location: ../login_page_failure.php');
 	exit();
     }
 }

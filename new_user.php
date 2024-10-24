@@ -11,12 +11,13 @@
         <title>Login</title>
 
     </head>
-    <?php include "navbar.phtml" ?>
+    <?php include "navbar.php" ?>
 <body>
 
-<!-- ONLY change made to this document was changing action from "appMenu.phtml to /php_scripts/login.php-->
+
+<!-- ONLY change made to this document was changing action from "appMenu.php to /php_scripts/login.php-->
 <form action="./php_scripts/add_user.php" method="post">
-<center><h3 style="color: #ff0000">Passwords do not match!</h3></center>
+
     <div class="container">
         <label for="uname"><b>New Username</b></label>
         <input type="text" placeholder="Enter Username" name="uname" required>

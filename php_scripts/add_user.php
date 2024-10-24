@@ -17,7 +17,7 @@ $pswLow = strtolower($psw);
 
 
 if($psw != $psw2){
-	header('Location: ../new_user_failure.phtml');
+	header('Location: ../new_user_failure.php');
 	exit();
 }
 else if( (strlen($psw) < 8)
@@ -25,7 +25,7 @@ else if( (strlen($psw) < 8)
 	or (!(preg_match('~[0-9]+~',$psw)))
 	or (!(preg_match("[[`'\~!@# $*()<>,:;{}\|]]",$psw)))
 ){
-		header('Location: ../new_user_simple.phtml');
+		header('Location: ../new_user_simple.php');
 		exit();
 }
 else {

@@ -11,7 +11,7 @@
         <title>About Project</title>
 
     </head>
-    <?php include "navbar.phtml" ?>
+    <?php include "navbar.php" ?>
     <body style="margin-top: 8%;">
 
         <h1>Project Info</h1>

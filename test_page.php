@@ -140,12 +140,12 @@
     session_start();
 
     if(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
-        header('Location: login_page.phtml');
+        header('Location: login_screen.php');
         exit();
     }
     ?>
 </head>
-<?php include "navbar.phtml" ?>
+<?php include "navbar.php" ?>
 <body style="margin-top: 8%;">
 
 <h1 style=font-size:250%>House Assessment Tool</h1>

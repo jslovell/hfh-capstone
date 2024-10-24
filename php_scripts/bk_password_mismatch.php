@@ -1,6 +1,6 @@
 <?php
 
-header("Location: https://hfh-capstone.bradley.edu/new_user_failure.phtml");
+header("Location: https://hfh-capstone.bradley.edu/new_user_failure.php");
 
 
 $message='Passwords do not match!';

@@ -1,6 +1,6 @@
 <?php
 
-header("Location: https://hfh-capstone.bradley.edu/login_page_failure.phtml");
+header("Location: https://hfh-capstone.bradley.edu/login_page_failure.php");
 
 
 $message='Username/Password combination not found!';

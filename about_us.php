@@ -11,7 +11,7 @@
         <title>About Us</title>
 
     </head>
-    <?php include "navbar.phtml" ?>
+    <?php include "navbar.php" ?>
     <body>
         <div class="center">
             <img src="assets/Bradley_Hall.jpeg" id="mainimage">

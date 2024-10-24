@@ -13,7 +13,7 @@
     <title>CS491</title>
     
 </head>
-<?php include "navbar.phtml" ?>
+<?php include "navbar.php" ?>
 <body>
 
     <h1 id="page-title" class="page-title">Habitat for Humanity</h1>

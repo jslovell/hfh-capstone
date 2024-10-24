@@ -11,12 +11,12 @@
     <title>Menu Selection</title>
 
 </head>
-<?php include "navbar.phtml" ?>
+<?php include "navbar.php" ?>
 <body>
 <form method="post">
     <div class="container">
-        <button type="button" class="createAssessment" onclick="location.href='houseAssesmentTool.phtml'">Create New Assessment</button>
-        <button type="button" class="editAssessment" onclick="location.href='test_page.phtml'">Edit Existing Assessment</button>
+        <button type="button" class="createAssessment" onclick="location.href='houseAssesmentTool.php'">Create New Assessment</button>
+        <button type="button" class="editAssessment" onclick="location.href='test_page.php'">Edit Existing Assessment</button>
     </div>
 </form>
 

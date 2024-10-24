@@ -3,7 +3,7 @@
 session_start();
 
 if(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
-    header('Location: login_page.phtml');
+    header('Location: login_page.php');
     exit();
 }
 ?>
@@ -139,7 +139,7 @@ if(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
     }
 </style>
 </head>
-<?php include "navbar.phtml" ?>
+<?php include "navbar.php" ?>
 <body style="margin-top: 8%;">
 
 <h1 style=font-size:250%>Testing Page</h1>

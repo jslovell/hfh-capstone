@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
-	header('Location: ./login_page.phtml');
+	header('Location: ./login_screen.php');
 	exit();
 }
 ?>
@@ -18,7 +18,7 @@ if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
     <script src="jquery-ui.css"></script>
     <script src="script.js"></script>
     <title>House Assesment Tool</title>
-    <?php include "navbar.phtml" ?>
+    <?php include "navbar.php" ?>
 
 <!--
     <script>

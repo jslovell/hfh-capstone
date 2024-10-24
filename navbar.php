@@ -18,8 +18,8 @@
     <div class="sidebar-content">
         <ul>
             <li><a href="homepage.php">Home</a></li>
-            <li><a href="about_us.phtml">About Us</a></li>
-            <li><a href="appMenu.phtml">House Assessment Tool</a></li>
+            <li><a href="about_us.php">About Us</a></li>
+            <li><a href="appMenu.php">House Assessment Tool</a></li>
 
         </ul>
     </div>

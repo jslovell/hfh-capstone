@@ -1,6 +1,6 @@
 <?php
 
-header('Location: ../test_page.phtml');
+header('Location: ../test_page.php');
 
 require_once "db.php";
 

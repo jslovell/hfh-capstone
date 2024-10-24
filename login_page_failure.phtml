@@ -11,14 +11,14 @@
         <title>Login</title>
 
     </head>
-    <?php include "navbar.phtml" ?>
+    <?php include "navbar.php" ?>
 <body>
 
 <script>
     alert("Username/Password combination is invalid!");
 </script>
 
-<!-- ONLY change made to this document was changing action from "appMenu.phtml to /php_scripts/login.php-->
+<!-- ONLY change made to this document was changing action from "appMenu.php to /php_scripts/login.php-->
 <form action="./php_scripts/login.php" method="post">
 
     <div class="container">
@@ -32,7 +32,7 @@
         <label>
             <input type="checkbox" checked="checked" name="remember"> Remember me
 
-	<span class="psw"><a href="./new_user.phtml">New user?</a></span>
+	<span class="psw"><a href="./new_user.php">New user?</a></span>
     	</label>
     </div>
 
