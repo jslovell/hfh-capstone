@@ -33,7 +33,7 @@ else {
 
 	$rs = mysqli_query($conn, $sql);
 
-	header('Location: ../login_page.phtml');
+	header('Location: ../index.php');
 	exit();
 }
 

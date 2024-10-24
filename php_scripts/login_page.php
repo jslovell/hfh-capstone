@@ -1,6 +1,6 @@
 <?php
 
-header("Location: /login_page.phtml");
+header("Location: /index.php");
 exit();
 
 ?>
