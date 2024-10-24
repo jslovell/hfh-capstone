@@ -20,6 +20,7 @@
             <li><a href="homepage.php">Home</a></li>
             <li><a href="about_us.php">About Us</a></li>
             <li><a href="appMenu.php">House Assessment Tool</a></li>
+            <li><a href="?logout=true">Logout</a></li>
 
         </ul>
     </div>

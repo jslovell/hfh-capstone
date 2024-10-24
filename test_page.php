@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php include "./php_scripts/session.php" ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -135,15 +136,7 @@
         }
     }
 </style>
-    <!-- PHP used to ensure that user is logged in-->
-    <?php
-    session_start();
 
-    if(!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
-        header('Location: login_screen.php');
-        exit();
-    }
-    ?>
 </head>
 <?php include "navbar.php" ?>
 <body style="margin-top: 8%;">

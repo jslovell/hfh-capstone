@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+    session_start();
+?>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -15,7 +18,7 @@
 <body>
 
 <!-- ONLY change made to this document was changing action from "appMenu.php to /php_scripts/login.php-->
-<form action="./php_scripts/add_user.php" method="post"> 
+<form action="./php_scripts/add_user.php" method="post">
 <center><h3 style="color: #ff0000">Password did not meet complexity requirements!</h3></center>
     <div class="container">
         <label for="uname"><b>New Username</b></label>

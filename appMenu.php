@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php include "./php_scripts/session.php" ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

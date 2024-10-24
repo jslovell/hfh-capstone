@@ -1,12 +1,5 @@
 <!-- PHP used to ensure that user is logged in -->
-<?php
-session_start();
-
-if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
-	header('Location: ./login_screen.php');
-	exit();
-}
-?>
+<?php include "./php_scripts/session.php" ?>
 
 <!DOCTYPE html>
 <html lang="en">
