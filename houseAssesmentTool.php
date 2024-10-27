@@ -48,7 +48,7 @@
 </head>
 <body style="margin-top: 8%">
 <h1>House Assessment Tool</h1>
-<form id="assessment-form" action="./php_scripts/form.php" method="post">
+<form id="assessment-form" action="./php_scripts/form.php" method="post" enctype="multipart/form-data">
 <!--
     <label for="photoupload">Upload Photo (PNG or JPG):</label>
     <input type="file" name="photoupload" id="photoupload" accept="image/jpeg,image/png" required>
@@ -75,6 +75,9 @@
 
     <label for="zip">Zip Code:</label>
     <input type="text" name="zip" id="zip" maxlength="8" required>
+
+    <label for="layout">Home Layout:</label>
+    <input type="file" name="layout" id="layout">
 
     <br>
     <button type="submit" name="submit">Submit Assessment</button>
