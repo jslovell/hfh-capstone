@@ -155,9 +155,11 @@ if ($id > 0) {
         $layout_path = "./uploads/" . $row['layout'];
     } else {
         echo "Image not found";
+        $layout_path = "./assets/testbp.png";
     }
 } else {
     echo "Invalid ID";
+    $layout_path = "./assets/testbp.png";
 }
 
 mysqli_close($conn);
