@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>House Assessment Tool</title>
     <link rel="stylesheet" href="jquery-ui.css">
-    <link rel="stylesheet" href="/styles/tabToolStyle.css">
+    <link rel="stylesheet" href="./styles/tabToolStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.js"></script>
     <script src="script.js"></script>
@@ -139,11 +139,45 @@
 
 </head>
 <?php include "navbar.php" ?>
+<?php
+require_once "./php_scripts/db.php";
+
+// Gets the ID from the URL
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Checks the ID and makes sure it is valid
+if ($id > 0) {
+    $sql = "SELECT layout FROM form_entries WHERE id = $id";
+    $result = mysqli_query($conn, $sql);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $layout_path = "./uploads/" . $row['layout'];
+    } else {
+        echo "Image not found";
+    }
+} else {
+    echo "Invalid ID";
+}
+
+mysqli_close($conn);
+?>
+
+
 <body style="margin-top: 8%;">
 
-<h1 style=font-size:250%>House Assessment Tool</h1>
+<h1 style="font-size:250%">House Assessment Tool</h1>
 <br>
 <img src="images/icon-legend.png" style="width: 500px; height: 250px; justify-content: center; display: flex; align-items: center;margin: auto">
+
+<br>
+<br>
+    <div class="clickableArea" >
+        <?php if (isset($layout_path)) : ?>
+        <img src="<?php echo $layout_path; ?>" alt="Home Layout" id="testBlueprint" style="width: 800px; height: 800px">
+        <?php endif; ?>
+    </div>
+<br>
 
 <div class="sidebar">
     <button id="clearButton"></button>
@@ -154,19 +188,6 @@
     <button id="photo-button"></button>
     <button id="note-button"></button>
 </div>
-
-
-
-<br>
-<br>
-
-<div class="clickableArea"><img src="assets/testbp.png" id = "testBlueprint" style="width: 800px; height: 800px"></div>
-
-<br>
-
-<div></div>
-
-
 
 </body>
 

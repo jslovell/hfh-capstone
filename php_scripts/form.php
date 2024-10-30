@@ -127,8 +127,13 @@ else{
     echo "Error!";
 }
 
+// Gets the last inserted ID and then redirects to test_page.php with the ID
+$new_id = mysqli_insert_id($conn); 
+  header("Location: ../test_page.php?id=$new_id"); 
+  exit();
+
 mysqli_close($conn);
-
-
-
+  
 ?>
+
+
