@@ -152,7 +152,7 @@ if ($id > 0) {
 
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
-        $layout_path = "./uploads/" . $row['layout'];
+        $layout_path = "./uploads/layouts/" . $row['layout'];
     } else {
         echo "Image not found";
         $layout_path = "./assets/testbp.png";

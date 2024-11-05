@@ -1,6 +1,6 @@
 <?php
 
-header('Location: ../test_page.php');
+//header('Location: ../test_page.php');
 
 require_once "db.php";
 
@@ -15,7 +15,7 @@ $zip = $_POST['zip'];
 $layout = $_FILES["layout"]["name"];
 
 // Home layout upload
-$target_dir = "../uploads/";
+$target_dir = "../uploads/layouts/";
 $target_file = $target_dir . basename($_FILES["layout"]["name"]);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -117,23 +117,22 @@ if(mysqli_num_rows($rs1) == 0){
 #	$sql2 = "INSERT INTO hfh.form_entries (firstname, lastname, email, phone, address, city, state, parcel_number) VALUES ('$firstname', '$lastname', '$email', '$phone', '$address', '$city', '$state', '$rs1');";
 #}
 
-$rs2 = mysqli_query($conn, $sql2);
+if ($uploadOk == 1) {
+    $rs2 = mysqli_query($conn, $sql2);
 
+    if($rs2){
+        	echo "Success!";
+    }
+    else{
+        echo "Error!";
+    }
 
-if($rs2){
-    	echo "Success!";
+    // Gets the last inserted ID and then redirects to test_page.php with the ID
+    $new_id = mysqli_insert_id($conn);
+      header("Location: ../test_page.php?id=$new_id");
+      exit();
 }
-else{
-    echo "Error!";
-}
-
-// Gets the last inserted ID and then redirects to test_page.php with the ID
-$new_id = mysqli_insert_id($conn); 
-  header("Location: ../test_page.php?id=$new_id"); 
-  exit();
 
 mysqli_close($conn);
-  
+
 ?>
-
-
