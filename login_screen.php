@@ -19,7 +19,7 @@
 
 
 <!-- ONLY change made to this document was changing action from "appMenu.php to /php_scripts/login.php-->
-<form action="./php_scripts/login.php" method="post">
+<form action="./hfh-capstone/php_scripts/login.php" method="post">
 
     <div class="container">
         <label for="uname"><b>Username</b></label>
