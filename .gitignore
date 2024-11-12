@@ -1,2 +1,5 @@
 # ignore ALL uploaded home layouts
 uploads/layouts/*
+!uploads/layouts/default.jpg
+fpdf/doc/*
+fpdf/tutorial/*
