@@ -1,300 +1,240 @@
-$(document).ready(function() {
-	var activeButtonId = null;
-	var isBrushActive = false;
-	var isSelectMode = false;
-	var iconCounter = localStorage.getItem('iconCounter') ? parseInt(localStorage.getItem('iconCounter')) : 0;
-	var iconId = null;
+$(document).ready(function () {
+    var activeButtonId = null;
+    var isBrushActive = false;
+    var isSelectMode = false;
 
-	function saveIconData(iconId, type, data) {
-		var iconData = {
-			id: iconId,
-			type: type,
-			data: data,
-		};
-		localStorage.setItem(iconId, JSON.stringify(iconData));
-	}
+    class Icon {
+        constructor(iconId, alertType, photoData, notesData, x_pos, y_pos) {
+            this.id = iconId;
+            this.assignmentID = assignmentID;
+            this.type = alertType;
+            this.photo = photoData;
+            this.notes = notesData;
+            this.x_pos = x_pos;
+            this.y_pos = y_pos;
+        }
+    }
 
-	function loadIconData(iconId) {
-		let iconData = JSON.parse(localStorage.getItem('iconData')) || {};
-		return iconData[iconId];
-	}
+    function saveIconToDatabase(icon) {
+        if (icon.x_pos === undefined || icon.y_pos === undefined) {
+            console.error(`Position data is missing for icon ID: ${icon.id}`);
+        }
+        var iconData = {
+            iconId: icon.id,
+            assignmentID: icon.assignmentID,
+            type: icon.type,
+            photo: icon.photo,
+            notes: icon.notes,
+            x_pos: icon.x_pos,
+            y_pos: icon.y_pos
+        };
+        console.log("Saving to database:", iconData);
 
+        $.ajax({
+            url: './php_scripts/save_icon.php',
+            method: 'POST',
+            data: JSON.stringify(iconData),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log('Icon saved:', response);
+            },
+            error: function (xhr, status, error) {
+                console.log("Error status: " + status);
+                console.log("Response text: " + xhr.responseText);
+                console.error('Error saving icon:', error);
+            }
+        });
+    }
 
-	$('body').on("click", '.alerts-icon', function(e) {
-		e.preventDefault();
-		var popupContent = "<select><option value='1'>Electrical</option><option value='2'>Windows</option><option value='3'>Water Damage</option><option value='4'>Asbestos</option><option value='5'>Cracks</option><option value='other'>Other</option></select><br><textarea id='alerts-textarea' placeholder='Enter description'></textarea><br><input type='file' accept='image/*'><br><button class='save-button'>Save</button>";
-		var $popup = $("<div class='alerts'></div>");
-		$popup.html(popupContent);
-		$popup.dialog({
-			width: 600,
-			height: 'auto',
-			modal:true,
-			title: 'Input Alert',
-			overlay: { backgroundColor: "#000", opacity: 0.9 }
-		});
-		$('#save-button').on('click', function() {
-			var textareaValue = $('#alerts-textarea').val();
-			saveIconData(iconId, 'alerts', { textareaValue: textareaValue });
-		});
+    function saveIconData(icon) {
+        var iconData = JSON.parse(localStorage.getItem('iconData')) || {};
+        iconData[icon.id] = icon;
+        localStorage.setItem('iconData', JSON.stringify(iconData));
 
-		var iconData = loadIconData(iconId);
-		if (iconData && iconData.type === 'alerts') {
-			$('#alerts-textarea').val(iconData.data.textareaValue);
-		}
-	});
+        saveIconToDatabase(icon);
+    }
 
-	$('body').on("click", '.notes-icon', function(e) {
-		e.preventDefault();
-		var popupContent = "<textarea id='notes-textarea' placeholder='Enter description'></textarea><button class='save-button'>Save</button>";
-		var $popup = $("<div class='alerts'></div>");
-		$popup.html(popupContent);
-		$popup.dialog({
-			width: 600,
-			height: 'auto',
-			modal:true,
-			title: 'Input Notes',
-			overlay: { backgroundColor: "#000", opacity: 0.9 }
-		});
-		$('#save-button').on('click', function() {
-			var textareaValue = $('#notes-textarea').val();
-			saveIconData(iconId, 'notes', { textareaValue: textareaValue });
-		});
-	});
+    function loadIconData(iconId) {
+        let iconData = JSON.parse(localStorage.getItem('iconData')) || {};
+        let icon = iconData[iconId];
 
-	$('body').on("click", '.photo-icon', function(e) {
-		e.preventDefault();
-		var popupContent = "<textarea id='photo-textarea' placeholder='Enter description'></textarea><br><input type='file' accept='image/*'><br><button class='save-button'>Save</button>";
-		var $popup = $("<div class='alerts'></div>");
-		$popup.html(popupContent);
-		$popup.dialog({
-			width: 600,
-			height: 'auto',
-			modal:true,
-			title: 'Input Picture',
-			overlay: { backgroundColor: "#000", opacity: 0.9 }
-		});
-		$('#save-button').on('click', function() {
-			var textareaValue = $('#photo-textarea').val();
-			saveIconData(iconId, 'photo', { textareaValue: textareaValue });
-		});
-	});
+        if (icon) {
+            console.log("Loaded Icon Data:", icon);
+            if (icon.x_pos === undefined || icon.y_pos === undefined) {
+                console.error(`Position data missing for icon with ID: ${iconId}`);
+            }
+        } else {
+            console.log(`No data found for icon with ID: ${iconId}`);
+        }
 
-	$('body').on('click', '.save-button', function() {
-		var textareaValue;
-		if ($(this).closest('.alerts').length) {
-			textareaValue = $('#alerts-textarea').val();
-			saveIconData(iconId, 'alerts', { textareaValue: textareaValue });
-		} else if ($(this).closest('.notes').length) {
-			textareaValue = $('#notes-textarea').val();
-			saveIconData(iconId, 'notes', { textareaValue: textareaValue });
-		} else if ($(this).closest('.photo').length) {
-			textareaValue = $('#photo-textarea').val();
-			saveIconData(iconId, 'photo', { textareaValue: textareaValue });
-		}
-		$(this).closest('.alerts').dialog('close');
-	});
+        return icon;
+    }
 
+    function openEditPopup(iconId) {
+        var popupContent = `
+            <select id='alert-type'>
+                <option value='1'>Electrical</option>
+                <option value='2'>Windows</option>
+                <option value='3'>Water Damage</option>
+                <option value='4'>Asbestos</option>
+                <option value='5'>Cracks</option>
+                <option value='other'>Other</option>
+            </select><br>
+            <input type='file' id='icon-photo' accept='image/*'><br> 
+            <textarea id='icon-notes' placeholder='Enter notes'></textarea><br> 
+            <button class='save-button'>Save</button>
+        `;
 
-	$(function(){
+        var $popup = $("<div class='alerts'></div>");
+        $popup.html(popupContent);
+        $popup.dialog({
+            width: 600,
+            height: 'auto',
+            modal: true,
+            title: 'Input Alert',
+            overlay: { backgroundColor: "#000", opacity: 0.9 },
+            close: function () {
+                $(this).dialog('destroy').remove();
+            }
+        });
 
-		$('.photo-icon').on("click", function(e){
-			e.preventDefault();
-			var popupContent = "<textarea placeholder='Enter description'></textarea><br><input type='file' accept='image/*'><br><button onclick='alert('upload complete')'>Upload</button>";
-			var $popup = $("<div class='alerts'></div>");
-			$popup.html(popupContent);
-			$popup.dialog({
-				width: 600,
-				height: 'auto',
-				modal:true,
-				title: 'Input Picture',
-				overlay: { backgroundColor: "#000", opacity: 0.9 }
-			});
-		});
+        var icon = loadIconData(iconId);
+        if (icon) {
+            $popup.find('#alert-type').val(icon.type);
+            $popup.find('#icon-notes').val(icon.notes);
+        }
 
-		$('.alerts-icon').on("click", function(e){
-			e.preventDefault();
-			var popupContent = "<select><option value='1'>Electrical</option><option value='2'>Windows</option><option value='3'>Water Damage</option><option value='4'>Asbestos</option><option value='5'>Cracks</option><option value='other'>Other</option></select><br><textarea placeholder='Enter description'></textarea><br><input type='file' accept='image/*'><br><button>Submit</button>";
-			var $popup = $("<div class='alerts'></div>");
-			$popup.html(popupContent);
-			$popup.dialog({
-				width: 600,
-				height: 'auto',
-				modal:true,
-				title: 'Input Alert',
-				overlay: { backgroundColor: "#000", opacity: 0.9 }
-			});
-		});
+        $popup.find('.save-button').on('click', function () {
+            var alertType = $popup.find('#alert-type').val();
+            var photoData = $popup.find('#icon-photo')[0].files[0];
+            var notesData = $popup.find('#icon-notes').val();
 
-		$('body').on("click", '.notes-icon', function(e) {
-			e.preventDefault();
-			var popupContent = "<textarea placeholder='Enter description'></textarea><button>Submit</button>";
-			$popup.html(popupContent);
-			$popup.dialog({
-				width: 600,
-				height: 'auto',
-				modal:true,
-				title: 'Input Notes',
-				overlay: { backgroundColor: "#000", opacity: 0.9 }
-			});
-		});
+            var iconLeft = icon ? icon.x_pos : $(`#${iconId}`).offset().left;
+            var iconTop = icon ? icon.y_pos : $(`#${iconId}`).offset().top;
 
-	});
+            var updatedIcon = new Icon(iconId, alertType, photoData ? photoData.name : "", notesData, iconLeft, iconTop);
 
+            saveIconData(updatedIcon);
+            $popup.dialog('close');
+        });
+    }
 
-	function toggleSideNav() {
-		$(".side_nav,.nav-overlay").toggleClass("active");
-	}
+    // Event listener for icon edit
+    $('body').on("click", '.alerts-icon', function (e) {
+        e.preventDefault();
+        var iconId = $(this).closest('.box-alert').attr("id");
+        openEditPopup(iconId);
+    });
 
-	$(".nav_ico").click(function() {
-		$(this).toggleClass("active");
-		toggleSideNav();
-		return false;
-	});
+    $(".clickableArea").on("mousedown", function (event) {
+        if (isSelectMode) {
+            if (activeButtonId) {
+                var bodyOffset = $("body").offset();
+                var iconTop = event.pageY - bodyOffset.top - 10;
+                var iconLeft = event.pageX - bodyOffset.left - 10;
+                console.log("Calculated position for new icon:", iconLeft, iconTop);
 
-	$(".nav-overlay").click(function() {
-		$(".nav_ico").removeClass("active");
-		toggleSideNav();
-	});
+                var iconId = "icon-" + Date.now();
+                var $icon;
 
-	$(".side_nav a[data-target]").click(function(event) {
-		event.preventDefault();
-		const targetId = $(this).attr('data-target');
-		const targetNav = $("#" + targetId);
+                switch (activeButtonId) {
+                    case "alert-severe-button":
+                        $("#alert-severe-button").css("background-image", "url('images/alert-severe-button-active.png')");
+                        $icon = $("<div class=\"box-alert\"><div class=\"alerts-icon\"><img src=\"images/alert-sever-icon.png\"></div></div>");
+                        break;
+                }
 
-		if (targetNav) {
-			$(".nav_ico").removeClass("active");
-			toggleSideNav();
-		}
-	});
+                if ($icon) {
+                    $icon.attr("id", iconId);
+                    $icon.css({
+                        top: iconTop,
+                        left: iconLeft
+                    });
+                    $(".clickableArea").append($icon);
 
+                    var icon = new Icon(iconId, null, null, null, iconLeft, iconTop);
+                    saveIconData(icon);
+                }
+            } else {
+                var $clickedIcon = $(event.target).closest('.box-alert');
+                if ($clickedIcon.length) {
+                    var clickedIconId = $clickedIcon.attr("id");
+                    openEditPopup(clickedIconId);
+                }
+            }
+        }
+    });
 
-	function toggleBrush() {
-		isBrushActive = !isBrushActive;
-		$("body").toggleClass("brush-cursor", isBrushActive);
-	}
+    // Navbar and side navigation functionality
+    function toggleSideNav() {
+        $(".side_nav,.nav-overlay").toggleClass("active");
+    }
 
-	function deactivateIcons() {
-		$("#alert-button").css("background-image", "url('images/alert-button.png')");
-		$("#alert-moderate-button").css("background-image", "url('images/alert-moderate-button.png')");
-		$("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
-		$("#photo-button").css("background-image", "url('images/picture-button.png')");
-		$("#note-button").css("background-image", "url('images/note-button.png')");
-	}
+    $(".nav_ico").click(function () {
+        $(this).toggleClass("active");
+        toggleSideNav();
+        return false;
+    });
 
-	function toggleSelectMode() {
-		isSelectMode = !isSelectMode;
-		if (isSelectMode) {
-			$("#select-button").css("background-image", "url('images/select-button-active.png')");
-			toggleBrush();
-		} else {
-			$("#select-button").css("background-image", "url('images/select-button.png')");
-			deactivateIcons()
-			isBrushActive = false;
-		}
-	}
+    $(".nav-overlay").click(function () {
+        $(".nav_ico").removeClass("active");
+        toggleSideNav();
+    });
 
-	$("#select-button").click(function() {
-		toggleSelectMode();
-	});
+    $(".side_nav a[data-target]").click(function (event) {
+        event.preventDefault();
+        const targetId = $(this).attr('data-target');
+        const targetNav = $("#" + targetId);
 
-	$(".icon-button").on("click", function() {
-		if (isSelectMode) {
-			activeButtonId = $(this).attr("id");
-		}
-	});
+        if (targetNav) {
+            $(".nav_ico").removeClass("active");
+            toggleSideNav();
+        }
+    });
 
-	$("#alert-severe-button, #alert-moderate-button, #alert-button, #photo-button, #note-button, #removal-button").on("click", function() {
-		if (isSelectMode) {
-			activeButtonId = $(this).attr("id");
-		}
-	});
+    function toggleBrush() {
+        isBrushActive = !isBrushActive;
+        $("body").toggleClass("brush-cursor", isBrushActive);
+    }
 
-	$(".clickableArea").on("click", function(event) {
+    function deactivateIcons() {
+        $("#alert-button").css("background-image", "url('images/alert-button.png')");
+        $("#alert-moderate-button").css("background-image", "url('images/alert-moderate-button.png')");
+        $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
+    }
 
+    function toggleSelectMode() {
+        isSelectMode = !isSelectMode;
+        if (isSelectMode) {
+            $("#select-button").css("background-image", "url('images/select-button-active.png')");
+            toggleBrush();
+        } else {
+            $("#select-button").css("background-image", "url('images/select-button.png')");
+            deactivateIcons();
+            isBrushActive = false;
+        }
+    }
 
-		if (isSelectMode && activeButtonId) {
-			var bodyOffset = $("body").offset();
-			var iconTop = event.pageY - bodyOffset.top - 10;
-			var iconLeft = event.pageX - bodyOffset.left - 10;
-			var $icon;
-			switch(activeButtonId) {
-				case "alert-severe-button":
-					deactivateIcons()
-					$("#alert-severe-button").css("background-image", "url('images/alert-severe-button-active.png')");
-					$icon = $("<div class=\"box-alert\"><div class=\"alerts-icon\"><img src=\"images/alert-sever-icon.png\"></div></div>");
-					$icon.attr("id", "icon-" + iconCounter);
-					iconCounter++;
-					$icon.css({
-						top: iconTop,
-						left: iconLeft
-					});
-					break;
-				case "alert-moderate-button":
-					deactivateIcons()
-					$("#alert-moderate-button").css("background-image", "url('images/alert-moderate-button-active.png')");
-					$icon = $("<div class=\"box-alert\"><div class=\"alerts-icon\"><img src=\"images/alert-moderate-icon.png\"></div></div>");
-					$icon.attr("id", "icon-" + iconCounter);
-					iconCounter++;
-					$icon.css({
-						top: iconTop,
-						left: iconLeft
-					});
-					break;
-				case "alert-button":
-					deactivateIcons()
-					$("#alert-button").css("background-image", "url('images/alert-button-active.png')");
-					$icon = $("<div class=\"box-alert\"><div class=\"alerts-icon\"><img src=\"images/alert-icon.png\"></div></div>");
-					$icon.attr("id", "icon-" + iconCounter);
-					iconCounter++;
-					$icon.css({
-						top: iconTop,
-						left: iconLeft
-					});
-					break;
-				case "photo-button":
-					deactivateIcons()
-					$("#photo-button").css("background-image", "url('images/picture-button-active.png')");
-					$icon = $("<div class=\"box\"><div class=\"photo-icon\"><img src=\"images/picture-icon.png\"></div><div class=\"picture\">Photo Here...<div></div>");
-					$icon.attr("id", "icon-" + iconCounter);
-					iconCounter++;
-					$icon.css({
-						top: iconTop,
-						left: iconLeft
-					});
+    $("#select-button").click(function () {
+        toggleSelectMode();
+        activeButtonId = null;
+    });
 
-					break;
-				case "note-button":
-					deactivateIcons()
-					$("#note-button").css("background-image", "url('images/note-button-active.png')");
-					$icon = $("<div class=\"box-note\"><div class=\"notes-icon\"><img src=\"images/note-icon.png\"></div><div class=\"notes\"></div></div>");
-					$icon.attr("id", "icon-" + iconCounter);
-					iconCounter++;
-					$icon.css({
-						top: iconTop,
-						left: iconLeft
-					});
-					break;
-			}
+    $("#alert-severe-button, #alert-moderate-button, #alert-button").on("click", function () {
+        if (isSelectMode) {
+            activeButtonId = $(this).attr("id");
+        }
+    });
 
-			$("body").append($icon);
-			saveIconData($icon.attr("id"), 'icon', { top: iconTop, left: iconLeft });
-			localStorage.setItem('iconCounter', iconCounter.toString());
-		}
-
-		iconId = $icon.attr("id");
-	});
-
-
-	$("#clearButton").on("click", function() {
-		let text = "Warning: All icons will be deleted\n";
-		if (confirm(text)) {
-			$(".box, .box-alert, .box-note").remove();
-			deactivateIcons();
-			isSelectMode = false;
-			isBrushActive = false;
-			iconCounter = 0;
-			$("#select-button").css("background-image", "url('images/select-button.png')");
-			localStorage.clear();
-		}
-	});
+    $("#clearButton").on("click", function () {
+        let text = "Warning: All icons will be deleted\n";
+        if (confirm(text)) {
+            $(".box, .box-alert, .box-note").remove();
+            deactivateIcons();
+            isSelectMode = false;
+            isBrushActive = false;
+            $("#select-button").css("background-image", "url('images/select-button.png')");
+            localStorage.clear();
+        }
+    });
 });
