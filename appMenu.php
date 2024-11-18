@@ -18,7 +18,7 @@
     <div class="container">
         <button type="button" class="createAssessment" onclick="location.href='houseAssesmentTool.php'">Create New Assessment</button>
         <button type="button" class="editAssessment" onclick="location.href='test_page.php'">Edit Existing Assessment</button>
-        <button type="button" class="editAssessment" onclick="location.href='php_scripts/print_to_pdf.php?id=131'">TEST PDF</button>
+        <button type="button" class="editAssessment" onclick="location.href='php_scripts/print_to_pdf.php?id=132'">TEST PDF</button>
     </div>
 </form>
 

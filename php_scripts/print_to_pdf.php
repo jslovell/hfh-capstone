@@ -18,22 +18,35 @@ require_once "./db.php";
 // Check if id exists
 if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $sql = "SELECT address, city, state, layout FROM form_entries WHERE id = $id";
-    $result = mysqli_query($conn, $sql);
+    $sqlForm = "SELECT address, city, state, layout FROM form_entries WHERE id = $id";
+    $resultForm = mysqli_query($conn, $sqlForm);
     // Check if id has data
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $GLOBALS['header1'] = $row['address'];
-        $GLOBALS['header2'] = $row['city'] . " " . $row['state'];
+    if ($resultForm && mysqli_num_rows($resultForm) > 0) {
+        $form = mysqli_fetch_assoc($resultForm);
+        $GLOBALS['header1'] = $form['address'];
+        $GLOBALS['header2'] = $form['city'] . " " . $form['state'];
         // Check if layout exists
-        if (is_null($row['layout'])) {
+        if (is_null($form['layout'])) {
             $layout_path = "../uploads/layouts/default.jpg";
         } else {
-            $layout_path = "../uploads/layouts/" . $row['layout'];
+            $layout_path = "../uploads/layouts/" . $form['layout'];
         }
     } else {
         // error: no row exists with that id
         header('Location: ../appMenu.php');
+    }
+
+    // Get icon data
+    $sqlIcons = "SELECT type, picture, notes, x_pos, y_pos FROM icons WHERE assignmentID = $id";
+    $resultIcons = mysqli_query($conn, $sqlIcons);
+    $icons = [];
+    if ($resultIcons && mysqli_num_rows($resultIcons) > 0) {
+        while($iconRow = mysqli_fetch_array($resultIcons))
+        {
+            $icons[] = $iconRow;
+        }
+    } else {
+        // error: no icons
     }
 } else {
     // error: invalid id
@@ -76,6 +89,13 @@ class PDF extends FPDF {
         $this->Cell(0,10,'Page ' .
             $this->PageNo() . '/{nb}',0,0,'C');
     }
+
+    // Icon
+    function DrawIcon($w, $h, $txt='',) {
+        $this->Image('../images/alert-sever-icon.png', $w, $h-5, 7, 7);
+        $this->Rect($w+7, $h+1, 2+strlen($txt)*2.3, -5, 'F');
+        $this->Text($w+8, $h, $txt);
+    }
 }
 
 // Instantiation of FPDF class
@@ -85,16 +105,56 @@ $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->SetFont('Times','',14);
 
-//page 1
+// page 1
 $pdf->AddPage();
-list($x1, $y1) = getimagesize($layout_path);
-$scalar = 160 / $x1;
-$h = $y1 * $scalar + $pdf->GetY();
-$pdf->Cell(0, $h, "", 0, 1, 'C',$pdf->Image($layout_path,$pdf->GetX(),$pdf->GetY(),0,160));
 
-for($i = 1; $i <= 10; $i++)
-    $pdf->Cell(0, 10, 'line number '
-            . $i, 0, 1);
+// Home Layout
+list($x1, $y1) = getimagesize($layout_path);
+$scalar = 180 / $x1;
+$originX = $pdf->GetX();
+$originY = $pdf->GetY();
+$w = $x1 * $scalar;
+$h = $y1 * $scalar;
+$pdf->Cell($w + $originX, $h + 10, "", 0, 1, 'C',$pdf->Image($layout_path,$originX,$originY,180,0));
+
+// Overlay Icons
+$pdf->SetFillColor(255, 255, 255);
+$iconNum = 0;
+foreach($icons as $icon) {
+    $row = array($icon['x_pos'], $icon['y_pos'], ++$iconNum);
+    $pdf->DrawIcon($originX + ($row[0]/100) * $w, $originY + ($row[1]/100) * $h, $row[2]);
+}
+
+// Table Header
+$header = array('Number', 'Type', 'Notes');
+$colWidths = array(20, 20, 140);
+$iconNum = 0;
+foreach($header as $col)
+    $pdf->Cell($colWidths[$iconNum++],7,$col,1);
+$pdf->Ln();
+// Table Data
+$iconNum = 0;
+foreach($icons as $icon) {
+    $row = array(++$iconNum, $icon['type'], $icon['picture'], $icon['notes']);
+    $pdf->Cell($colWidths[0],6,$row[0],1);
+    $pdf->Cell($colWidths[1],6,$row[1],1);
+    $pdf->Cell($colWidths[2],6,$row[3],1);
+    $pdf->Ln();
+    // Image
+    if ($row[2] != '' && !is_null($row[2]) ) {
+        $imagePath = "../uploads/layouts/" . $row[2];
+        list($img_x1, $img_y1) = getimagesize($imagePath);
+        $scalar = 180 / $img_x1;
+        $img_w = $img_x1 * $scalar;
+        $img_h = $img_y1 * $scalar;
+        if ($pdf->GetY() + $img_h > 200) {
+            $pdf->AddPage();
+        }
+        $pdf->Cell(180,$img_h+1,"",1,0,'C',$pdf->Image($imagePath,$pdf->GetX()+1,$pdf->GetY()+1,178,0));
+        $pdf->Ln();
+    }
+}
+
 $pdf->Output();
 
 ?>
