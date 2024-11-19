@@ -38,11 +38,10 @@ mysqli_close($conn);
     <link rel="stylesheet" href="./styles/tabToolStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.js"></script>
-
-    <!-- Initialize assignmentID in JavaScript -->
     <script>
         const assignmentID = <?php echo json_encode($assignmentID); ?>;
     </script>
+
     <script src="script.js"></script>
     <style>
         #clearButton {
@@ -228,6 +227,12 @@ mysqli_close($conn);
             });
         }
     });
+</script>
+
+
+<script>
+    // Define our page as variable and pass to script.js
+    const currentPage = 'assessment_tool';
 </script>
 
 </body>
