@@ -122,7 +122,7 @@ $pdf->SetFillColor(255, 255, 255);
 $iconNum = 0;
 foreach($icons as $icon) {
     $row = array($icon['x_pos'], $icon['y_pos'], ++$iconNum);
-    $pdf->DrawIcon($originX + ($row[0]/100) * $w, $originY + ($row[1]/100) * $h, $row[2]);
+    $pdf->DrawIcon($originX + $row[0] * $scalar, $originY + $row[1] * $scalar, $row[2]);
 }
 
 // Table Header
@@ -138,11 +138,11 @@ foreach($icons as $icon) {
     $row = array(++$iconNum, $icon['type'], $icon['picture'], $icon['notes']);
     $pdf->Cell($colWidths[0],6,$row[0],1);
     $pdf->Cell($colWidths[1],6,$row[1],1);
-    $pdf->Cell($colWidths[2],6,$row[3],1);
-    $pdf->Ln();
+    $pdf->MultiCell($colWidths[2],6,$row[3],1);
+    //$pdf->Ln();
     // Image
     if ($row[2] != '' && !is_null($row[2]) ) {
-        $imagePath = "../uploads/layouts/" . $row[2];
+        $imagePath = "../uploads/photos/" . $row[2];
         list($img_x1, $img_y1) = getimagesize($imagePath);
         $scalar = 180 / $img_x1;
         $img_w = $img_x1 * $scalar;
