@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Step 2: If iconId exists, perform an update
         $stmt->close();
         $stmt = $conn->prepare("UPDATE icons SET assignmentID = ?, type = ?, picture = ?, notes = ?, x_pos = ?, y_pos = ? WHERE iconId = ?");
-        $stmt->bind_param('isssiii', $assignmentID, $type, $picture, $notes, $x_pos, $y_pos, $iconId);
+        $stmt->bind_param('isssiis', $assignmentID, $type, $picture, $notes, $x_pos, $y_pos, $iconId);
 
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Icon updated successfully']);
