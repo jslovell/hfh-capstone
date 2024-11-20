@@ -17,8 +17,12 @@
 
   $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-  if(!$conn){
-    die("Connection failed: " . mysqli_connect_error());
+  // Establish database connection using PDO
+  try {
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  } catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
   }
  
 ?>
