@@ -109,7 +109,10 @@ $pdf->SetFont('Times','',14);
 $pdf->AddPage();
 
 // Home Layout
-list($x1, $y1) = getimagesize($layout_path);
+//list($x1, $y1) = getimagesize($layout_path);
+$x1 = 1600;
+$y1 = 1400;
+// TEMP ^^
 $scalar = 180 / $x1;
 $originX = $pdf->GetX();
 $originY = $pdf->GetY();
@@ -122,7 +125,7 @@ $pdf->SetFillColor(255, 255, 255);
 $iconNum = 0;
 foreach($icons as $icon) {
     $row = array($icon['x_pos'], $icon['y_pos'], ++$iconNum);
-    $pdf->DrawIcon($originX + $row[0] * $scalar, $originY + $row[1] * $scalar, $row[2]);
+    $pdf->DrawIcon($originX + ($row[0]-540) * 1.85 * $scalar, $originY + ($row[1]-375) * 1.85 * $scalar, $row[2]);
 }
 
 // Table Header
