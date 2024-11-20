@@ -52,6 +52,7 @@
     <link rel="stylesheet" href="styles/indexStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.css"></script>
+    <script src="script.js"></script>
 
     <style>
     .search-container {
