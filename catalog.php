@@ -5,12 +5,12 @@
         $teamMember = isset($_POST['teamMember']) ? mysqli_real_escape_string($conn, $_POST['teamMember']) : '';
         $address = isset($_POST['address']) ? mysqli_real_escape_string($conn, $_POST['address']) : '';
         
-        $query = "SELECT * FROM parcel WHERE 1=1";
+        $query = "SELECT * FROM form_entries WHERE 1=1";
         
         if (strlen($teamMember) >= 2) {
-            $query .= " AND (CONCAT(first_name, ' ', last_name) LIKE '%$teamMember%'
-                         OR first_name LIKE '%$teamMember%'
-                         OR last_name LIKE '%$teamMember%')";
+            $query .= " AND (CONCAT(firstname, ' ', lastname) LIKE '%$teamMember%'
+                         OR firstname LIKE '%$teamMember%'
+                         OR lastname LIKE '%$teamMember%')";
         }
         
         if (strlen($address) >= 2) {
@@ -22,16 +22,13 @@
         while ($row = mysqli_fetch_assoc($result)) {
             ?>
             <div class="assessment-card">
-            <a href="./test_page.php?id=<?=$row['parcel_number']?>" class="edit-icon">✎</a>
+            <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon">✎</a>
             <a href="php_scripts/print_to_pdf.php?id=$id" class="edit-icon">📄</a>
                 <h3>Team Member</h3>
-                <p class="team-member"><?php echo $row['first_name'] . ' ' . $row['last_name']; ?></p>
+                <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
                 
                 <h3>Address</h3>
                 <p class="address"><?php echo $row['address']; ?></p>
-                
-                <h3>Notes</h3>
-                <p>Residence Type: <?php echo $row['residence_type']; ?></p>
                 
                 <h3>Status</h3>
                 <p>In Progress</p>
