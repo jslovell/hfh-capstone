@@ -14,9 +14,11 @@
     </head>
     <?php include "navbar.php" ?>
     <body>
+        <h1>About Us</h1>
         <div class="center">
             <img src="assets/Bradley_Hall.jpeg" id="mainimage">
         </div>
+        <h1>Computer Science Team</h1>
         <br>
         <div class="member-profiles">
             <div class="member">
@@ -48,7 +50,7 @@
                     <p><strong>Last Name: </strong>Janssen</p>
                     <p><strong>Email: </strong>tjanssen@mail.bradley.edu</p>
                     <p><strong>Major: </strong>Computer Science</p>
-                    <p><strong>Minor: </strong>Cyber Security</p>
+                    <p><strong>Minor: </strong>Cybersecurity</p>
                 </div>
             </div>
         
@@ -69,7 +71,7 @@
                     <p><strong>Last Name: </strong>Pacheco</p>
                     <p><strong>Email: </strong>tpacheco@mail.bradley.edu</p>
                     <p><strong>Major: </strong>Computer Science</p>
-                    <p><strong>Minor: </strong>Cyber Security</p>
+                    <p><strong>Minor: </strong>Cybersecurity</p>
                 </div>
             </div>
         </div>
