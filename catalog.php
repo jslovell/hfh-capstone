@@ -22,8 +22,8 @@
         while ($row = mysqli_fetch_assoc($result)) {
             ?>
             <div class="assessment-card">
-                <a href="./test_page.php?id=<?=$row['parcel_number']?>" class="edit-icon">✎</a>
-                
+            <a href="./test_page.php?id=<?=$row['parcel_number']?>" class="edit-icon">✎</a>
+            <a href="php_scripts/print_to_pdf.php?id=$id" class="edit-icon">📄</a>
                 <h3>Team Member</h3>
                 <p class="team-member"><?php echo $row['first_name'] . ' ' . $row['last_name']; ?></p>
                 
