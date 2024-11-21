@@ -18,7 +18,7 @@ require_once "./db.php";
 // Check if id exists
 if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $sqlForm = "SELECT address, city, state, layout FROM form_entries WHERE id = $id";
+    $sqlForm = "SELECT firstname, lastname, address, city, state, zip, layout FROM form_entries WHERE id = $id";
     $resultForm = mysqli_query($conn, $sqlForm);
     // Check if id has data
     if ($resultForm && mysqli_num_rows($resultForm) > 0) {
@@ -92,9 +92,9 @@ class PDF extends FPDF {
 
     // Icon
     function DrawIcon($w, $h, $txt='',) {
-        $this->Image('../images/alert-sever-icon.png', $w, $h-5, 7, 7);
-        $this->Rect($w+7, $h+1, 2+strlen($txt)*2.3, -5, 'F');
-        $this->Text($w+8, $h, $txt);
+        $this->Image('../images/alert-sever-icon.png', $w-1, $h-1, 7, 7);
+        $this->Rect($w+6, $h+5, 2+strlen($txt)*2.3, -5, 'F');
+        $this->Text($w+7, $h+4, $txt);
     }
 }
 
@@ -118,19 +118,32 @@ $originX = $pdf->GetX();
 $originY = $pdf->GetY();
 $w = $x1 * $scalar;
 $h = $y1 * $scalar;
-$pdf->Cell($w + $originX, $h + 10, "", 0, 1, 'C',$pdf->Image($layout_path,$originX,$originY,180,0));
+$pdf->Cell($w + $originX, $h + $originY - 20, "", 0, 1, 'C',$pdf->Image($layout_path,$originX,$originY,$w,0));
 
 // Overlay Icons
 $pdf->SetFillColor(255, 255, 255);
 $iconNum = 0;
 foreach($icons as $icon) {
     $row = array($icon['x_pos'], $icon['y_pos'], ++$iconNum);
-    $pdf->DrawIcon($originX + ($row[0]-540) * 1.85 * $scalar, $originY + ($row[1]-375) * 1.85 * $scalar, $row[2]);
+    $pdf->DrawIcon($originX + ($row[0]-540) * 1.9 * $scalar, $originY + ($row[1]-375) * 1.9 * $scalar, $row[2]);
 }
 
-// Table Header
+// Home Info
+$pdf->Cell(30,6,"Homeowner:",0,0,'R');
+$pdf->Cell(75,6,$form['firstname']." ".$form['lastname'],0,1,'L');
+$pdf->Cell(30,6,"Address:",0,0,'R');
+$pdf->Cell(75,6,$form['address'],0,0,'L');
+$pdf->Cell(20,6,"State:",0,0,'R');
+$pdf->Cell(20,6,$form['state'],0,1,'L');
+$pdf->Cell(30,6,"City:",0,0,'R');
+$pdf->Cell(75,6,$form['city'],0,0,'L');
+$pdf->Cell(20,6,"Zip:",0,0,'R');
+$pdf->Cell(20,6,$form['zip'],0,1,'L');
+$pdf->Ln();
+
+// Icon Table Header
 $header = array('Number', 'Type', 'Notes');
-$colWidths = array(20, 20, 140);
+$colWidths = array(20, 20, 150);
 $iconNum = 0;
 foreach($header as $col)
     $pdf->Cell($colWidths[$iconNum++],7,$col,1);

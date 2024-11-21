@@ -1,35 +1,35 @@
 <?php
     require_once "./php_scripts/db.php";
-    
+
     if(isset($_POST['ajax'])) {
         $teamMember = isset($_POST['teamMember']) ? mysqli_real_escape_string($conn, $_POST['teamMember']) : '';
         $address = isset($_POST['address']) ? mysqli_real_escape_string($conn, $_POST['address']) : '';
-        
+
         $query = "SELECT * FROM form_entries WHERE 1=1";
-        
+
         if (strlen($teamMember) >= 2) {
             $query .= " AND (CONCAT(firstname, ' ', lastname) LIKE '%$teamMember%'
                          OR firstname LIKE '%$teamMember%'
                          OR lastname LIKE '%$teamMember%')";
         }
-        
+
         if (strlen($address) >= 2) {
             $query .= " AND address LIKE '%$address%'";
         }
-        
+
         $result = mysqli_query($conn, $query);
-        
+
         while ($row = mysqli_fetch_assoc($result)) {
             ?>
             <div class="assessment-card">
             <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon">✎</a>
-            <a href="php_scripts/print_to_pdf.php?id=$id" class="edit-icon">📄</a>
+            <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon">📄</a>
                 <h3>Team Member</h3>
                 <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
-                
+
                 <h3>Address</h3>
                 <p class="address"><?php echo $row['address']; ?></p>
-                
+
                 <h3>Status</h3>
                 <p>In Progress</p>
             </div>
@@ -132,7 +132,7 @@
 <body>
     <div class="search-container">
         <h1>House Assessment Search</h1>
-        
+
         <div class="search-field-group">
             <label>Team Member</label>
             <input type="text" id="teamMemberSearch" class="search-field" placeholder="Search by team member">
@@ -159,7 +159,7 @@
             <p>Enter a team member name or address to search</p>
             <p>🔍</p>
         </div>
-        
+
         <div id="noResults" class="empty-state" style="display: none;">
             <p>No matching results found</p>
             <p>Try adjusting your search terms</p>
@@ -171,18 +171,18 @@
     <script>
     $(document).ready(function() {
         const MIN_SEARCH_LENGTH = 2;
-        
+
         function updateResults() {
             var teamMember = $('#teamMemberSearch').val();
             var address = $('#addressSearch').val();
-            
+
             if (teamMember.length < MIN_SEARCH_LENGTH && address.length < MIN_SEARCH_LENGTH) {
                 $('#results').empty();
                 $('#emptyState').show();
                 $('#noResults').hide();
                 return;
             }
-            
+
             $.ajax({
                 url: window.location.href,
                 method: 'POST',
@@ -193,7 +193,7 @@
                 },
                 success: function(response) {
                     $('#emptyState').hide();
-                    
+
                     if (response.trim().length > 0) {
                         $('#results').html(response);
                         $('#noResults').hide();
@@ -204,7 +204,7 @@
                 }
             });
         }
-        
+
         function debounce(func, wait) {
             let timeout;
             return function() {
