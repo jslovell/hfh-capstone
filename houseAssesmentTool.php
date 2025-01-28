@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/toolStyle.css">
+    <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.css"></script>
