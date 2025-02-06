@@ -59,7 +59,7 @@ if ($uploadOk == 0) {
   if (move_uploaded_file($_FILES["layout"]["tmp_name"], $target_file)) {
     echo "The file ". htmlspecialchars( basename( $_FILES["layout"]["name"])). " has been uploaded.";
   } else {
-    echo "Sorry, there was an error uploading your file.";
+    echo "Sorry, there was an error uploading your file: Error #".$_FILES["layout"]["error"];
   }
 }
 
