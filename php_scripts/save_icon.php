@@ -27,7 +27,7 @@ try {
         $targetFile = $uploadDir . $photoName;
 
         if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetFile)) {
-            $photoPath = 'uploads/photos/' . $photoName; //path for database storage (file path or URL)
+            $photoPath = $photoName; //path for database storage (file path or URL)
         } else {
             echo json_encode(['success' => false, 'message' => 'File upload failed']);
             exit;

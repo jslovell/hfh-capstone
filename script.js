@@ -180,12 +180,12 @@ $(document).ready(function () {
                 <option value='other'>Other</option>
                 </select><br>
                 <input type='file' id='icon-photo' accept='image/*'><br>
-                <img id='icon-preview' src="${iconInstance.picture ? iconInstance.picture : ''}" 
+                <img id='icon-preview' src="${iconInstance.picture ? './uploads/photos/'+iconInstance.picture : ''}" 
                     style="max-width: 300px; max-height: 300px; display: ${iconInstance.picture ? 'block' : 'none'}; margin-top: 10px;"><br>
                 <textarea id='icon-notes' placeholder='Enter notes'></textarea><br>
                 <button class='save-button'>Save</button>
             `;
-        
+
             const $popup = $("<div class='alerts'></div>");
             $popup.html(popupContent);
             $popup.dialog({
