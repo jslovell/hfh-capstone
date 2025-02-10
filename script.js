@@ -163,7 +163,15 @@ $(document).ready(function () {
                 return;
             }
             
-            const popupContent = `
+            //RED
+            const baseURL = window.location.origin + "/hfh-capstone2";  // This works both locally and on production
+
+            const imagePath = (iconInstance.picture && iconInstance.picture !== "null") 
+            ? `${baseURL}/uploads/photos/${iconInstance.picture}`  // Dynamically construct the full path
+            : '';
+
+
+        const popupContent = `
             <select id='alert-type'>
                 <option value='1'>Window(s)</option>
                 <option value='2'>Door(s)</option>
@@ -178,13 +186,13 @@ $(document).ready(function () {
                 <option value='11'>Tree Maintenance</option>
                 <option value='12'>Roofing</option>
                 <option value='other'>Other</option>
-                </select><br>
-                <input type='file' id='icon-photo' accept='image/*'><br>
-                <img id='icon-preview' src="${iconInstance.picture ? './uploads/photos/'+iconInstance.picture : ''}" 
-                    style="max-width: 300px; max-height: 300px; display: ${iconInstance.picture ? 'block' : 'none'}; margin-top: 10px;"><br>
-                <textarea id='icon-notes' placeholder='Enter notes'></textarea><br>
-                <button class='save-button'>Save</button>
-            `;
+            </select><br>
+            <input type='file' id='icon-photo' accept='image/*'><br>
+            <img id='icon-preview' src="${imagePath}" 
+                style="max-width: 300px; max-height: 300px; display: ${imagePath ? 'block' : 'none'}; margin-top: 10px;"><br>
+            <textarea id='icon-notes' placeholder='Enter notes'></textarea><br>
+            <button class='save-button'>Save</button>
+        `;
 
             const $popup = $("<div class='alerts'></div>");
             $popup.html(popupContent);
