@@ -153,21 +153,22 @@ $(document).ready(function () {
         });
     }    
 
-    function openEditPopup(iconId) {
-        const $iconElement = $(`[iconId="${iconId}"]`);
-        let iconInstance = $iconElement.data("iconInstance");
     
-        if (!iconInstance) {
-            console.warn(`Icon with ID ${iconId} not found in DOM, attempting localStorage.`);
-            iconInstance = loadIconData(iconId);
-        }
-    
-        if (!iconInstance) {
-            console.error(`Icon with ID ${iconId} not found in DOM or localStorage.`);
-            return;
-        }
-    
-        // Proceed to populate and open the popup
+        function openEditPopup(iconId) {
+            const $iconElement = $(`[iconId="${iconId}"]`);
+            let iconInstance = $iconElement.data("iconInstance") || loadIconData(iconId);
+        
+            if (!iconInstance) {
+                console.error(`Icon with ID ${iconId} not found in DOM or localStorage.`);
+                return;
+            }
+            
+            //correct image from the database
+            const imagePath = (iconInstance.picture && iconInstance.picture !== "null") 
+            ? `uploads/photos/${iconInstance.picture}`
+            : '';
+            
+
         const popupContent = `
             <select id='alert-type'>
                 <option value='1'>Window(s)</option>
@@ -185,54 +186,88 @@ $(document).ready(function () {
                 <option value='other'>Other</option>
             </select><br>
             <input type='file' id='icon-photo' accept='image/*'><br>
+            <img id='icon-preview' src="${imagePath}" 
+                style="max-width: 300px; max-height: 300px; display: ${imagePath ? 'block' : 'none'}; margin-top: 10px;"><br>
             <textarea id='icon-notes' placeholder='Enter notes'></textarea><br>
             <button class='save-button'>Save</button>
         `;
-    
-        const $popup = $("<div class='alerts'></div>");
-        $popup.html(popupContent);
-        $popup.dialog({
-            width: 600,
-            height: 'auto',
-            modal: true,
-            title: 'Edit Icon',
-            close: function () {
-                $(this).dialog('destroy').remove();
-            }
-        });
-    
-        // Pre-fill data
-        $popup.find('#alert-type').val(iconInstance.type || '');
-        $popup.find('#icon-notes').val(iconInstance.notes || '');
-    
-        $popup.find('.save-button').on('click', function () {
-            const updatedIcon = {
-                ...iconInstance,
-                type: $popup.find('#alert-type').val(),
-                notes: $popup.find('#icon-notes').val(),
-            };
-    
-            // Update localStorage
-            const icons = JSON.parse(localStorage.getItem('iconData')) || [];
-            const iconIndex = icons.findIndex(icon => icon.iconId === iconId);
-            if (iconIndex > -1) {
-                icons[iconIndex] = updatedIcon;
-                localStorage.setItem('iconData', JSON.stringify(icons));
-            }
-    
-            // Save to the server
-            saveIconToDatabase(updatedIcon);
-    
-            $popup.dialog('close');
-        });
-    }    
 
-    // Event listener for icon edit
-    $('body').on("click", '.alerts-icon', function (e) {
-        e.preventDefault();
-        var iconId = $(this).closest('.box-alert').attr("iconId");
-        openEditPopup(iconId);
-    });
+            const $popup = $("<div class='alerts'></div>");
+            $popup.html(popupContent);
+            $popup.dialog({
+                width: 600,
+                height: 'auto',
+                modal: true,
+                title: 'Edit Icon',
+                close: function () {
+                    $(this).dialog('destroy').remove();
+                }
+            });
+        
+            //pre-fill data
+            $popup.find('#alert-type').val(iconInstance.type || '');
+            $popup.find('#icon-notes').val(iconInstance.notes || '');
+        
+            //retain image preview throughout opening and closing
+            if (imagePath) {
+                $popup.find("#icon-preview").attr("src", imagePath).show();
+            }
+            //show preview when a new file is selected
+            $popup.find('#icon-photo').on('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $popup.find('#icon-preview').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        
+            $popup.find('.save-button').on('click', function () {
+                const formData = new FormData();
+                formData.append('iconId', iconInstance.iconId);
+                formData.append('assignmentID', assignmentID);
+                formData.append('type', $popup.find('#alert-type').val());
+                formData.append('notes', $popup.find('#icon-notes').val());
+                formData.append('x_pos', iconInstance.x_pos);
+                formData.append('y_pos', iconInstance.y_pos);
+                const file = $popup.find('#icon-photo')[0].files[0];
+                if (file) formData.append('photo', file);
+        
+                $.ajax({
+                    url: './php_scripts/save_icon.php',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log('Save successful:', response);
+                        if (response.success) {
+                            $popup.dialog('close');
+                            //this is used to refresh icons
+                            fetchAndPlaceIcons(); 
+                            
+                            //reload page so image updates
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error saving icon:', error, xhr.responseText);
+                    }
+                });
+            });
+        }
+    
+        // Event listener for icon edit
+        $('body').on('click', '.alerts-icon', function (e) {
+            e.preventDefault();
+            var iconId = $(this).closest('.box-alert').attr('iconId');
+            openEditPopup(iconId);
+        });
+    
 
     $(".clickableArea").on("mousedown", function (event) {
         if (isSelectMode) {
