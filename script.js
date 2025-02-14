@@ -163,13 +163,11 @@ $(document).ready(function () {
                 return;
             }
             
-            //RED
-            const baseURL = window.location.origin + "/hfh-capstone2";  // This works both locally and on production
-
+            //correct image from the database
             const imagePath = (iconInstance.picture && iconInstance.picture !== "null") 
-            ? `${baseURL}/uploads/photos/${iconInstance.picture}`  // Dynamically construct the full path
+            ? `uploads/photos/${iconInstance.picture}`
             : '';
-
+            
 
         const popupContent = `
             <select id='alert-type'>
@@ -210,6 +208,10 @@ $(document).ready(function () {
             $popup.find('#alert-type').val(iconInstance.type || '');
             $popup.find('#icon-notes').val(iconInstance.notes || '');
         
+            //retain image preview throughout opening and closing
+            if (imagePath) {
+                $popup.find("#icon-preview").attr("src", imagePath).show();
+            }
             //show preview when a new file is selected
             $popup.find('#icon-photo').on('change', function () {
                 const file = this.files[0];
@@ -245,6 +247,9 @@ $(document).ready(function () {
                             $popup.dialog('close');
                             //this is used to refresh icons
                             fetchAndPlaceIcons(); 
+                            
+                            //reload page so image updates
+                            location.reload();
                         } else {
                             alert(response.message);
                         }
