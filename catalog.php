@@ -23,7 +23,7 @@
             ?>
             <div class="assessment-card">
             <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon">✎</a>
-            <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon">📄</a>
+            <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon" target="_blank">📄</a>
                 <h3>Team Member</h3>
                 <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
 
