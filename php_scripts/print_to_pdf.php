@@ -160,13 +160,13 @@ foreach($icons as $icon) {
     if ($row[2] != '' && !is_null($row[2]) ) {
         $imagePath = "../uploads/photos/" . $row[2];
         list($img_x1, $img_y1) = getimagesize($imagePath);
-        $scalar = 180 / $img_x1;
+        $scalar = 190 / $img_x1;
         $img_w = $img_x1 * $scalar;
         $img_h = $img_y1 * $scalar;
         if ($pdf->GetY() + $img_h > 200) {
             $pdf->AddPage();
         }
-        $pdf->Cell(180,$img_h+1,"",1,0,'C',$pdf->Image($imagePath,$pdf->GetX()+1,$pdf->GetY()+1,178,0));
+        $pdf->Cell(190,$img_h+1,"",1,0,'C',$pdf->Image($imagePath,$pdf->GetX()+1,$pdf->GetY()+1,188,0));
         $pdf->Ln();
     }
 }
