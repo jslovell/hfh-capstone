@@ -8,14 +8,14 @@ $errors = [];
 
 $firstname = $_POST['firstname'] ?? '';
 $lastname = $_POST['lastname'] ?? '';
-$email = $_POST['email'] ?? ''; 
+$email = $_POST['email'] ?? '';
 $phone = $_POST['phone'] ?? '';
-$phone = preg_replace("/[^0-9]/", "", $phone); 
+$phone = preg_replace("/[^0-9]/", "", $phone);
 $address = $_POST['address'] ?? '';
 $city = $_POST['city'] ?? '';
 $state = strtoupper(trim($_POST['state'] ?? ''));
 $zip = $_POST['zip'] ?? '';
-$layout = $_FILES["layout"]["name"] ?? '';
+//$layout = $_FILES["layout"]["name"] ?? '';
 
 if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = "Invalid email format.";
 
@@ -32,7 +32,8 @@ if (!preg_match("/^\d{5}$/", $zip)) $errors['zip'] = "Invalid zip code format. M
 
 // Home layout upload
 $target_dir = "../uploads/layouts/";
-$target_file = $target_dir . basename($_FILES["layout"]["name"]);
+$layoutName = time() . '_' . preg_replace('/[^A-Za-z0-9\._-]/', '', basename($_FILES['layout']['name']));
+$target_file = $target_dir . $layoutName;
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
@@ -62,7 +63,7 @@ if(!empty($errors)){
           "firstname" => $firstname,
           "lastname" => $lastname,
           "email" => $email,
-          "phone" => $phone,  
+          "phone" => $phone,
           "address" => $address,
           "city" => $city,
           "state" => $state,
@@ -86,7 +87,7 @@ if ($uploadOk == 1) {
 
 $sql = "INSERT INTO hfh.form_entries (firstname, lastname, email, phone, address, city, state, zip, layout) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssssssss", $firstname, $lastname, $email, $phone, $address, $city, $state, $zip, $layout);
+$stmt->bind_param("sssssssss", $firstname, $lastname, $email, $phone, $address, $city, $state, $zip, $layoutName);
 
 if ($stmt->execute()) {
   $new_id = mysqli_insert_id($conn);
