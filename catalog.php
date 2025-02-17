@@ -1,4 +1,5 @@
 <?php
+    include "./php_scripts/session.php";
     require_once "./php_scripts/db.php";
 
     if(isset($_POST['ajax'])) {
