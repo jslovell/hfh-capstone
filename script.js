@@ -56,7 +56,7 @@ $(document).ready(function () {
         // Set the icon image based on its type
         switch (type) {
             default:
-                $img.attr("src", "images/default-icon.png");
+                $img.attr("src", "images/alert-sever-icon.png");
         }
     
         // Attach the Icon instance directly
