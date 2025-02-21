@@ -50,8 +50,8 @@ if ($_FILES["layout"]["size"] > 500000) {
 }
 
 // Allow certain file formats
-if(!in_array($imageFileType, ["jpg", "png", "jpeg", "gif"])) {
-  $errors['layout'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed. ";
+if(!in_array($imageFileType, ["jpg", "png", "jpeg", "gif", "heic"])) {
+  $errors['layout'] = "Sorry, only JPG, JPEG, PNG, GIF, & HEIC files are allowed. ";
   $uploadOk = 0;
 }
 
@@ -77,6 +77,18 @@ if(!empty($errors)){
 if ($uploadOk == 1) {
   if (move_uploaded_file($_FILES["layout"]["tmp_name"], $target_file)) {
       // File uploaded successfully
+      try {
+          if (Maestroerror\HeicToJpg::isHeic($target_file)) {
+              $len = strlen($layoutName);
+              $jpgLayoutName = substr($layoutName, 0, $len-4) . "jpg";
+              console.log($jpgLayoutName);
+              Maestroerror\HeicToJpg::convert($target_file, "", true)->saveAs($target_dir . $jpgLayoutName);
+              console.log("It works.");
+          }
+      }
+      catch(Exception $e) {
+          console.log("It don't work: " . $e);
+      }
   } else {
       $errors['layout'] = "Sorry, there was an error uploading your file.";
       echo json_encode(["status" => "error", "errors" => $errors]);
