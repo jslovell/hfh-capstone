@@ -2,7 +2,7 @@
     <header class="header">
         <nav class="navbar navbar-default">
         <div class="logo">
-            <img src="assets/Habitat_for_humanity_logo.png" width="160" height="80" onclick="location.href='homepage.php'">
+            <img src="assets/gdmhfh_logo1.png" width="160" height="80" onclick="location.href='homepage.php'">
         </div>
         <div class="container-fluid"></div>
         <div class="nav navbar-nav">

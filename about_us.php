@@ -10,7 +10,7 @@
         <script src="jquery-ui.css"></script>
         <script src="script.js"></script>
         <title>About Us</title>
-
+        <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     </head>
     <?php include "navbar.php" ?>
     <body>

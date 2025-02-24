@@ -23,16 +23,22 @@
         while ($row = mysqli_fetch_assoc($result)) {
             ?>
             <div class="assessment-card">
-            <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon">✎</a>
-            <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon" target="_blank">📄</a>
+            <a href="javascript:void(0);" class="edit-icon" id="delete-icon" data-id="<?=$row['id']?>"><div title="Delete Assessment">🗑️</div></a>
+            <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon" id="edit-icon"><div title="Edit Assessment">✎</div></a>
+            <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon" id="print-icon" target="_blank"><div title="Print PDF">📄</div></a>
+                <h3>Assessment ID</h3>
+                <p class="assignment-id"><?php echo $row['id']; ?></p>
+
                 <h3>Team Member</h3>
                 <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
 
                 <h3>Address</h3>
                 <p class="address"><?php echo $row['address']; ?></p>
 
+
                 <h3>Status</h3>
-                <p>In Progress</p>
+                <p>Needs Assessment</p>
+            
             </div>
             <?php
         }
@@ -50,7 +56,8 @@
     <link rel="stylesheet" href="styles/indexStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.css"></script>
-
+    <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
+    <title>Assessment Catalog</title>
     <style>
     .search-container {
         background: white;
@@ -86,6 +93,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         max-height: calc(100vh - 300px);
         overflow-y: auto;
+        width: 550px;
     }
 
     .assessment-card {
@@ -109,6 +117,7 @@
         float: right;
         color: #666;
         text-decoration: none;
+        font-size: 20px;
     }
 
     .empty-state {
@@ -149,8 +158,9 @@
         <div class="search-field-group">
             <label>Status</label>
             <select class="search-field">
-                <option value="">All Statuses</option>
-                <option value="in-progress" selected>In Progress</option>
+                <option value="in-progress" selected>Needs Assessment</option>
+                <option value="needs-bidding" selected>Needs Bidding</option>
+                <option value="all-statuses">All Statuses</option>
             </select>
         </div>
     </div>
@@ -215,7 +225,32 @@
         }
 
         $('#teamMemberSearch, #addressSearch').on('input', debounce(updateResults, 300));
+
+
+        $(document).on("click", ".edit-icon[data-id]", function() {
+            let entryId = $(this).data("id");
+            if(confirm("Are you sure you want to delete this assessment?")){
+                $.ajax({
+                    url: "php_scripts/delete_form.php",
+                    type: "POST",
+                    data: { id: entryId },
+                    success: function(response){
+                        if(response.trim() === "success"){
+                            alert("Assessment deleted successfully.");
+                            updateResults();
+                        } else{
+                            alert("Error deleting assessment.");
+                        }
+                    }
+                });
+            }
+        });
+
+
     });
+
+
+
     </script>
 </body>
 </html>
