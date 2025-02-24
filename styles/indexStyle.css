@@ -1,8 +1,6 @@
-
 .page-title {
     font-size: 100px;
     text-align: center;
-
 }
 
 @media (min-width: 720px) {
@@ -10,27 +8,221 @@
         --size: 500px;
     }
 }
+
+
+html {
+    height: 100%;
+}
+
 body {
-    background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65) ), url("indexBGnew.jpg");
+    background-image: url("../assets/tempbg1.jpeg"); 
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    position: absolute;
     background-position: center;
-    inset: 0;
     display: flex;
-    place-content: center;
+    justify-content: center;
     align-items: center;
-    overflow: hidden;
-
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    position: relative; 
 }
 
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2); 
+    z-index: -1;
+}
 
 h1 {
     color: darkgrey;
     font-family: Helvetica;
-
 }
+
 h2 {
     font-family: Helvetica;
+}
+
+form {
+    max-width: 500px;
+    width: 85%;
+    border: 2.5px solid #bfbfbf;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25); 
+    background-color: rgba(255, 255, 255, 0.95); 
+    margin: 80px auto 30px;
+    position: relative; 
+    overflow: hidden; 
+}
+
+.container {
+    padding: 25px;
+}
+
+.container label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #f1f6fc;
+    font-size: 16px;
+}
+
+#login-button {
+    background-color: #09c;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 25px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#login-button:hover {
+    background-color: #08a;
+}
+
+#login-button:active {
+    transform: translateY(1px);
+    background-color: #078;
+}
+
+.cancelbtn {
+    background-color: #6b6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s;
+}
+
+.cancelbtn:hover {
+    background-color: #555;
+}
+
+input:focus {
+    border-color: #09c;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 153, 204, 0.4);
+}
+
+/* Remember me styling */
+input[type="checkbox"] {
+    margin-right: 10px;
+    vertical-align: middle;
+    transform: scale(1.2);
+}
+
+label {
+    user-select: none;
+    font-size: 15px;
+}
+
+form .container[style*="background-color: whitesmoke"] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; 
+    background-color: rgba(245, 245, 245, 0.9) !important;
+    border-top: 1px solid #ddd;
+    padding: 20px 25px;
+}
+
+span.psw {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+    gap: 12px;
+}
+
+span.psw a {
+    display: block;
+    color: #09c;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-size: 15px;
+    padding: 4px 0;
+}
+
+span.psw a:hover {
+    color: #E55D25;
+    text-decoration: underline;
+}
+
+/* iPad optimizations */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    form {
+        width: 70%;
+        max-width: 600px;
+    }
+    
+    .container {
+        padding: 30px;
+    }
+    
+    #login-button, 
+    .cancelbtn {
+        padding: 15px;
+        font-size: 17px;
+    }
+    
+    .container label,
+    .container input[type="text"],
+    .container input[type="password"] {
+        font-size: 17px;
+    }
+    
+    span.psw a {
+        font-size: 16px;
+        padding: 6px 0;
+    }
+}
+
+/* Phone optimizations */
+@media (max-width: 767px) {
+    form {
+        width: 90%;
+        margin-top: 60px;
+    }
+    
+    form .container[style*="background-color: whitesmoke"] {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    span.psw {
+        width: 100%;
+        align-items: center; 
+    }
+    
+    .cancelbtn {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
 }

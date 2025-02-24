@@ -1,40 +1,51 @@
-navbar {     
+.navbar {     
     width: 100%;     
     position: fixed;     
     top: 0;     
     left: 0;     
-    background: rgba(255, 255, 255, 0.9);      
+    background: white;      
     z-index: 1000;  
+    max-width: 100vw;
+    overflow-x: hidden;
+    border-bottom: 4px solid #bfbfbf; 
 }  
-.navbar nav {     
+.header{
     display: flex;     
     align-items: center;     
-    justify-content: space-between;   
+    justify-content: space-between;  
+    padding: 0.5rem 1rem; 
+    width: 100%;
+    box-sizing: border-box; 
+}
+.navbar nav {     
     width: 100%;     
-    padding: 0.5rem;
 }  
 .logo {     
     margin-right: 1rem; 
+    left: 0;
+    height: auto;
 }  
 .navbar .logo img {     
     width: auto;     
-    height: 4vw;      
+    height: 8vw;      
     min-height: 20px;     
-    max-height: 40px;     
+    max-height: 80px;     
     cursor: pointer; 
 }  
 .nav.navbar-nav {     
     display: flex;     
     align-items: center; 
+    margin-left: auto;
 }  
 .navbar ul {     
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 0.75rem;   
     margin: 0;     
     padding: 0;     
     list-style: none; 
+    white-space: nowrap;
 }  
 .navbar ul img {    
     width: auto;     
@@ -53,9 +64,13 @@ navbar {
     .navbar ul {         
         gap: 0.1rem;      
     }          
-.navbar .logo img {         
-    height: 4vw;      
-}          
-.navbar ul img {         
-    height: 4vw;     
-} }
+    .navbar .logo img {         
+        height: 4vw;      
+    }          
+    .navbar ul img {         
+        height: 4vw;     
+    } 
+    .main-content {
+        padding-top: calc(4vw + 1rem); 
+    }
+}
