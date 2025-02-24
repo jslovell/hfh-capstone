@@ -30,7 +30,7 @@ if(mysqli_num_rows($result) == 0) {
     if($bool){
 	$_SESSION['authenticated'] = true;
 	// include succes.php
-  	header('Location: ../homepage.php');
+  	header('Location: ../catalog.php');
 	exit();
     } else {
 	// include failure.php
