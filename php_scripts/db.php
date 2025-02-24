@@ -8,11 +8,11 @@
   $password = "hfh";
   $dbname = "hfh";
 
-  // (Localhost Database Variables)
-  //$servername = "localhost";
-  //$username = "root";
-  //$password = "";
-  //$dbname = "hfh";
+  //(Localhost Database Variables)
+  // $servername = "localhost";
+  // $username = "root";
+  // $password = "";
+  // $dbname = "hfh";
 
 
   $conn = mysqli_connect($servername, $username, $password, $dbname);

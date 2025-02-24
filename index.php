@@ -12,7 +12,7 @@
         <script src="jquery-ui.css"></script>
         <script src="script.js"></script>
         <title>Login</title>
-
+        <link rel="icon" type="image/png" href="assets/gdmfh_logo.png">
     </head>
     <?php include "navbar.php"; ?>
 <body>
