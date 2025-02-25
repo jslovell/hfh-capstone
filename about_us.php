@@ -4,6 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/toolStyle.css">
         <link rel="stylesheet" href="jquery-ui.css">
         <link rel="stylesheet" href="styles/aboutUsStyle.css">
         <link rel="stylesheet" href="styles/navbar.css">
@@ -33,7 +34,7 @@
                     <p><strong>Minor: </strong>Theater Arts</p>
                 </div>
             </div>
-        
+
             <div class="member">
                 <img src="assets/blankprofile.png" alt="Member 2">
                 <div class="member-info">
@@ -43,7 +44,7 @@
                     <p><strong>Major: </strong>Computer Science with Concentration in Game Technology</p>
                 </div>
             </div>
-        
+
             <div class="member">
                 <img src="assets/blankprofile.png" alt="Member 3">
                 <div class="member-info">
@@ -54,7 +55,7 @@
                     <p><strong>Minor: </strong>Cybersecurity</p>
                 </div>
             </div>
-        
+
             <div class="member">
                 <img src="assets/blankprofile.png" alt="Member 4">
                 <div class="member-info">
@@ -64,7 +65,7 @@
                     <p><strong>Major: </strong>Computer Science</p>
                 </div>
             </div>
-        
+
             <div class="member">
                 <img src="assets/blankprofile.png" alt="Member 5">
                 <div class="member-info">
