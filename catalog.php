@@ -48,86 +48,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/catalog.css">
     <link rel="stylesheet" href="styles/indexStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!--<script src="jquery-ui.css"></script>-->
 
     <style>
-    .search-container {
-        background: #bfbfbf;
-        padding: 20px 40px;
-        margin: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-    }
-
-    .search-field-group {
-        margin-bottom: 15px;
-    }
-
-    .search-field-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    .search-field {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #bfbfbf;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .content-container {
-        background: #bfbfbf;
-        padding: 20px;
-        margin: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-        max-height: calc(100vh - 300px);
-        overflow-y: auto;
-    }
-
-    .assessment-card {
-        background: white;
-        padding: 20px;
-        margin-bottom: 15px;
-        border-radius: 4px;
-        border: 1px solid black;
-    }
-
-    .assessment-card h3 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-    }
-
-    .assessment-card p {
-        margin: 5px 0;
-    }
-
-    .edit-icon {
-        float: right;
-        color: #0099cc;
-        text-decoration: none;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: black;
-    }
-
-    .empty-state p {
-        margin: 10px 0;
-        font-size: 16px;
-    }
-
-    .min-search-notice {
-        font-size: 14px;
-        color: black;
-        margin-top: 5px;
-    }
+    
 </style>
 
 </head>
@@ -135,7 +63,7 @@
 <body>
     
     <div class="search-container">
-        <h1 style="color: black">House Assessment Search<!--<div class="info-icon" title="User Manual">
+        <h1>House Assessment Search<!--<div class="info-icon" title="User Manual">
         <img src = "images/info-circle.svg"></img></a></div>--></h1>
 
         <div class="search-field-group">
