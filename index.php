@@ -46,14 +46,10 @@
         <button type="button" style = "background-color: #0099CC" class="cancelbtn" onclick="location.href='./homepage.php'" id="cancel-button">Cancel</button>
     <!-- <button type"button" class="cancelbtn">New User<a href="https://hfh-capstone.bradley.edu/new_user"></a>
 	-->
-<<<<<<< HEAD
 	<span class="psw">
         <a href="./new_user.php">New user?</a>
         <a href="#">Forgot password?</a>
     </span>
-=======
-	    <span class="psw"><a href="#">Forgot password?</a></span>
->>>>>>> SearchPage
     </div>
 </form>
 

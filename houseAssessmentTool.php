@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- link rel="stylesheet" href="styles/toolStyle.css" -->
+    <link rel="stylesheet" href="styles/toolStyle.css">
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="jquery-ui.css">
     <!-- <script src="jquery-ui.css"></script> -->
