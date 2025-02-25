@@ -1,5 +1,5 @@
-<?php 
-include "./php_scripts/session.php"; 
+<?php
+include "./php_scripts/session.php";
 require_once "./php_scripts/db.php";
 
 // Fetch assignment ID from URL
@@ -35,6 +35,7 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <title>House Assessment Tool</title>
     <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="./styles/toolStyle.css">
     <link rel="stylesheet" href="./styles/tabToolStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.js"></script>
@@ -237,4 +238,3 @@ mysqli_close($conn);
 
 </body>
 </html>
-
