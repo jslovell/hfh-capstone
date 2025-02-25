@@ -59,7 +59,7 @@ class PDF extends FPDF {
     function Header() {
 
         // Add logo to page
-        $this->Image('../assets/Habitat_for_humanity_logo.png',10,8,33);
+        $this->Image('../assets/hfh_Logo_Black.png',10,8,33);
 
         // Set font family to Arial bold
         $this->SetFont('Arial','B',20);
