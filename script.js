@@ -285,6 +285,11 @@ $(document).ready(function () {
             console.error(`Icon with ID ${iconId} not found in DOM or localStorage.`);
             return;
         }
+
+        //correct image from the database
+        const imagePath = (iconInstance.picture && iconInstance.picture !== "null") 
+        ? `uploads/photos/${iconInstance.picture}`
+        : '';
     
         console.log(`Opening edit popup for icon:`, iconInstance);
     
@@ -334,11 +339,30 @@ $(document).ready(function () {
     
         // Set pre-filled data
         $("#alert-type").val(iconInstance.type || '');
+
+        //retain image preview throughout opening and closing
+        if (imagePath) {
+            $("#edit-popup").find("#icon-preview").attr("src", imagePath).show();
+        }
+
+        //show preview when a new file is selected
+        $("#edit-popup").find('#icon-photo').on('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#edit-popup").find('#icon-preview').attr('src', e.target.result).show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     
         // Save button event
         $("#save-button").on("click", function () {
             iconInstance.type = $("#alert-type").val();
             iconInstance.notes = $("#icon-notes").val();
+            const file = $("#edit-popup").find('#icon-photo')[0].files[0];
+            if (file) iconInstance.photoData = file;
             saveIconToDatabase(iconInstance);
             $("#edit-popup").dialog('close');
         });
