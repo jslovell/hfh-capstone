@@ -54,6 +54,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/catalog.css">
     <link rel="stylesheet" href="styles/indexStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!--<script src="jquery-ui.css"></script>-->
@@ -144,7 +145,7 @@
 <body>
 
     <div class="search-container">
-        <h1 style="color: black">House Assessment Search<!--<div class="info-icon" title="User Manual">
+        <h1>House Assessment Search<!--<div class="info-icon" title="User Manual">
         <img src = "images/info-circle.svg"></img></a></div>--></h1>
 
         <div class="search-field-group">
