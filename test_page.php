@@ -91,7 +91,7 @@ mysqli_close($conn);
         }
 
         .alert-icon, .alert-moderate-icon, .alert-severe-icon, .note-icon, .picture-icon {
-            position: absolute;
+            position: relative;
             cursor: pointer;
             background-repeat: no-repeat;
             background-position: center;
@@ -100,6 +100,7 @@ mysqli_close($conn);
             height: 32px;
             pointer-events: none;
         }
+        
         #removal-button {
             background-image: url("images/removal-button.png");
 
@@ -124,7 +125,8 @@ mysqli_close($conn);
             border: 3px dashed black;
             display: flex;
             align-items: center;
-            justify-content: center;;
+            justify-content: center;
+            overflow: hidden;
         }
         .sidebar {
             position: fixed;
@@ -183,7 +185,24 @@ mysqli_close($conn);
 <!-- Blueprint Image with Icons -->
 <div class="clickableArea">
     <?php if (isset($layout_path)) : ?>
-        <img src="<?php echo $layout_path; ?>" alt="Home Layout" id="testBlueprint" style="width: 800px; height: 800px">
+        <div class="assessmentArea">
+            <style>
+                .assessmentArea {
+                position: relative;  /* Required to contain absolute children */
+                width: 100%;         /* Adjust to your layout */
+                height: 100%;        /* Adjust to your layout */
+                overflow: hidden;    /* Ensures icons do not overflow */
+                }   
+            </style>
+            <img src="<?php echo $layout_path; ?>" alt="Home Layout" id="testBlueprint" style="width: 800px; height: 800px">
+            <style>
+                .clickableArea img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: absolute; /* Ensures image resizes while keeping proportions */
+                }
+            </style>
+        </div>
     <?php endif; ?>
 </div>
 
@@ -200,35 +219,17 @@ mysqli_close($conn);
 
 <!-- Pass Icons Data to JavaScript -->
 <script>
-    const existingIcons = <?php echo json_encode($icons); ?>;
-    document.addEventListener("DOMContentLoaded", function () {
-        if (existingIcons.length > 0) {
-            // Render existing icons dynamically on the layout
-            existingIcons.forEach(icon => {
-                const $icon = $("<div class='box-alert'></div>");
-                $icon.attr("id", "icon-" + icon.local_idx);
-                $icon.css({
-                    top: icon.y_pos + "px",
-                    left: icon.x_pos + "px",
-                });
-                $icon.html("<div class='alerts-icon'><img src='images/alert-icon.png'></div>");
-                $(".clickableArea").append($icon);
-
-                // Store icon details in localStorage
-                const iconObject = {
-                    id: $icon.attr("id"),
-                    alertType: icon.type,
-                    photoData: icon.picture,
-                    notesData: icon.notes,
-                };
-                const iconData = JSON.parse(localStorage.getItem("iconData")) || {};
-                iconData[iconObject.id] = iconObject;
-                localStorage.setItem("iconData", JSON.stringify(iconData));
-            });
-        }
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    fetch('./php_scripts/load_icons.php?id=' + assignmentID)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data.length > 0) {
+                localStorage.setItem("iconData", JSON.stringify(data.data));
+            }
+        })
+        .catch(error => console.error("Error loading icons:", error));
+});
 </script>
-
 
 <script>
     // Define our page as variable and pass to script.js
