@@ -60,6 +60,40 @@ $(document).ready(function () {
             }
         });
     }
+
+    function getIconImageByType(type) {
+        switch (type) {
+            case '1':   // Windows                       
+                return 'images/alert-icon.png';
+            case '2':   // Doors
+                return 'images/alert-icon.png';
+            case '3':   // Siding
+                return 'images/alert-icon.png';
+            case '4':   // Porch
+                return 'images/alert-icon.png';
+            case '5':   // Stairs
+                return 'images/alert-moderate-icon.png';
+            case '6':   // Deck
+                return 'images/alert-moderate-icon.png';
+            case '7':   // Mechanical
+                return 'images/alert-moderate-icon.png';
+            case '8':   // Plumbing
+                return 'images/alert-moderate-icon.png';
+            case '9':   // Electrical
+                return 'images/alert-moderate-icon.png';
+            case '10':  // Flatwork
+                return 'images/alert-sever-icon.png';
+            case '11':  // Tree Maintenance
+                return 'images/alert-sever-icon.png';
+            case '12':  // Roofing
+                return 'images/alert-sever-icon.png';
+            case 'other':
+                return 'images/alert-sever-icon.png';
+            default:
+                // If no recognized type, use a default alert icon
+                return 'images/alert-icon.png';
+        }
+    }    
     
     // Ensure icons load on page load
     $(document).ready(function () {
@@ -72,14 +106,14 @@ $(document).ready(function () {
             } else {
                 console.error("assignmentID is not defined or is null!");
             }
-        }, 100);
+        }, 10);
     });       
 
     function placeIcon(icon) {
         console.log("Placing icon:", icon);
     
-        const { iconId, type, picture, notes, x_pos, y_pos } = icon;
-    
+        const { iconId, type, x_pos, y_pos } = icon;
+        
         if (!iconId) {
             console.error("Error: Attempted to place an icon without an iconId!");
             return;
@@ -89,16 +123,11 @@ $(document).ready(function () {
         $iconDiv.attr("iconId", iconId); // Ensure iconId is set
     
         const $img = $iconDiv.find("img");
-    
-        if (picture) {
-            $img.attr("src", "uploads/" + picture);
-        } else {
-            $img.attr("src", "images/default-icon.png");
-        }
-    
+        const iconSrc = getIconImageByType(type);
+        $img.attr("src", iconSrc);
         $iconDiv.data("iconInstance", icon);
-        var $assessmentArea = $(".assessmentArea");
     
+        var $assessmentArea = $(".assessmentArea");
         if ($assessmentArea.length === 0) {
             console.error("Error: .assessmentArea not found!");
             return;
@@ -107,7 +136,6 @@ $(document).ready(function () {
         console.log("Appending icon:", iconId, "to", $assessmentArea);
         $assessmentArea.append($iconDiv);
     
-        // Apply percentage-based positioning
         $iconDiv.css({
             position: "absolute",
             left: x_pos + "%",
@@ -115,34 +143,34 @@ $(document).ready(function () {
         });
     
         console.log(`Icon ${iconId} placed at (${x_pos}%, ${y_pos}%)`);
-    
-        // Save icon to localStorage to ensure it persists
-        saveIconData(icon);
     }    
     
     function saveIconToDatabase(icon) {
         if (!icon || !icon.iconId) {
-            console.error('Icon or icon ID is missing.');
+            console.error('Error: Missing icon ID when saving:', icon);
             return;
         }
     
-        const iconData = {
-            iconId: icon.iconId,
-            assignmentID: assignmentID,
-            type: icon.type,
-            photo: icon.photo || "", // Handle potential null/undefined
-            notes: icon.notes || "",
-            x_pos: icon.x_pos,
-            y_pos: icon.y_pos,
-        };
+        const formData = new FormData();
+        formData.append("iconId", icon.iconId);
+        formData.append("assignmentID", assignmentID);
+        formData.append("type", icon.type);
+        formData.append("notes", icon.notes || "");
+        formData.append("x_pos", icon.x_pos);
+        formData.append("y_pos", icon.y_pos);
+        
+        if (icon.photoData) {
+            formData.append("photo", icon.photoData);
+        }
     
-        console.log("Sending icon data to save:", iconData);
+        console.log("Sending icon data to save:", Object.fromEntries(formData.entries()));
     
         $.ajax({
             url: './php_scripts/save_icon.php',
             method: 'POST',
-            data: JSON.stringify(iconData),
-            contentType: 'application/json',
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function (response) {
                 console.log('Save successful:', response);
             },
@@ -150,7 +178,7 @@ $(document).ready(function () {
                 console.error('Error saving icon:', error, xhr.responseText);
             }
         });
-    }
+    }    
     
     function saveIconData(icon) {
         if (!icon || !icon.iconId) {
@@ -162,14 +190,15 @@ $(document).ready(function () {
         const index = icons.findIndex(item => item.iconId === icon.iconId);
     
         if (index > -1) {
-            icons[index] = icon; // Update existing icon
+            icons[index] = { ...icons[index], ...icon };
         } else {
-            icons.push(icon); // Add new icon
+            icons.push(icon);
         }
     
         localStorage.setItem('iconData', JSON.stringify(icons));
         console.log("Saved icon data:", icons);
-    }    
+        saveIconToDatabase(icon);
+    }     
     
     function loadIconData(iconId) {
         if (!iconId) {
@@ -198,7 +227,7 @@ $(document).ready(function () {
         $.ajax({
             url: './php_scripts/delete_icon.php',
             method: 'POST',
-            data: JSON.stringify({ iconId: iconId }), // Ensure it's correctly sent as JSON
+            data: JSON.stringify({ iconId: iconId }),
             contentType: 'application/json',
             success: function (response) {
                 console.log("Delete response:", response);
@@ -266,33 +295,11 @@ $(document).ready(function () {
     });
     
     function openEditPopup(iconId) {
-        console.log(`Attempting to open edit popup for icon ID: ${iconId}`);
-    
-        if (!iconId) {
-            console.error("Error: openEditPopup was called with an undefined iconId.");
-            return;
-        }
-    
         const $iconElement = $(`[iconId="${iconId}"]`);
-        let iconInstance = $iconElement.data("iconInstance");
+        let iconInstance = $iconElement.data("iconInstance") || loadIconData(iconId);
+        if (!iconInstance) return;
     
-        if (!iconInstance) {
-            console.warn(`Icon with ID ${iconId} not found in DOM, attempting localStorage.`);
-            iconInstance = loadIconData(iconId);
-        }
-    
-        if (!iconInstance) {
-            console.error(`Icon with ID ${iconId} not found in DOM or localStorage.`);
-            return;
-        }
-    
-        console.log(`Opening edit popup for icon:`, iconInstance);
-    
-        // Ensure only one popup exists at a time
-        $(".alerts").remove();
-    
-        // Construct popup content
-        const popupContent = `
+        let popupContent = `
             <div id="edit-popup">
                 <label for="alert-type">Icon Type:</label>
                 <select id='alert-type'>
@@ -310,51 +317,59 @@ $(document).ready(function () {
                     <option value='12'>Roofing</option>
                     <option value='other'>Other</option>
                 </select><br>
-                <input type='file' id='icon-photo' accept='image/*'><br>
+                ${iconInstance.picture ? `<img id="icon-preview" src="${iconInstance.picture}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
+                <input type='file' id='icon-photo' accept='image/*' style="display:block;margin:10px auto;">
                 <label for="icon-notes">Notes:</label>
-                <textarea id="icon-notes" placeholder="Enter notes">${iconInstance.notes || ''}</textarea><br>
-                <button id="save-button">Save</button>
+                <textarea id="icon-notes" style="display:block;margin:10px auto;">${iconInstance.notes || ''}</textarea>
+                <button id="save-button" style="margin-right:10px;">Save</button>
                 <button id="delete-button">Delete</button>
             </div>
         `;
-    
-        // Append the popup to the body
         $("body").append(popupContent);
+        $("#alert-type").val(iconInstance.type || '');
     
-        // Initialize jQuery UI Dialog
         $("#edit-popup").dialog({
             width: 500,
-            height: 'auto',
+            height: "auto",
             modal: true,
-            title: 'Edit Icon',
-            close: function () {
-                $(this).dialog('destroy').remove();
+            title: "Edit Icon",
+            draggable: true,
+            resizable: false,
+            close: function() {
+                $(this).dialog("destroy").remove();
+            }
+        });               
+    
+        $("#icon-photo").on("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    if (!$("#icon-preview").length) {
+                        $("#icon-photo").before(`<img id="icon-preview" src="${e.target.result}" style="max-width:90%;margin:20px auto;display:block;">`);
+                    } else {
+                        $("#icon-preview").attr('src', e.target.result).show();
+                    }
+                };
+                reader.readAsDataURL(file);
             }
         });
     
-        // Set pre-filled data
-        $("#alert-type").val(iconInstance.type || '');
-    
-        // Save button event
+        const oldPicturePath = iconInstance.picture;
         $("#save-button").on("click", function () {
             iconInstance.type = $("#alert-type").val();
             iconInstance.notes = $("#icon-notes").val();
-            saveIconToDatabase(iconInstance);
+            const file = $("#icon-photo")[0].files[0];
+            iconInstance.photoData = file || null;
+            if (!file) iconInstance.picture = oldPicturePath;
+            saveIconData(iconInstance);
+            let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
+            $iconDiv.find("img").attr("src", getIconImageByType(iconInstance.type));
             $("#edit-popup").dialog('close');
         });
     
-        // Delete button event
         $("#delete-button").on("click", function () {
-            console.log(`Delete button clicked for icon ${iconId}`);
-
-            if (!iconId) {
-                console.error("Error: Delete button clicked but iconId is missing.");
-                return;
-            }
-
             deleteIconFromDatabase(iconId);
-
-            // Close the popup immediately
             $("#edit-popup").dialog('close');
         });
     }    
@@ -367,20 +382,14 @@ $(document).ready(function () {
             var rect = $assessmentArea[0].getBoundingClientRect();
             var areaWidth = rect.width;
             var areaHeight = rect.height;
-    
-            // Calculate x and y relative to the assessmentArea
+
             var x = ((event.clientX - rect.left) / areaWidth) * 100;
             var y = ((event.clientY - rect.top) / areaHeight) * 100;
     
-            // Create the new icon object
             const newIcon = new Icon(iconId, null, null, null, x, y);
     
-            // Call placeIcon() which will create and append the icon properly
-            placeIcon(newIcon);
-    
-            // Save the icon
             saveIconData(newIcon);
-            saveIconToDatabase(newIcon);
+            placeIcon(newIcon);
         }
     });    
 
@@ -395,24 +404,12 @@ $(document).ready(function () {
         const $assessmentArea = $(".assessmentArea");
         const $assessmentImg = $("#assessment-img");
     
-        if (!$assessmentImg.length) {
-            console.warn("Assessment image not found in the DOM!");
-            return;
-        }
-    
-        // Get the new size of the assessment image
         const newWidth = $assessmentImg.width();
         const newHeight = $assessmentImg.height();
     
         console.log("New assessment image size:", newWidth, newHeight);
-    
-        // Get stored icons
         const icons = JSON.parse(localStorage.getItem('iconData')) || [];
-    
-        // Clear the assessment area before placing icons again
         $assessmentArea.empty();
-    
-        // Re-insert the assessment image
         $assessmentArea.append($assessmentImg);
     
         // Recalculate and reposition icons

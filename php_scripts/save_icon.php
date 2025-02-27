@@ -1,78 +1,119 @@
 <?php
-require_once 'db.php';
+header('Content-Type: application/json');
+require 'db.php';
+$response = ["success" => false];
 
-// Check if the request method is POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Read the raw POST data (JSON)
-    $input = file_get_contents('php://input');
+// Parse POST fields:
+$iconId       = trim($_POST['iconId'] ?? '');
+$assignmentID = (int)($_POST['assignmentID'] ?? 0);
+$type         = trim($_POST['type'] ?? '');
+$notes        = trim($_POST['notes'] ?? '');
+$x_pos        = (int)($_POST['x_pos'] ?? 0);
+$y_pos        = (int)($_POST['y_pos'] ?? 0);
 
-    // Decode the JSON data
-    $data = json_decode($input, true);
+$photoPath = null;
+if (!empty($_FILES['photo']['name'])) {
+    $uploadDir = '../uploads/photos/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
-    // Check if decoding was successful
-    if ($data === null) {
-        echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+    $photoName  = time() . "_" . basename($_FILES['photo']['name']);
+    $targetFile = $uploadDir . $photoName;
+
+    if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetFile)) {
+        $photoPath = "uploads/photos/" . $photoName;
+    } else {
+        $response['error'] = "File upload failed.";
+        echo json_encode($response);
         exit;
     }
-
-    // Extract the fields from the decoded data
-    $iconId = $data['iconId'];
-    $assignmentID = $data['assignmentID'];
-    $type = $data['type'];
-    $picture = $data['photo'];
-    $notes = $data['notes'];
-    $x_pos = $data['x_pos'];
-    $y_pos = $data['y_pos'];
-
-    // Check if x_pos or y_pos are null and retrieve existing values if needed
-    if ($x_pos === null || $y_pos === null) {
-        $stmt = $conn->prepare("SELECT x_pos, y_pos FROM icons WHERE iconId = ?");
-        $stmt->bind_param('s', $iconId);
-        $stmt->execute();
-        $stmt->bind_result($existing_x_pos, $existing_y_pos);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Use existing values if x_pos or y_pos are null
-        $x_pos = $x_pos ?? $existing_x_pos ?? 0;
-        $y_pos = $y_pos ?? $existing_y_pos ?? 0;
-    }
-
-    // Step 1: Check if the iconId already exists in the database
-    $stmt = $conn->prepare("SELECT 1 FROM icons WHERE iconId = ?");
-    $stmt->bind_param('s', $iconId);
-    $stmt->execute();
-    $stmt->store_result();  // Stores the result to check if any row exists
-
-    if ($stmt->num_rows > 0) {
-        // Step 2: If iconId exists, perform an update
-        $stmt->close();
-        $stmt = $conn->prepare("UPDATE icons SET assignmentID = ?, type = ?, picture = ?, notes = ?, x_pos = ?, y_pos = ? WHERE iconId = ?");
-        $stmt->bind_param('isssiis', $assignmentID, $type, $picture, $notes, $x_pos, $y_pos, $iconId);
-
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Icon updated successfully']);
-        } else {
-            echo json_encode(['success' => false, 'error' => $stmt->error]);
-        }
-    } else {
-        // Step 3: If iconId does not exist, perform an insert
-        $stmt->close();
-        $stmt = $conn->prepare("INSERT INTO icons (iconId, assignmentID, type, picture, notes, x_pos, y_pos) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('sisssii', $iconId, $assignmentID, $type, $picture, $notes, $x_pos, $y_pos);
-
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Icon inserted successfully', 'id' => $conn->insert_id]);
-        } else {
-            echo json_encode(['success' => false, 'error' => $stmt->error]);
-        }
-    }
-
-    // Close the statement and the connection
-    $stmt->close();
-    $conn->close();
-} else {
-    echo json_encode(['success' => false, 'error' => 'Invalid request method']);
 }
+
+if ($iconId !== '') {
+    // Check if there's already a row with this iconId
+    $readQuery = "SELECT picture, notes FROM icons WHERE iconId = ? LIMIT 1";
+    if ($readStmt = $conn->prepare($readQuery)) {
+        $readStmt->bind_param("s", $iconId);
+        $readStmt->execute();
+        $readStmt->bind_result($existingPicture, $existingNotes);
+        if ($readStmt->fetch()) {
+            if ($photoPath === null) {
+                $photoPath = $existingPicture;
+            }
+            if ($notes === '') {
+                $notes = $existingNotes;
+            }
+        }
+        $readStmt->close();
+    }
+}
+
+// Attempt to update first
+$updateQuery = "
+    UPDATE icons
+    SET
+      assignmentID = ?,
+      type         = ?,
+      picture      = ?,
+      notes        = ?,
+      x_pos        = ?,
+      y_pos        = ?
+    WHERE iconId   = ?
+";
+
+// Prepare and execute the UPDATE
+if ($updateStmt = $conn->prepare($updateQuery)) {
+    $updateStmt->bind_param(
+        "isssiis",
+        $assignmentID,
+        $type,
+        $photoPath, // might be null or old image path
+        $notes,     // might be empty or old notes
+        $x_pos,
+        $y_pos,
+        $iconId
+    );
+    $updateStmt->execute();
+    $affected = $updateStmt->affected_rows;
+    $updateStmt->close();
+} else {
+    $response['error'] = "Failed to prepare update statement.";
+    echo json_encode($response);
+    exit;
+}
+
+// If the UPDATE affects 0 rows, then we INSERT as new row
+if ($affected === 0) {
+    $insertQuery = "
+        INSERT INTO icons
+          (iconId, assignmentID, type, picture, notes, x_pos, y_pos)
+        VALUES
+          (?, ?, ?, ?, ?, ?, ?)
+    ";
+    if ($insertStmt = $conn->prepare($insertQuery)) {
+        $insertStmt->bind_param(
+            "sisssii",
+            $iconId,
+            $assignmentID,
+            $type,
+            $photoPath,
+            $notes,
+            $x_pos,
+            $y_pos
+        );
+        if ($insertStmt->execute()) {
+            $response['success'] = true;
+        } else {
+            $response['error'] = "Database insert error: " . $insertStmt->error;
+        }
+        $insertStmt->close();
+    } else {
+        $response['error'] = "Failed to prepare insert statement.";
+    }
+} else {
+    $response['success'] = true;
+}
+
+echo json_encode($response);
 ?>
