@@ -172,11 +172,17 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log('Save successful:', response);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error saving icon:', error, xhr.responseText);
-            }
+                try {
+                    let r = JSON.parse(response);
+                    if (r.success && r.fileName) {
+                        icon.picture = r.fileName;
+                        let icons = JSON.parse(localStorage.getItem('iconData')) || [];
+                        let i = icons.findIndex(o => o.iconId === icon.iconId);
+                        if (i > -1) icons[i].picture = r.fileName;
+                        localStorage.setItem('iconData', JSON.stringify(icons));
+                    }
+                } catch (e) {}
+            }   
         });
     }
 
@@ -187,16 +193,16 @@ $(document).ready(function () {
         }
 
         const icons = JSON.parse(localStorage.getItem('iconData')) || [];
-        const index = icons.findIndex(item => item.iconId === icon.iconId);
+        const i = icons.findIndex(o => o.iconId === icon.iconId);
 
-        if (index > -1) {
-            icons[index] = { ...icons[index], ...icon };
+        if (i > -1) {
+            icons[i] = { ...icons[i], ...icon };
         } else {
             icons.push(icon);
         }
-
         localStorage.setItem('iconData', JSON.stringify(icons));
-        console.log("Saved icon data:", icons);
+        console.log("LocalStorage updated:",icons);
+
         saveIconToDatabase(icon);
     }
 
@@ -290,19 +296,21 @@ $(document).ready(function () {
             return;
         }
 
-        console.log(`Icon clicked, opening edit popup for ID: ${iconId}`);
         openEditPopup(iconId);
     });
 
     function openEditPopup(iconId) {
-        const $iconElement = $(`[iconId="${iconId}"]`);
-        let iconInstance = $iconElement.data("iconInstance") || loadIconData(iconId);
+        let iconInstance = loadIconData(iconId);
         if (!iconInstance) return;
 
-        //correct image from the database
-        const imagePath = (iconInstance.picture && iconInstance.picture !== "null")
-        ? `../uploads/photos/${iconInstance.picture}`
-        : '';
+        const oldFileName = (
+            iconInstance.picture &&
+            iconInstance.picture !== "null"
+        ) ? iconInstance.picture : "";
+
+        const imagePath = oldFileName
+            ? `uploads/photos/${oldFileName}?t=${Date.now()}`
+            : "";
 
         let popupContent = `
             <div id="edit-popup">
@@ -360,17 +368,26 @@ $(document).ready(function () {
             }
         });
 
-        const oldPicturePath = imagePath;
         $("#save-button").on("click", function () {
             iconInstance.type = $("#alert-type").val();
             iconInstance.notes = $("#icon-notes").val();
+
             const file = $("#icon-photo")[0].files[0];
-            iconInstance.photoData = file || null;
-            if (!file) iconInstance.picture = oldPicturePath;
+
+            if (file) {
+                iconInstance.photoData = file;
+            } else {
+                iconInstance.picture = oldFileName;
+            }
+
             saveIconData(iconInstance);
+
             let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
             $iconDiv.find("img").attr("src", getIconImageByType(iconInstance.type));
             $("#edit-popup").dialog('close');
+            setTimeout(function() {
+                fetchAndPlaceIcons();
+              }, 300);
         });
 
         $("#delete-button").on("click", function () {
@@ -404,7 +421,6 @@ $(document).ready(function () {
     }
 
     $(window).on("resize", function () {
-        console.log("Window resized, recalculating icon positions...");
 
         const $assessmentArea = $(".assessmentArea");
         const $assessmentImg = $("#assessment-img");
@@ -412,17 +428,13 @@ $(document).ready(function () {
         const newWidth = $assessmentImg.width();
         const newHeight = $assessmentImg.height();
 
-        console.log("New assessment image size:", newWidth, newHeight);
         const icons = JSON.parse(localStorage.getItem('iconData')) || [];
         $assessmentArea.empty();
         $assessmentArea.append($assessmentImg);
 
-        // Recalculate and reposition icons
         icons.forEach(icon => {
             const adjustedX = (icon.x_pos / 100) * newWidth;
             const adjustedY = (icon.y_pos / 100) * newHeight;
-
-            console.log(`Repositioning icon ${icon.iconId} to (${adjustedX}px, ${adjustedY}px)`);
 
             let $iconDiv = $(`[iconId="${icon.iconId}"]`);
             if (!$iconDiv.length) {
