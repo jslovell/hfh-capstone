@@ -24,7 +24,7 @@ if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     if ($resultForm && mysqli_num_rows($resultForm) > 0) {
         $form = mysqli_fetch_assoc($resultForm);
         $GLOBALS['header1'] = $form['address'];
-        $GLOBALS['header2'] = $form['city'] . " " . $form['state'];
+        $GLOBALS['header2'] = $form['city'] . " " . $form['state'] . " " . $form['zip'];
         // Check if layout exists
         if (is_null($form['layout'])) {
             $layout_path = "../uploads/layouts/default.jpg";
@@ -59,17 +59,17 @@ class PDF extends FPDF {
     function Header() {
 
         // Add logo to page
-        $this->Image('../assets/hfh_Logo_Black.png',10,8,33);
+        $this->Image('../assets/hfh_Logo_Black.png',10,8,45);
 
         // Set font family to Arial bold
         $this->SetFont('Arial','B',20);
 
         // Move to the right
-        $this->Cell(40);
+        $this->Cell(50);
 
         // Header
         $this->Cell(0,10,$GLOBALS['header1'],0,1);
-        $this->Cell(40);
+        $this->Cell(50);
         $this->Cell(0,10,$GLOBALS['header2'],0,0);
 
         // Line break
@@ -90,9 +90,42 @@ class PDF extends FPDF {
             $this->PageNo() . '/{nb}',0,0,'C');
     }
 
+    function GetIconInfoByType($type) {
+        switch ($type) {
+            case '1': // Windows
+                return array('../images/alert-icon.png', 'Windows');
+            case '2': // Doors
+                return array('../images/alert-icon.png', 'Doors');
+            case '3': // Siding
+                return array('../images/alert-icon.png', 'Siding');
+            case '4': // Porch
+                return array('../images/alert-icon.png', 'Porch');
+            case '5': // Stairs
+                return array('../images/alert-moderate-icon.png', 'Stairs');
+            case '6': // Deck
+                return array('../images/alert-moderate-icon.png', 'Deck');
+            case '7': // Mechanical
+                return array('../images/alert-moderate-icon.png', 'Mechanical');
+            case '8': // Plumbing
+                return array('../images/alert-moderate-icon.png', 'Plumbing');
+            case '9': // Electrical
+                return array('../images/alert-moderate-icon.png', 'Electrical');
+            case '10': // Flatwork
+                return array('../images/alert-sever-icon.png', 'Flatwork');
+            case '11': // Tree Maintenance
+                return array('../images/alert-sever-icon.png', 'Tree Maintenance');
+            case '12': // Roofing
+                return array('../images/alert-sever-icon.png', 'Roofing');
+            case 'other': // Other
+                return array('../images/alert-sever-icon.png', 'Other');
+            default: // If no recognized type, use a default alert icon
+                return array('../images/alert-icon.png', 'Unknown');
+        }
+    }
+
     // Icon
-    function DrawIcon($w, $h, $txt='',) {
-        $this->Image('../images/alert-sever-icon.png', $w-1, $h-1, 7, 7);
+    function DrawIcon($w, $h, $txt='', $type='') {
+        $this->Image($this->GetIconInfoByType($type)[0], $w-1, $h-1, 7, 7);
         $this->Rect($w+6, $h+5, 2+strlen($txt)*2.3, -5, 'F');
         $this->Text($w+7, $h+4, $txt);
     }
@@ -109,41 +142,32 @@ $pdf->SetFont('Times','',14);
 $pdf->AddPage();
 
 // Home Layout
-//list($x1, $y1) = getimagesize($layout_path);
-$x1 = 1600;
-$y1 = 1400;
-// TEMP ^^
-$scalar = 180 / $x1;
 $originX = $pdf->GetX();
 $originY = $pdf->GetY();
-$w = $x1 * $scalar;
-$h = $y1 * $scalar;
-$pdf->Cell($w + $originX, $h + $originY - 20, "", 0, 1, 'C',$pdf->Image($layout_path,$originX,$originY,$w,0));
+$w = 190;
+$pdf->Cell($w + $originX, $w, "", 0, 1, 'C',$pdf->Image($layout_path,$originX,$originY,$w,$w));
 
 // Overlay Icons
 $pdf->SetFillColor(255, 255, 255);
 $iconNum = 0;
 foreach($icons as $icon) {
-    $row = array($icon['x_pos'], $icon['y_pos'], ++$iconNum);
-    $pdf->DrawIcon($originX + ($row[0]-540) * 1.9 * $scalar, $originY + ($row[1]-375) * 1.9 * $scalar, $row[2]);
+    $pdf->DrawIcon($originX + ($icon['x_pos'] / 100.0) * $w, $originY + ($icon['y_pos'] / 100.0) * $w, ++$iconNum, $icon['type']);
 }
 
 // Home Info
 $pdf->Cell(30,6,"Homeowner:",0,0,'R');
 $pdf->Cell(75,6,$form['firstname']." ".$form['lastname'],0,1,'L');
 $pdf->Cell(30,6,"Address:",0,0,'R');
-$pdf->Cell(75,6,$form['address'],0,0,'L');
-$pdf->Cell(20,6,"State:",0,0,'R');
-$pdf->Cell(20,6,$form['state'],0,1,'L');
-$pdf->Cell(30,6,"City:",0,0,'R');
-$pdf->Cell(75,6,$form['city'],0,0,'L');
-$pdf->Cell(20,6,"Zip:",0,0,'R');
-$pdf->Cell(20,6,$form['zip'],0,1,'L');
-$pdf->Ln();
+$pdf->Cell(75,6,$form['address'],0,1,'L');
+$pdf->Cell(30,6,"",0,0,'R');
+$pdf->Cell(75,6,$form['city']." ".$form['state']." ".$form['zip'],0,1,'L');
+$pdf->Cell(30,6,"HfH Rep:",0,0,'R');
+$pdf->Cell(75,6,$form['firstname']." ".$form['lastname'],0,1,'L');
+$pdf->AddPage();
 
 // Icon Table Header
 $header = array('Number', 'Type', 'Notes');
-$colWidths = array(20, 20, 150);
+$colWidths = array(20, 40, 130);
 $iconNum = 0;
 foreach($header as $col)
     $pdf->Cell($colWidths[$iconNum++],7,$col,1);
@@ -153,7 +177,7 @@ $iconNum = 0;
 foreach($icons as $icon) {
     $row = array(++$iconNum, $icon['type'], $icon['picture'], $icon['notes']);
     $pdf->Cell($colWidths[0],6,$row[0],1);
-    $pdf->Cell($colWidths[1],6,$row[1],1);
+    $pdf->Cell($colWidths[1],6,$pdf->GetIconInfoByType($row[1])[1],1);
     $pdf->MultiCell($colWidths[2],6,$row[3],1);
     //$pdf->Ln();
     // Image
