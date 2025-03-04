@@ -20,9 +20,9 @@ $(document).ready(function () {
             console.error("Error: assignmentID is undefined or null!");
             return;
         }
-    
+
         console.log("Fetching icons from database for assignmentID:", assignmentID);
-    
+
         $.ajax({
             url: './php_scripts/load_icons.php',
             method: 'GET',
@@ -31,19 +31,19 @@ $(document).ready(function () {
             success: function (response, textStatus, xhr) {
                 console.log("HTTP Status:", xhr.status);
                 console.log("Raw Response:", xhr.responseText);
-    
+
                 try {
                     response = JSON.parse(xhr.responseText);
                 } catch (e) {
                     console.error("Error parsing JSON:", e);
                     return;
                 }
-    
+
                 if (response.success && response.data.length > 0) {
                     console.log("Icons data received:", response.data);
-    
+
                     localStorage.setItem('iconData', JSON.stringify(response.data));
-    
+
                     response.data.forEach(icon => {
                         placeIcon(icon);
                     });
@@ -63,7 +63,7 @@ $(document).ready(function () {
 
     function getIconImageByType(type) {
         switch (type) {
-            case '1':   // Windows                       
+            case '1':   // Windows
                 return 'images/alert-icon.png';
             case '2':   // Doors
                 return 'images/alert-icon.png';
@@ -93,13 +93,13 @@ $(document).ready(function () {
                 // If no recognized type, use a default alert icon
                 return 'images/alert-icon.png';
         }
-    }    
-    
+    }
+
     // Ensure icons load on page load
     $(document).ready(function () {
         setTimeout(function () {
             console.log("Checking assignmentID before fetching icons:", assignmentID);
-    
+
             if (typeof assignmentID !== "undefined" && assignmentID !== null) {
                 console.log("Fetching icons for assignmentID:", assignmentID);
                 fetchAndPlaceIcons();
@@ -107,50 +107,50 @@ $(document).ready(function () {
                 console.error("assignmentID is not defined or is null!");
             }
         }, 10);
-    });       
+    });
 
     function placeIcon(icon) {
         console.log("Placing icon:", icon);
-    
+
         const { iconId, type, x_pos, y_pos } = icon;
-        
+
         if (!iconId) {
             console.error("Error: Attempted to place an icon without an iconId!");
             return;
         }
-    
+
         let $iconDiv = $("<div class='box-alert'><div class='alerts-icon'><img></div></div>");
         $iconDiv.attr("iconId", iconId); // Ensure iconId is set
-    
+
         const $img = $iconDiv.find("img");
         const iconSrc = getIconImageByType(type);
         $img.attr("src", iconSrc);
         $iconDiv.data("iconInstance", icon);
-    
+
         var $assessmentArea = $(".assessmentArea");
         if ($assessmentArea.length === 0) {
             console.error("Error: .assessmentArea not found!");
             return;
         }
-    
+
         console.log("Appending icon:", iconId, "to", $assessmentArea);
         $assessmentArea.append($iconDiv);
-    
+
         $iconDiv.css({
             position: "absolute",
             left: x_pos + "%",
             top: y_pos + "%"
         });
-    
+
         console.log(`Icon ${iconId} placed at (${x_pos}%, ${y_pos}%)`);
-    }    
-    
+    }
+
     function saveIconToDatabase(icon) {
         if (!icon || !icon.iconId) {
             console.error('Error: Missing icon ID when saving:', icon);
             return;
         }
-    
+
         const formData = new FormData();
         formData.append("iconId", icon.iconId);
         formData.append("assignmentID", assignmentID);
@@ -158,13 +158,13 @@ $(document).ready(function () {
         formData.append("notes", icon.notes || "");
         formData.append("x_pos", icon.x_pos);
         formData.append("y_pos", icon.y_pos);
-        
+
         if (icon.photoData) {
             formData.append("photo", icon.photoData);
         }
-    
+
         console.log("Sending icon data to save:", Object.fromEntries(formData.entries()));
-    
+
         $.ajax({
             url: './php_scripts/save_icon.php',
             method: 'POST',
@@ -172,58 +172,64 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log('Save successful:', response);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error saving icon:', error, xhr.responseText);
-            }
+                try {
+                    let r = JSON.parse(response);
+                    if (r.success && r.fileName) {
+                        icon.picture = r.fileName;
+                        let icons = JSON.parse(localStorage.getItem('iconData')) || [];
+                        let i = icons.findIndex(o => o.iconId === icon.iconId);
+                        if (i > -1) icons[i].picture = r.fileName;
+                        localStorage.setItem('iconData', JSON.stringify(icons));
+                    }
+                } catch (e) {}
+            }   
         });
-    }    
-    
+    }
+
     function saveIconData(icon) {
         if (!icon || !icon.iconId) {
             console.error("Error: Attempted to save an icon without an iconId!", icon);
             return;
         }
-    
+
         const icons = JSON.parse(localStorage.getItem('iconData')) || [];
-        const index = icons.findIndex(item => item.iconId === icon.iconId);
-    
-        if (index > -1) {
-            icons[index] = { ...icons[index], ...icon };
+        const i = icons.findIndex(o => o.iconId === icon.iconId);
+
+        if (i > -1) {
+            icons[i] = { ...icons[i], ...icon };
         } else {
             icons.push(icon);
         }
-    
         localStorage.setItem('iconData', JSON.stringify(icons));
-        console.log("Saved icon data:", icons);
+        console.log("LocalStorage updated:",icons);
+
         saveIconToDatabase(icon);
-    }     
-    
+    }
+
     function loadIconData(iconId) {
         if (!iconId) {
             console.error("Error: Tried to load icon data with an undefined iconId!");
             return null;
         }
-    
+
         const icons = JSON.parse(localStorage.getItem('iconData')) || [];
         const icon = icons.find(icon => icon.iconId === iconId) || null;
-    
+
         if (!icon) {
             console.warn(`Warning: Icon with ID ${iconId} not found in localStorage.`);
         }
-    
+
         return icon;
-    }      
+    }
 
     function deleteIconFromDatabase(iconId) {
         if (!iconId) {
             console.error("Error: Attempted to delete an icon without an iconId!");
             return;
         }
-    
+
         console.log(`Deleting icon with ID: ${iconId}`);
-    
+
         $.ajax({
             url: './php_scripts/delete_icon.php',
             method: 'POST',
@@ -231,22 +237,22 @@ $(document).ready(function () {
             contentType: 'application/json',
             success: function (response) {
                 console.log("Delete response:", response);
-    
+
                 try {
                     response = JSON.parse(response);
                 } catch (e) {
                     console.error("Error parsing JSON response from delete:", e);
                     return;
                 }
-    
+
                 if (response.success) {
                     console.log(`Successfully deleted icon ${iconId} from the database.`);
-    
+
                     // Remove from localStorage
                     let icons = JSON.parse(localStorage.getItem('iconData')) || [];
                     icons = icons.filter(icon => icon.iconId !== iconId);
                     localStorage.setItem('iconData', JSON.stringify(icons));
-    
+
                     // Remove from the DOM
                     $(`[iconId="${iconId}"]`).remove();
                     console.log(`Icon ${iconId} removed from screen.`);
@@ -258,8 +264,8 @@ $(document).ready(function () {
                 console.error(`Error deleting icon ${iconId}:`, error, xhr.responseText);
             }
         });
-    }    
-    
+    }
+
     // Currently unused, to be used for trash can icon in future sidebar
     function deleteAllIconsFromDatabase() {
         $.ajax({
@@ -278,27 +284,34 @@ $(document).ready(function () {
                 console.error('AJAX error deleting all icons:', error, xhr.responseText);
             }
         });
-    }    
+    }
 
     $(document).on("click", ".alerts-icon", function (e) {
         e.preventDefault();
         var $iconDiv = $(this).closest('.box-alert');
         var iconId = $iconDiv.attr("iconId");
-    
+
         if (!iconId) {
             console.error("Error: Clicked an icon but it has no valid iconId.");
             return;
         }
-    
-        console.log(`Icon clicked, opening edit popup for ID: ${iconId}`);
+
         openEditPopup(iconId);
     });
-    
+
     function openEditPopup(iconId) {
-        const $iconElement = $(`[iconId="${iconId}"]`);
-        let iconInstance = $iconElement.data("iconInstance") || loadIconData(iconId);
+        let iconInstance = loadIconData(iconId);
         if (!iconInstance) return;
-    
+
+        const oldFileName = (
+            iconInstance.picture &&
+            iconInstance.picture !== "null"
+        ) ? iconInstance.picture : "";
+
+        const imagePath = oldFileName
+            ? `uploads/photos/${oldFileName}?t=${Date.now()}`
+            : "";
+
         let popupContent = `
             <div id="edit-popup">
                 <label for="alert-type">Icon Type:</label>
@@ -317,7 +330,7 @@ $(document).ready(function () {
                     <option value='12'>Roofing</option>
                     <option value='other'>Other</option>
                 </select><br>
-                ${iconInstance.picture ? `<img id="icon-preview" src="${iconInstance.picture}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
+                ${iconInstance.picture ? `<img id="icon-preview" src="${imagePath}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
                 <input type='file' id='icon-photo' accept='image/*' style="display:block;margin:10px auto;">
                 <label for="icon-notes">Notes:</label>
                 <textarea id="icon-notes" style="display:block;margin:10px auto;">${iconInstance.notes || ''}</textarea>
@@ -327,7 +340,7 @@ $(document).ready(function () {
         `;
         $("body").append(popupContent);
         $("#alert-type").val(iconInstance.type || '');
-    
+
         $("#edit-popup").dialog({
             width: 500,
             height: "auto",
@@ -338,8 +351,8 @@ $(document).ready(function () {
             close: function() {
                 $(this).dialog("destroy").remove();
             }
-        });               
-    
+        });
+
         $("#icon-photo").on("change", function () {
             const file = this.files[0];
             if (file) {
@@ -354,30 +367,39 @@ $(document).ready(function () {
                 reader.readAsDataURL(file);
             }
         });
-    
-        const oldPicturePath = iconInstance.picture;
+
         $("#save-button").on("click", function () {
             iconInstance.type = $("#alert-type").val();
             iconInstance.notes = $("#icon-notes").val();
+
             const file = $("#icon-photo")[0].files[0];
-            iconInstance.photoData = file || null;
-            if (!file) iconInstance.picture = oldPicturePath;
+
+            if (file) {
+                iconInstance.photoData = file;
+            } else {
+                iconInstance.picture = oldFileName;
+            }
+
             saveIconData(iconInstance);
+
             let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
             $iconDiv.find("img").attr("src", getIconImageByType(iconInstance.type));
             $("#edit-popup").dialog('close');
+            setTimeout(function() {
+                fetchAndPlaceIcons();
+              }, 300);
         });
-    
+
         $("#delete-button").on("click", function () {
             deleteIconFromDatabase(iconId);
             $("#edit-popup").dialog('close');
         });
-    }    
+    }
 
     $(document).on("mousedown", ".assessmentArea", function (event) {
         if (isSelectMode && activeButtonId) {
             var iconId = "icon-" + Date.now();
-    
+
             var $assessmentArea = $(".assessmentArea");
             var rect = $assessmentArea[0].getBoundingClientRect();
             var areaWidth = rect.width;
@@ -385,13 +407,13 @@ $(document).ready(function () {
 
             var x = ((event.clientX - rect.left) / areaWidth) * 100;
             var y = ((event.clientY - rect.top) / areaHeight) * 100;
-    
+
             const newIcon = new Icon(iconId, null, null, null, x, y);
-    
+
             saveIconData(newIcon);
             placeIcon(newIcon);
         }
-    });    
+    });
 
     // Navbar and side navigation functionality
     function toggleSideNav() {
@@ -399,40 +421,35 @@ $(document).ready(function () {
     }
 
     $(window).on("resize", function () {
-        console.log("Window resized, recalculating icon positions...");
-    
+
         const $assessmentArea = $(".assessmentArea");
         const $assessmentImg = $("#assessment-img");
-    
+
         const newWidth = $assessmentImg.width();
         const newHeight = $assessmentImg.height();
-    
-        console.log("New assessment image size:", newWidth, newHeight);
+
         const icons = JSON.parse(localStorage.getItem('iconData')) || [];
         $assessmentArea.empty();
         $assessmentArea.append($assessmentImg);
-    
-        // Recalculate and reposition icons
+
         icons.forEach(icon => {
             const adjustedX = (icon.x_pos / 100) * newWidth;
             const adjustedY = (icon.y_pos / 100) * newHeight;
-    
-            console.log(`Repositioning icon ${icon.iconId} to (${adjustedX}px, ${adjustedY}px)`);
-    
+
             let $iconDiv = $(`[iconId="${icon.iconId}"]`);
             if (!$iconDiv.length) {
                 $iconDiv = $("<div class='box-alert'><div class='alerts-icon'><img></div></div>");
                 $iconDiv.attr("iconId", icon.iconId);
                 $assessmentArea.append($iconDiv);
             }
-    
+
             $iconDiv.css({
                 position: "absolute",
                 left: adjustedX + "px",
                 top: adjustedY + "px"
             });
         });
-    });    
+    });
 
     $(".nav_ico").click(function () {
         $(this).toggleClass("active");
@@ -477,7 +494,7 @@ $(document).ready(function () {
             deactivateIcons();
             isBrushActive = false;
         }
-    }    
+    }
 
     $("#select-button").click(function () {
         toggleSelectMode();

@@ -4,13 +4,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/toolStyle.css">
         <link rel="stylesheet" href="jquery-ui.css">
         <link rel="stylesheet" href="styles/aboutProjectStyle.css">
+        <link rel="stylesheet" href="styles/navbar.css">
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="jquery-ui.css"></script>
         <script src="script.js"></script>
         <title>About Project</title>
-
+        <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     </head>
     <?php include "navbar.php" ?>
     <body style="margin-top: 8%;">
@@ -19,7 +21,7 @@
         <div class ="center">
             <img src="assets/HFH_BG.jpeg" id="mainimage">
         </div>
-    
+
         <h2>The goal of our project is to help Habitat for Humanity assist people who have existing homes restore any concerning areas. Our webpage will allow someone to upload photos from their home and add any modifications that are needed. It will also have an option of creating a project plan and allow the option to order materials or people to complete any assignments needed to update the house.</h2>
         <h1>Week 1 Progress</h1>
         <h2>
@@ -30,7 +32,7 @@
                 <li>Began looking into database and security options</li>
             </ul>
         </h2>
-    
+
         <h1>Week 2 Progress</h1>
         <h2>
             <ul>
@@ -40,7 +42,7 @@
                 <li>Gathered more information about Habitat for Humanity</li>
             </ul>
         </h2>
-    
+
         <h1>Week 3 Progress</h1>
         <h2>
             <ul>
@@ -51,7 +53,7 @@
                 <li>Set up meeting with Habitat for Humanity</li>
             </ul>
         </h2>
-    
+
         <h1>Week 4 Progress</h1>
         <h2>
             <ul>
@@ -60,7 +62,7 @@
                 <li>Continued to improve the website's appearance</li>
             </ul>
         </h2>
-    
+
         <h1>Week 5 Progress</h1>
         <h2>
             <ul>
@@ -69,7 +71,7 @@
                 <li>Created a document of questions to ask Habitat for the next meeting with them</li>
             </ul>
         </h2>
-    
+
         <h1>Week 6 Progress</h1>
         <h2>
             <ul>
@@ -77,7 +79,7 @@
                 <li>Added more questions to ask Habitat</li>
             </ul>
         </h2>
-    
+
         <h1>Week 7 Progress</h1>
         <h2>
             <ul>
@@ -85,7 +87,7 @@
                 <li>Began working on design documents along with a report on all the work we've done so far</li>
             </ul>
         </h2>
-    
+
         <h1>Week 8 Progress</h1>
         <h2>
             <ul>
@@ -96,7 +98,7 @@
                 <li>Complied and Developed a new Security Plan based on the data being stored on Habitat's servers</li>
             </ul>
         </h2>
-    
+
         <h1>Week 9 Progress</h1>
         <h2>
             <ul>
@@ -104,17 +106,17 @@
                 <li>Preparation for developing the application has begun</li>
             </ul>
         </h2>
-    
+
         <h1>Week 10 Progress</h1>
         <h2>
             <ul>
                 <li>Began coding with java to try and make a prototype for the applet using Visual Studio</li>
                 <li>More research has been made to try and implement MongoDB with the current tool</li>
-    
+
             </ul>
         </h2>
-    
-    
+
+
     </body>
 
 
