@@ -1,64 +1,130 @@
 <?php
 header('Content-Type: application/json');
 require 'db.php';
+$response = ["success" => false];
 
-try {
-    $iconId = $_POST['iconId'] ?? null;
-    $assignmentID = $_POST['assignmentID'] ?? null;
-    $type = $_POST['type'] ?? null;
-    $notes = $_POST['notes'] ?? null;
-    $x_pos = $_POST['x_pos'] ?? null;
-    $y_pos = $_POST['y_pos'] ?? null;
+$iconId       = trim($_POST['iconId'] ?? '');
+$assignmentID = (int)($_POST['assignmentID'] ?? 0);
+$type         = trim($_POST['type'] ?? '');
+$notes        = trim($_POST['notes'] ?? '');
+$x_pos        = (int)($_POST['x_pos'] ?? 0);
+$y_pos        = (int)($_POST['y_pos'] ?? 0);
 
-    if (!$iconId || !$assignmentID || !$x_pos || !$y_pos) {
-        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+$photoPath = null;
+if (!empty($_FILES['photo']['name'])) {
+    $uploadDir = __DIR__ . '/../uploads/photos/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    $photoName  = time() . "_" . basename($_FILES['photo']['name']);
+    $targetFile = $uploadDir . $photoName;
+    if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetFile)) {
+        $photoPath = $photoName;
+    } else {
+        $response['error'] = "File upload failed.";
+        echo json_encode($response);
         exit;
     }
-
-    // Handle file upload
+} else {
     $photoName = null;
-    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../uploads/photos/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
+}
 
-        
-        $photoName = time() . '_' . preg_replace('/[^A-Za-z0-9\._-]/', '', basename($_FILES['photo']['name']));
-        $targetFile = $uploadDir . $photoName;
+$existingRow = null;
+if ($iconId !== '') {
+    $readQuery = "SELECT assignmentID, type, picture, notes, x_pos, y_pos
+                  FROM icons
+                  WHERE iconId = ?
+                  LIMIT 1";
+    if ($readStmt = $conn->prepare($readQuery)) {
+        $readStmt->bind_param("s", $iconId);
+        $readStmt->execute();
+        $result = $readStmt->get_result();
+        $existingRow = $result->fetch_assoc();
+        $readStmt->close();
+    }
+}
 
-        //move the uploaded file to the uploads/photos directory
-        if (!move_uploaded_file($_FILES['photo']['tmp_name'], $targetFile)) {
-            echo json_encode(['success' => false, 'message' => 'File upload failed']);
-            exit;
+if ($existingRow) {
+    if ($photoPath === null) {
+        $photoPath = $existingRow['picture'];
+    }
+    if ($notes === '') {
+        $notes = $existingRow['notes'];
+    }
+    if ($type === '') {
+        $type = $existingRow['type'];
+    }
+}
+
+if ($existingRow) {
+    // =========== UPDATE Path ==============
+    $updateQuery = "
+        UPDATE icons
+        SET
+          assignmentID = ?,
+          type         = ?,
+          picture      = ?,
+          notes        = ?,
+          x_pos        = ?,
+          y_pos        = ?
+        WHERE iconId   = ?
+    ";
+    if ($updateStmt = $conn->prepare($updateQuery)) {
+        $updateStmt->bind_param(
+            "isssiis",
+            $assignmentID,
+            $type,
+            $photoPath,
+            $notes,
+            $x_pos,
+            $y_pos,
+            $iconId
+        );
+        if ($updateStmt->execute()) {
+            $response['success'] = true;
+            if ($photoPath) {
+                $response['fileName'] = $photoPath;
+            }
+        } else {
+            $response['error'] = "Database update error: " . $updateStmt->error;
         }
+        $updateStmt->close();
+    } else {
+        $response['error'] = "Failed to prepare update statement.";
     }
 
-    //use INSERT ... ON DUPLICATE KEY UPDATE to update the row if iconId already exists!
-    $query = "
-        INSERT INTO icons (iconId, assignmentID, type, notes, picture, x_pos, y_pos)
-        VALUES (:iconId, :assignmentID, :type, :notes, :picture, :x_pos, :y_pos)
-        ON DUPLICATE KEY UPDATE
-        type = VALUES(type),
-        notes = VALUES(notes),
-        picture = IF(VALUES(picture) != '', VALUES(picture), picture),
-        x_pos = VALUES(x_pos),
-        y_pos = VALUES(y_pos)
+} else {
+    // =========== INSERT Path ==============
+    $insertQuery = "
+        INSERT INTO icons
+          (iconId, assignmentID, type, picture, notes, x_pos, y_pos)
+        VALUES
+          (?, ?, ?, ?, ?, ?, ?)
     ";
-
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([
-        ':iconId' => $iconId,
-        ':assignmentID' => $assignmentID,
-        ':type' => $type,
-        ':notes' => $notes,
-        ':picture' => $photoName,
-        ':x_pos' => $x_pos,
-        ':y_pos' => $y_pos,
-    ]);
-
-    echo json_encode(['success' => true, 'message' => 'Icon saved successfully']);
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    if ($insertStmt = $conn->prepare($insertQuery)) {
+        $insertStmt->bind_param(
+            "sisssii",
+            $iconId,
+            $assignmentID,
+            $type,
+            $photoPath,
+            $notes,
+            $x_pos,
+            $y_pos
+        );
+        if ($insertStmt->execute()) {
+            $response['success'] = true;
+            if ($photoPath) {
+                $response['fileName'] = $photoPath;
+            }
+        } else {
+            $response['error'] = "Database insert error: " . $insertStmt->error;
+        }
+        $insertStmt->close();
+    } else {
+        $response['error'] = "Failed to prepare insert statement.";
+    }
 }
+
+echo json_encode($response);
 ?>

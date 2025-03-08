@@ -6,13 +6,27 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/toolStyle.css">
         <link rel="stylesheet" href="jquery-ui.css">
+        <link rel="stylesheet" href="styles/navbar.css">
+        <link rel="stylesheet" href="styles/index.css">
         <link rel="stylesheet" href="styles/indexStyle.css">
+        <link rel="stylesheet" href="styles/navbar.css">
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="jquery-ui.css"></script>
+        <!--<script src="jquery-ui.css"></script>-->
         <script src="script.js"></script>
         <title>Login</title>
 
+    <style>
+        .container
+        {
+            background-color: #bfbfbf;
+            border: 1px solid #bfbfbf;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+        }
+
+    </style>
     </head>
     <?php include "navbar.php" ?>
 <body>
@@ -39,8 +53,8 @@
     	</label>
     </div>
 
-    <div class="container" style="background-color: whitesmoke">
-    <button type="button" class="cancelbtn" onclick="location.href='./index.php'">Cancel</button>
+    <div class="container" >
+        <button type="button" class="cancelbtn" onclick="location.href='./index.php'">Cancel</button>
    <!-- <button type"button" class="cancelbtn">New User<a href="https://hfh-capstone.bradley.edu/new_user"></a>
 	-->
 	<span class="psw">Forgot <a href="#">password?</a></span>

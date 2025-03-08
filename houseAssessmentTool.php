@@ -4,7 +4,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- link rel="stylesheet" href="styles/toolStyle.css" -->
+    <link rel="stylesheet" href="styles/toolStyle.css">
+    <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="jquery-ui.css">
     <!-- <script src="jquery-ui.css"></script> -->
 <!-- -->
@@ -12,6 +13,7 @@
     <script src="script.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>House Assessment Tool</title>
+    <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     <?php include "navbar.php" ?>
 </head>
     <body class="background">
