@@ -28,6 +28,19 @@ if ($id > 0) {
     }
 }
 mysqli_close($conn);
+
+// Fetch current assessment status
+$assessmentStatus = "Unknown"; // Default value
+if ($id > 0) {
+    $sql = "SELECT assessmentStatus FROM form_entries WHERE id = $id";
+    $result = mysqli_query($conn, $sql);
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $assessmentStatus = $row['assessmentStatus'];
+    }
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +51,11 @@ mysqli_close($conn);
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="stylesheet" href="./styles/tabToolStyle.css">
     <link rel="stylesheet" href="./test_pagetempcss.css">
+<<<<<<< Updated upstream
     <!-- <link rel="stylesheet" href="styles/navbar.css"> -->
+=======
+    <link rel="stylesheet" href="styles/navbar.css">
+>>>>>>> Stashed changes
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.js"></script>
     <script>
@@ -54,8 +71,20 @@ mysqli_close($conn);
 <div class="popup" onclick="myFunction()">Click me!
   <span class="popuptext" id="myPopup">Popup text...</span>
 </div>
+<<<<<<< Updated upstream
+=======
 
-<h1 style="font-size:250%">House Assessment Tool</h1>
+<div style="text-align: center; margin-bottom: 20px;">
+    <h2>Assessment ID: <?php echo htmlspecialchars($id); ?></h2>
+    <!-- Dropdown for updating status -->
+    <label for="statusDropdown"><b>Current Status:</b></label>
+    <select id="statusDropdown" data-id="<?php echo $id; ?>">
+        <option id="statuses" value="Needs Assessment" <?php echo ($assessmentStatus === 'Needs Assessment') ? 'selected' : ''; ?>>Needs Assessment</option>
+        <option id="statuses"value="Needs Bidding" <?php echo ($assessmentStatus === 'Needs Bidding') ? 'selected' : ''; ?>>Needs Bidding</option>
+    </select>
+</div>
+>>>>>>> Stashed changes
+
 <br>
 <img src="images/icon-legend.png" style="width: 500px; height: 250px; justify-content: center; display: flex; align-items: center;margin: auto">
 <br>
@@ -74,9 +103,12 @@ mysqli_close($conn);
     <button id="select-button"></button>
     <button id="photo-button" onclick="display()"></button>
     <button id="note-button"></button>
+<<<<<<< Updated upstream
     <button id="alert-severe-button"></button>
     <button id="alert-moderate-button"></button>
     <button id="alert-button"></button>
+=======
+>>>>>>> Stashed changes
     <button id="deck-button"></button>
     <button id="door-button"></button>
     <button id="electrical-button"></button>
@@ -89,6 +121,28 @@ mysqli_close($conn);
 
 <!-- Pass Icons Data to JavaScript -->
 <script>
+<<<<<<< Updated upstream
+=======
+    $(document).ready(function () {
+    $("#statusDropdown").on("change", function () {
+        let newStatus = $(this).val();
+        let assessmentID = $(this).data("id");
+
+        $.ajax({
+            url: "php_scripts/update_status.php",
+            type: "POST",
+            data: { id: assessmentID, assessmentStatus: newStatus },
+            success: function (response) {
+                if (response.trim() === "success") {
+                    alert("Status updated successfully!");
+                } else {
+                    alert("Error updating status.");
+                }
+            }
+        });
+    });
+});
+>>>>>>> Stashed changes
     const existingIcons = <?php echo json_encode($icons); ?>;
     document.addEventListener("DOMContentLoaded", function () {
         if (existingIcons.length > 0) {
