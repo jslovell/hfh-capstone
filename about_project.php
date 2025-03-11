@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
         <link rel="stylesheet" href="styles/toolStyle.css">
         <link rel="stylesheet" href="jquery-ui.css">
         <link rel="stylesheet" href="styles/aboutProjectStyle.css">
@@ -19,7 +19,7 @@
 
         <h1>Project Info</h1>
         <div class ="center">
-            <img src="assets/HFH_BG.jpeg" id="mainimage">
+            <img src="assets/HFH_BG.jpeg" style="width:100vw">
         </div>
 
         <h2>The goal of our project is to help Habitat for Humanity assist people who have existing homes restore any concerning areas. Our webpage will allow someone to upload photos from their home and add any modifications that are needed. It will also have an option of creating a project plan and allow the option to order materials or people to complete any assignments needed to update the house.</h2>

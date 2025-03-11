@@ -1,9 +1,9 @@
-<link rel="stylesheet" href="/styles/navbar.css">
+<!-- <link rel="stylesheet" href="/styles/navbar.css"> -->
 <div class="navbar">
     <header class="header">
         <nav class="navbar navbar-default">
         <div class="logo">
-            <img src="assets/hfh_Logo_Black.png" onclick="location.href='homepage.php'">
+            <img src="assets/black_gdm_logo.png" style=" width: 150px; height: 50px;" onclick="location.href='homepage.php'">
         </div>
         <div class="nav navbar-nav">
             <ul>

@@ -26,6 +26,16 @@ if ($id > 0) {
         $icons[] = $row;
     }
 }
+// Fetch current assessment status
+$assessmentStatus = "Unknown"; // Default value
+if ($id > 0) {
+    $sql = "SELECT assessmentStatus FROM form_entries WHERE id = $id";
+    $result = mysqli_query($conn, $sql);
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $assessmentStatus = $row['assessmentStatus'];
+    }
+}
 mysqli_close($conn);
 ?>
 
@@ -37,8 +47,10 @@ mysqli_close($conn);
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="stylesheet" href="./styles/toolStyle.css">
     <link rel="stylesheet" href="./styles/tabToolStyle.css">
+    <link rel="stylesheet" href="styles/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.js"></script>
+    <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     <script>
         const assignmentID = <?php echo json_encode($assignmentID); ?>;
     </script>
@@ -171,6 +183,12 @@ mysqli_close($conn);
                 height: 30px;
             }
         }
+
+        #statusDropdown{
+            width: 200px;
+            height: 40px;
+            color: black;
+        }
     </style>
 </head>
 <?php include "navbar.php"; ?>
@@ -178,6 +196,14 @@ mysqli_close($conn);
 <body style="margin-top: 8%;">
 
 <h1 style="font-size:250%">House Assessment Tool</h1>
+<div style="text-align: center; margin-bottom: 20px;">
+    <h2>Assessment ID: <?php echo htmlspecialchars($id); ?></h2>
+    <label for="statusDropdown"><b>Current Status:</b></label>
+    <select id="statusDropdown" data-id="<?php echo $id; ?>">
+        <option id="statuses" value="Needs Assessment" <?php echo ($assessmentStatus === 'Needs Assessment') ? 'selected' : ''; ?>>Needs Assessment</option>
+        <option id="statuses"value="Needs Bidding" <?php echo ($assessmentStatus === 'Needs Bidding') ? 'selected' : ''; ?>>Needs Bidding</option>
+    </select>
+</div>
 <br>
 <img src="images/icon-legend.png" style="width: 500px; height: 250px; justify-content: center; display: flex; align-items: center;margin: auto">
 <br>
@@ -230,6 +256,28 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => console.error("Error loading icons:", error));
 });
+
+
+$(document).ready(function () {
+    $("#statusDropdown").on("change", function () {
+        let newStatus = $(this).val();
+        let assessmentID = $(this).data("id");
+
+        $.ajax({
+            url: "php_scripts/update_status.php",
+            type: "POST",
+            data: { id: assessmentID, assessmentStatus: newStatus },
+            success: function (response) {
+                if (response.trim() === "success") {
+                    alert("Status updated successfully!");
+                } else {
+                    alert("Error updating status.");
+                }
+            }
+        });
+    });
+});
+
 </script>
 
 <script>
