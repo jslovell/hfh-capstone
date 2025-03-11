@@ -1,0 +1,134 @@
+#clearButton {
+    background-image: url("images/clear-button.png");
+}
+#select-button {
+    background-image: url("images/select-button.png");
+}
+#alert-severe-button {
+    background-image: url("images/alert-severe-button.png");
+}
+#alert-moderate-button {
+    background-image: url("images/alert-moderate-button.png");
+}
+#alert-button {
+    background-image: url("images/alert-button.png");
+}
+#photo-button {
+    background-image: url("images/picture-button.png");
+}
+#note-button {
+    background-image: url("images/note-button.png");
+}
+#deck-button {
+    background-image: url("iconImages/Deck.png");
+}
+#door-button {
+    background-image: url("iconImages/door.png");
+}
+#electrical-button {
+    background-image: url("iconImages/Electrical.png");
+}
+#HVAC-button {
+    background-image: url("iconImages/HVAC.png");
+}
+#plumbing-button {
+    background-image: url("iconImages/Plumbing1.png");
+}
+#stairs-button {
+    background-image: url("iconImages/Stairs1.png");
+}
+#tree-button {
+    background-image: url("iconImages/Tree_Maintenance1.png");
+}
+#window-button {
+    background-image: url("iconImages/window1.png");
+}
+#clearButton, #select-button, #photo-button, #alert-moderate-button, #alert-severe-button, #alert-button, #removal-button, #note-button,
+#door-button, #deck-button, #electrical-button, #HVAC-button, #plumbing-button, #stairs-button, #tree-button, #window-button {
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 58px;
+    height: 58px;
+    background-color: inherit;
+}
+
+#removal-button {
+    background-image: url("images/removal-button.png");
+
+}
+
+.picture{
+    display:none;
+    width:30%;
+    height:30%;
+}
+.box, .box-alert, .box-note {
+
+    position: absolute;
+    width: 32px;
+    height: 32px;
+}
+
+
+.clickableArea {
+    width: 800px;
+    height: 800px;
+    margin: auto;
+    border: 3px dashed black;
+    display: flex;
+    align-items: center;
+    justify-content: center;;
+}
+.sidebar {
+    position: fixed;
+    top: 54%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+    background-color: #f1f1f1;
+    border-right: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 5px;
+    width: 150px;
+}
+
+.sidebar-button {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebar-button img {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+/* Tooltip CSS */
+
+
+
+
+
+
+
+
+
+@media screen and (max-width: 600px) {
+    .sidebar {
+        width: 60px;
+    }
+    .sidebar button {
+        width: 30px;
+        height: 30px;
+    }
+}
