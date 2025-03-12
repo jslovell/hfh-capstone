@@ -45,7 +45,7 @@
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="psw" required>
 
-        <button type="submit" name="submit">Login</button>
+        <button type="submit" name="submit" id="login-button">Login</button>
         <label>
             <input type="checkbox" checked="checked" name="remember"> Remember me
 
@@ -54,10 +54,10 @@
     </div>
 
     <div class="container" >
-        <button type="button" class="cancelbtn" onclick="location.href='./index.php'">Cancel</button>
+        <button type="button" class="cancelbtn" onclick="location.href='./index.php'"id="cancel-button">Cancel</button>
    <!-- <button type"button" class="cancelbtn">New User<a href="https://hfh-capstone.bradley.edu/new_user"></a>
 	-->
-	<span class="psw">Forgot <a href="#">password?</a></span>
+	<span class="psw"><a href="#">Forgot password?</a></span>
     </div>
 </form>
 

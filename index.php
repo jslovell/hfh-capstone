@@ -16,16 +16,6 @@
         <script src="script.js"></script>
         <title>Login</title>
         <link rel="icon" type="image/png" href="assets/gdmfh_logo.png">
-    <style>
-        .container
-        {
-            background-color: #bfbfbf;
-            border: 1px solid #bfbfbf;
-            padding: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-        }
-
-    </style>
     </head>
     <?php include "navbar.php"; ?>
 <body>
