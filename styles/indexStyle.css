@@ -15,7 +15,7 @@ html {
 }
 
 body {
-    background-image: url("../assets/tempbg1.jpeg");
+    background-image: url("../assets/indexBGnew.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -27,7 +27,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Helvetica, Arial, sans-serif;
-    position: relative;
+    /* position: relative; */
 }
 
 
@@ -91,13 +91,14 @@ form {
     color: white;
     border: none;
     width: 100%;
-    padding: 14px;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 600;
     font-size: 16px;
     margin-bottom: 25px;
     transition: background-color 0.2s, transform 0.1s;
+    height: 35px;
+    text-align: center;
 }
 
 #login-button:hover {
@@ -156,7 +157,6 @@ span.psw {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 12px;
 }
 
 span.psw a {
@@ -184,11 +184,11 @@ span.psw a:hover {
         padding: 30px;
     }
 
-    #login-button,
+    /* #login-button,
     .cancelbtn {
-        padding: 15px;
+        padding: 25px;
         font-size: 17px;
-    }
+    } */
 
     .container label,
     .container input[type="text"],
@@ -204,10 +204,10 @@ span.psw a:hover {
 
 /* Phone optimizations */
 @media (max-width: 767px) {
-    form {
+    /* form {
         width: 90%;
         margin-top: 60px;
-    }
+    } */
 
     form .container[style*="background-color: whitesmoke"] {
         flex-direction: column;
@@ -219,9 +219,10 @@ span.psw a:hover {
         align-items: center;
     }
 
-    .cancelbtn {
+
+   button{
+
         width: 100%;
-        padding: 12px;
-        margin-bottom: 15px;
-    }
+        font-size: 14px;
+   }
 }

@@ -5,40 +5,48 @@
     if(isset($_POST['ajax'])) {
         $teamMember = isset($_POST['teamMember']) ? mysqli_real_escape_string($conn, $_POST['teamMember']) : '';
         $address = isset($_POST['address']) ? mysqli_real_escape_string($conn, $_POST['address']) : '';
+        $assessmentStatus = isset($_POST['assessmentStatus']) ? mysqli_real_escape_string($conn, $_POST['assessmentStatus']) : '';
 
-        $query = "SELECT * FROM form_entries WHERE 1=1";
+        if ($assessmentStatus === "all-statuses") {
+            $statusCondition = "(assessmentStatus = 'needs assessment' OR assessmentStatus = 'needs bidding')";
+        } elseif (!empty($assessmentStatus)) {
+            $statusCondition = "assessmentStatus = '$assessmentStatus'";
+        }
 
-        if (strlen($teamMember) >= 2) {
+        $query = "SELECT * FROM form_entries WHERE $statusCondition";
+
+        if (strlen($teamMember) >= 0) {
             $query .= " AND (CONCAT(firstname, ' ', lastname) LIKE '%$teamMember%'
                          OR firstname LIKE '%$teamMember%'
                          OR lastname LIKE '%$teamMember%')";
         }
 
-        if (strlen($address) >= 2) {
+        if (strlen($address) >=0) {
             $query .= " AND address LIKE '%$address%'";
         }
+
 
         $result = mysqli_query($conn, $query);
 
         while ($row = mysqli_fetch_assoc($result)) {
             ?>
+
             <div class="assessment-card">
-            <a href="javascript:void(0);" class="edit-icon" id="delete-icon" data-id="<?=$row['id']?>"><div title="Delete Assessment">🗑️</div></a>
-            <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon" id="edit-icon"><div title="Edit Assessment">✎</div></a>
-            <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon" id="print-icon" target="_blank"><div title="Print PDF">📄</div></a>
-                <h3>Assessment ID</h3>
-                <p class="assignment-id"><?php echo $row['id']; ?></p>
+                <a href="javascript:void(0);" class="edit-icon" id="delete-icon" data-id="<?=$row['id']?>"><div title="Delete Assessment">🗑️</div></a>
+                <a href="./test_page.php?id=<?=$row['id']?>" class="edit-icon" id="edit-icon"><div title="Edit Assessment">✎</div></a>
+                <a href="php_scripts/print_to_pdf.php?id=<?=$row['id']?>" class="edit-icon" id="print-icon" target="_blank"><div title="Print PDF">📄</div></a>
 
-                <h3>Team Member</h3>
-                <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
+                    <h3>Assessment ID</h3>
+                    <p class="assignment-id"><?php echo $row['id']; ?></p>
 
-                <h3>Address</h3>
-                <p class="address"><?php echo $row['address']; ?></p>
+                    <h3>Team Member</h3>
+                    <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
 
+                    <h3>Address</h3>
+                    <p class="address"><?php echo $row['address']; ?></p>
 
-                <h3>Status</h3>
-                <p>Needs Assessment</p>
-
+                    <h3>Status</h3>
+                    <p><?php echo $row['assessmentStatus']; ?></p>
             </div>
             <?php
         }
@@ -51,46 +59,129 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/toolStyle.css">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="stylesheet" href="styles/navbar.css">
-    <link rel="stylesheet" href="styles/catalog.css">
     <link rel="stylesheet" href="styles/indexStyle.css">
+    <link rel="stylesheet" href="styles/toolStyle.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!--<script src="jquery-ui.css"></script>-->
     <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     <title>Assessment Catalog</title>
-    
+    <style>
+    .search-container {
+        background: #bfbfbf;
+        padding: 20px 40px;
+        margin: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+    }
+
+    .search-field-group {
+        margin-bottom: 15px;
+    }
+
+    .search-field-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .search-field {
+        width: 40%;
+        padding: 8px;
+        border: 1px solid #bfbfbf;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .content-container {
+        background: #bfbfbf;
+        padding: 20px;
+        margin: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+        max-height: calc(100vh - 300px);
+        overflow-y: auto;
+        width: 550px;
+    }
+
+    .assessment-card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border: 1px solid black;
+    }
+
+    .assessment-card h3 {
+        margin: 0 0 10px 0;
+        font-size: 16px;
+    }
+
+    .assessment-card p {
+        margin: 5px 0;
+    }
+
+    .edit-icon {
+        float: right;
+        color: #0099cc;
+        text-decoration: none;
+        font-size: 20px;
+        padding-left: 15px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: black;
+    }
+
+    .empty-state p {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .min-search-notice {
+        font-size: 14px;
+        color: black;
+        margin-top: 5px;
+    }
+
+    #search-title{
+        color: #0099cc;
+    }
+
+</style>
 
 </head>
 <?php include "navbar.php" ?>
-<body>
-
+<body id="catalog-background">
     <div class="search-container">
-        <h1>House Assessment Search<!--<div class="info-icon" title="User Manual">
+        <h1 id="search-title">House Assessment Search<!--<div class="info-icon" title="User Manual">
         <img src = "images/info-circle.svg"></img></a></div>--></h1>
 
         <div class="search-field-group">
             <label>Team Member</label>
             <input type="text" id="teamMemberSearch" class="search-field" placeholder="Search by team member">
-            <div class="min-search-notice">Enter at least 2 characters to search</div>
+            <!-- <div class="min-search-notice">Enter at least 2 characters to search</div> -->
         </div>
 
         <div class="search-field-group">
             <label>Address</label>
             <input type="text" id="addressSearch" class="search-field" placeholder="Search by address">
-            <div class="min-search-notice">Enter at least 2 characters to search</div>
+            <!-- <div class="min-search-notice">Enter at least 2 characters to search</div> -->
         </div>
 
         <div class="search-field-group">
             <label>Status</label>
-            <select class="search-field">
-                <option value="in-progress" selected>Needs Assessment</option>
-                <option value="needs-bidding" selected>Needs Bidding</option>
-                <option value="all-statuses">All Statuses</option>
+            <select id="assessmentStatusFilter" class="search-field">
+                <option value="needs assessment" >Needs Assessment</option>
+                <option value="needs bidding" >Needs Bidding</option>
+                <option value="all-statuses" selected>All Statuses</option>
             </select>
         </div>
+        <div class="needsBiddingCount" style="font-weight: bold; margin-bottom: 10px;">Total Number of Assessments: </div>
         <a href="about_project.php">First time using this tool? Click here for help.</a>
     </div>
 
@@ -110,13 +201,14 @@
 
     <script>
     $(document).ready(function() {
-        const MIN_SEARCH_LENGTH = 2;
+        const MIN_SEARCH_LENGTH = 0;
 
-        function updateResults() {
+        function updateResults(){
             var teamMember = $('#teamMemberSearch').val();
             var address = $('#addressSearch').val();
+            var assessmentStatus = $('#assessmentStatusFilter').val();
 
-            if (teamMember.length < MIN_SEARCH_LENGTH && address.length < MIN_SEARCH_LENGTH) {
+            if (teamMember.length < MIN_SEARCH_LENGTH && address.length < MIN_SEARCH_LENGTH && assessmentStatus === "all-statuses") {
                 $('#results').empty();
                 $('#emptyState').show();
                 $('#noResults').hide();
@@ -129,7 +221,8 @@
                 data: {
                     ajax: true,
                     teamMember: teamMember,
-                    address: address
+                    address: address,
+                    assessmentStatus: assessmentStatus
                 },
                 success: function(response) {
                     $('#emptyState').hide();
@@ -153,8 +246,9 @@
             };
         }
 
-        $('#teamMemberSearch, #addressSearch').on('input', debounce(updateResults, 300));
+        $('#teamMemberSearch, #addressSearch, #assessmentStatusFilter').on('input', debounce(updateResults, 300));
 
+        updateResults();
 
         $(document).on("click", ".edit-icon[data-id]", function() {
             let entryId = $(this).data("id");
@@ -177,8 +271,6 @@
 
 
     });
-
-
 
     </script>
 </body>

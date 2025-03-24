@@ -9,12 +9,6 @@
 	color: white;
 }
 
-#login-button {
-	background: seagreen;
-	color: white;
-	height: 30px;
-}
-
 form {
 	border: 3px solid #f1f1f1;
 	background-color: white;
@@ -22,8 +16,8 @@ form {
 	font-family: Helvetica;
 }
 input[type=text], input[type=password] {
-	width: 100%;
-	padding: 12px 20px;
+	/* width: 100%; */
+	padding: 7px 20px;
 	margin: 8px 0;
 	display: inline-block;
 	border: 1px solid #ccc;
@@ -34,7 +28,7 @@ button {
 	margin: 8px 0;
 	border: none;
 	cursor: pointer;
-	width: 100%;
+	width: justify-content;
 	font-family: Helvetica;
 }
 

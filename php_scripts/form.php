@@ -11,7 +11,7 @@ $lastname = $_POST['lastname'] ?? '';
 $email = $_POST['email'] ?? '';
 $phone = $_POST['phone'] ?? '';
 $phone = preg_replace("/[^0-9]/", "", $phone);
-$address = $_POST['address'] ?? '';
+$address = trim($_POST['address'] ?? '');
 $city = $_POST['city'] ?? '';
 $state = strtoupper(trim($_POST['state'] ?? ''));
 $zip = $_POST['zip'] ?? '';
@@ -44,7 +44,7 @@ if (file_exists($target_file)) {
 }
 
 // Check file size
-if ($_FILES["layout"]["size"] > 500000) {
+if ($_FILES["layout"]["size"] > 5000000) {
   $errors['layout'] = "Sorry, your file is too large. ";
   $uploadOk = 0;
 }

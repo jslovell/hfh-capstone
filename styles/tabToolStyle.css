@@ -46,13 +46,18 @@ textarea {
 }
 
 button {
-    background-color: #007bff;
+    background-color: #09c;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: Helvetica;
     font-size: 14px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #output {
