@@ -1,10 +1,12 @@
 <?php
 
 //header('Location: ../test_page.php');
-
+require_once 'session.php'; 
 require_once "db.php";
 
 $errors = [];
+
+$username = $_SESSION['username'] ?? 'unknown';
 
 $firstname = $_POST['firstname'] ?? '';
 $lastname = $_POST['lastname'] ?? '';
@@ -35,7 +37,7 @@ $target_dir = "../uploads/layouts/";
 $layoutName = time() . '_' . preg_replace('/[^A-Za-z0-9\._-]/', '', basename($_FILES['layout']['name']));
 $target_file = $target_dir . $layoutName;
 $uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
 // Check if file already exists
 if (file_exists($target_file)) {
@@ -50,34 +52,32 @@ if ($_FILES["layout"]["size"] > 5000000) {
 }
 
 // Allow certain file formats
-if(!in_array($imageFileType, ["jpg", "png", "jpeg"])) {
+if (!in_array($imageFileType, ["jpg", "png", "jpeg"])) {
   $errors['layout'] = "Sorry, only JPG, JPEG & PNG files are allowed. ";
   $uploadOk = 0;
 }
 
-if(!empty($errors)){
+if (!empty($errors)) {
   echo json_encode([
-      "status" => "error",
-      "errors" => $errors,
-      "old_values" => [
-          "firstname" => $firstname,
-          "lastname" => $lastname,
-          "email" => $email,
-          "phone" => $phone,
-          "address" => $address,
-          "city" => $city,
-          "state" => $state,
-          "zip" => $zip
-      ]
-  ], JSON_FORCE_OBJECT);
+    "status" => "error",
+    "errors" => $errors,
+    "old_values" => [
+      "firstname" => $firstname,
+      "lastname" => $lastname,
+      "email" => $email,
+      "phone" => $phone,
+      "address" => $address,
+      "city" => $city,
+      "state" => $state,
+      "zip" => $zip
+    ]
+  ]);
   exit;
 }
 
 // if everything is ok, try to upload file
 if ($uploadOk == 1) {
-  if (move_uploaded_file($_FILES["layout"]["tmp_name"], $target_file)) {
-      // File uploaded successfully
-  } else {
+  if (!move_uploaded_file($_FILES["layout"]["tmp_name"], $target_file)) {
       $errors['layout'] = "Sorry, there was an error uploading your file.";
       echo json_encode(["status" => "error", "errors" => $errors]);
       exit();
@@ -85,9 +85,10 @@ if ($uploadOk == 1) {
   }
 }
 
-$sql = "INSERT INTO hfh.form_entries (firstname, lastname, email, phone, address, city, state, zip, layout) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// INSERT with username
+$sql = "INSERT INTO hfh.form_entries (firstname, lastname, email, phone, address, city, state, zip, layout, username) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssssssss", $firstname, $lastname, $email, $phone, $address, $city, $state, $zip, $layoutName);
+$stmt->bind_param("ssssssssss", $firstname, $lastname, $email, $phone, $address, $city, $state, $zip, $layoutName, $username);
 
 if ($stmt->execute()) {
   $new_id = mysqli_insert_id($conn);
