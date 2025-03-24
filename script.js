@@ -2,6 +2,7 @@ $(document).ready(function () {
     var activeButtonId = null;
     var isBrushActive = false;
     var isSelectMode = false;
+    var selectedIconType = null;
 
     class Icon {
         constructor(iconId, alertType, photoData, notesData, x_pos, y_pos) {
@@ -339,7 +340,8 @@ $(document).ready(function () {
             </div>
         `;
         $("body").append(popupContent);
-        $("#alert-type").val(iconInstance.type || '');
+        $("#alert-type").val(baseType);
+        $("#priority-level").val(priority);
 
         $("#edit-popup").dialog({
             width: 500,
