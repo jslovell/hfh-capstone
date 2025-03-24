@@ -63,7 +63,7 @@
             <div class ="inputparam text-center">
                 <label for="city">City <span class="required">*</span></label>
                 <div class ="box">
-                <input type="text" name="city" id="city" maxlength="32" required placeholder="St. Louis, Peoria, etc.">
+                <input type="text" name="city" id="city" maxlength="32" required placeholder="Des Moines, Peoria, etc.">
                 </div>
             </div>
             <div class ="inputparam text-center">
