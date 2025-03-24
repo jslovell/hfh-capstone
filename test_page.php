@@ -455,7 +455,7 @@ $(document).ready(function() {
             } else if (priorityClass === "high-priority-icon") {
                 iconTypeNumber = "11-high";
             }
-        } else if(parentButtonId == )
+        }
 
         selectedIconType = iconTypeNumber;
         $(this).closest('.popup-menu').removeClass("visible");

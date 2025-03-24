@@ -63,6 +63,19 @@ $(document).ready(function () {
     }
 
     function getIconImageByType(type) {
+
+        if (type && type.includes('-')) {
+            const [baseType, priority] = type.split('-');
+
+            if (priority === 'low') {
+                return 'images/alert-icon.png';
+            } else if (priority === 'medium') {
+                return 'images/alert-moderate-icon.png';
+            } else if (priority === 'high') {
+                return 'images/alert-sever-icon.png';
+            }
+        }
+
         switch (type) {
             case '1':   // Windows
                 return 'images/alert-icon.png';
@@ -341,6 +354,7 @@ $(document).ready(function () {
         `;
         $("body").append(popupContent);
         $("#alert-type").val(baseType);
+        
         $("#priority-level").val(priority);
 
         $("#edit-popup").dialog({
@@ -423,7 +437,7 @@ $(document).ready(function () {
             var x = ((event.clientX - rect.left) / areaWidth) * 100;
             var y = ((event.clientY - rect.top) / areaHeight) * 100;
 
-            const newIcon = new Icon(iconId, null, null, null, x, y);
+            const newIcon = new Icon(iconId, selectedIconType, null, null, x, y);
 
             saveIconData(newIcon);
             placeIcon(newIcon);
