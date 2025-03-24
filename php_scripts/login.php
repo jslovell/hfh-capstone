@@ -1,6 +1,6 @@
-<?php
+<?php require_once 'session.php'; ?>
 
-session_start();
+<?php
 
 require_once "db.php";
 
@@ -29,6 +29,7 @@ if(mysqli_num_rows($result) == 0) {
 
     if($bool){
 	$_SESSION['authenticated'] = true;
+    $_SESSION['username'] = $uname;
 	// include succes.php
   	header('Location: ../catalog.php');
 	exit();

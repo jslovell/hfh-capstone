@@ -1,8 +1,10 @@
+<?php require_once 'session.php'; ?>
+
 <?php
 // NOTE: any other output, INCLUDING ECHO, will break this
 
 // Changed locations to work in php_scripts folder
-session_start();
+
 if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
     header('Location: ../index.php');
     exit();
