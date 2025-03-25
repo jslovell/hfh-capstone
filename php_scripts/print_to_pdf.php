@@ -163,8 +163,8 @@ $pdf->Cell(30,6,"Address:",0,0,'R');
 $pdf->Cell(75,6,$form['address'],0,1,'L');
 $pdf->Cell(30,6,"",0,0,'R');
 $pdf->Cell(75,6,$form['city']." ".$form['state']." ".$form['zip'],0,1,'L');
-$pdf->Cell(30,6,"HfH Rep:",0,0,'R');
-$pdf->Cell(75,6,$form['firstname']." ".$form['lastname'],0,1,'L');
+//$pdf->Cell(30,6,"HfH Rep:",0,0,'R');
+//$pdf->Cell(75,6,$form['firstname']." ".$form['lastname'],0,1,'L');
 $pdf->AddPage();
 
 // Icon Table Header
