@@ -1,7 +1,5 @@
 $(document).ready(function () {
     var activeButtonId = null;
-    var isBrushActive = false;
-    var isSelectMode = false;
 
     class Icon {
         constructor(iconId, alertType, photoData, notesData, x_pos, y_pos) {
@@ -137,9 +135,8 @@ $(document).ready(function () {
         $assessmentArea.append($iconDiv);
 
         $iconDiv.css({
-            position: "absolute",
-            left: x_pos + "%",
-            top: y_pos + "%"
+            left: `${x_pos}%`,
+            top: `${y_pos}%`
         });
 
         console.log(`Icon ${iconId} placed at (${x_pos}%, ${y_pos}%)`);
@@ -296,7 +293,9 @@ $(document).ready(function () {
             return;
         }
 
-        openEditPopup(iconId);
+        if (activeButtonId == "select") {
+            openEditPopup(iconId);
+        }
     });
 
     function openEditPopup(iconId) {
@@ -410,7 +409,7 @@ $(document).ready(function () {
     }
 
     $(document).on("mousedown", ".assessmentArea", function (event) {
-        if (isSelectMode && activeButtonId) {
+        if (activeButtonId == "place") {
             var iconId = "icon-" + Date.now();
 
             var $assessmentArea = $(".assessmentArea");
@@ -432,37 +431,6 @@ $(document).ready(function () {
     function toggleSideNav() {
         $(".side_nav,.nav-overlay").toggleClass("active");
     }
-
-    $(window).on("resize", function () {
-
-        const $assessmentArea = $(".assessmentArea");
-        const $assessmentImg = $("#assessment-img");
-
-        const newWidth = $assessmentImg.width();
-        const newHeight = $assessmentImg.height();
-
-        const icons = JSON.parse(localStorage.getItem('iconData')) || [];
-        $assessmentArea.empty();
-        $assessmentArea.append($assessmentImg);
-
-        icons.forEach(icon => {
-            const adjustedX = (icon.x_pos / 100) * newWidth;
-            const adjustedY = (icon.y_pos / 100) * newHeight;
-
-            let $iconDiv = $(`[iconId="${icon.iconId}"]`);
-            if (!$iconDiv.length) {
-                $iconDiv = $("<div class='box-alert'><div class='alerts-icon'><img></div></div>");
-                $iconDiv.attr("iconId", icon.iconId);
-                $assessmentArea.append($iconDiv);
-            }
-
-            $iconDiv.css({
-                position: "absolute",
-                left: adjustedX + "px",
-                top: adjustedY + "px"
-            });
-        });
-    });
 
     $(".nav_ico").click(function () {
         $(this).toggleClass("active");
@@ -486,37 +454,38 @@ $(document).ready(function () {
         }
     });
 
-    function toggleBrush() {
-        isBrushActive = !isBrushActive;
-        $("body").toggleClass("brush-cursor", isBrushActive);
-    }
-
-    function deactivateIcons() {
-        $("#alert-button").css("background-image", "url('images/alert-button.png')");
-        $("#alert-moderate-button").css("background-image", "url('images/alert-moderate-button.png')");
-        $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
-    }
-
-    function toggleSelectMode() {
-        isSelectMode = !isSelectMode;
-        if (isSelectMode) {
-            $("#select-button").css("background-image", "url('images/select-button-active.png')");
-            toggleBrush();
-        } else {
+    // Updates sidebar button pictures logically based on current active button ID
+    function updateSidebar() {
+        if (activeButtonId == "select") {
+            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
+        } else if (activeButtonId == "place") {
             $("#select-button").css("background-image", "url('images/select-button.png')");
-            deactivateIcons();
-            isBrushActive = false;
+        } else if (activeButtonId == "delete") {
+            $("#select-button").css("background-image", "url('images/select-button.png')");
+            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
+            activeButtonId = null;
         }
     }
 
     $("#select-button").click(function () {
-        toggleSelectMode();
-        activeButtonId = null;
+        if (activeButtonId == "select") {
+            $("#select-button").css("background-image", "url('images/select-button.png')");
+            activeButtonId = null;
+        } else {
+            $("#select-button").css("background-image", "url('images/select-button-active.png')");
+            activeButtonId = "select";
+            updateSidebar(); // Update other buttons
+        }
     });
 
-    $("#alert-severe-button, #alert-moderate-button, #alert-button").on("click", function () {
-        if (isSelectMode) {
-            activeButtonId = $(this).attr("id");
+    $("#alert-severe-button").on("click", function () {
+        if (activeButtonId == "place"){
+            activeButtonId == null;
+            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
+        } else {
+            activeButtonId = "place";
+            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button-active.png')");
+            updateSidebar();    // Update other buttons
         }
     });
 
@@ -524,12 +493,10 @@ $(document).ready(function () {
         let text = "Warning: All icons will be deleted\n";
         if (confirm(text)) {
             $(".box, .box-alert, .box-note").remove();
-            deactivateIcons();
-            isSelectMode = false;
-            isBrushActive = false;
-            $("#select-button").css("background-image", "url('images/select-button.png')");
             deleteAllIconsFromDatabase();
             localStorage.clear();
+            activeButtonId = "delete";
+            updateSidebar();    // Update other buttons
         }
     });
 });
