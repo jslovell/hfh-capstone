@@ -50,8 +50,8 @@ if ($_FILES["layout"]["size"] > 500000) {
 }
 
 // Allow certain file formats
-if(!in_array($imageFileType, ["jpg", "png", "jpeg", "gif"])) {
-  $errors['layout'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed. ";
+if(!in_array($imageFileType, ["jpg", "png", "jpeg"])) {
+  $errors['layout'] = "Sorry, only JPG, JPEG & PNG files are allowed. ";
   $uploadOk = 0;
 }
 

@@ -182,7 +182,7 @@ $(document).ready(function () {
                         localStorage.setItem('iconData', JSON.stringify(icons));
                     }
                 } catch (e) {}
-            }   
+            }
         });
     }
 
@@ -373,21 +373,34 @@ $(document).ready(function () {
             iconInstance.notes = $("#icon-notes").val();
 
             const file = $("#icon-photo")[0].files[0];
+            let isValidFile = true;
 
             if (file) {
                 iconInstance.photoData = file;
+                // Check for correct file types
+                let extension = iconInstance.photoData.name.substring(iconInstance.photoData.name.length - 4);
+                if (extension != ".jpg" && extension != "jpeg" && extension != ".png") {
+                    console.error("Error: Invalid image type: " + extension);
+                    alert("Error: Invalid image type: " + extension);
+                    isValidFile = false;
+                } else {
+                    isValidFile = true;
+                }
             } else {
                 iconInstance.picture = oldFileName;
+                isValidFile = true;
             }
 
-            saveIconData(iconInstance);
+            if (isValidFile) {
+                saveIconData(iconInstance);
 
-            let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
-            $iconDiv.find("img").attr("src", getIconImageByType(iconInstance.type));
-            $("#edit-popup").dialog('close');
-            setTimeout(function() {
-                fetchAndPlaceIcons();
-              }, 300);
+                let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
+                $iconDiv.find("img").attr("src", getIconImageByType(iconInstance.type));
+                $("#edit-popup").dialog('close');
+                setTimeout(function() {
+                    fetchAndPlaceIcons();
+                  }, 300);
+            }
         });
 
         $("#delete-button").on("click", function () {
