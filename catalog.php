@@ -41,7 +41,7 @@
                     <p class="team-member"><?php echo $row['username']; ?></p>
 
                     <h3>Address</h3>
-                    <p class="address"><?php echo $row['address']; ?>, <?php echo $row['city']; ?>, <?php echo $row['state']; ?></p>
+                    <p class="address"><?php echo $row['address'];?>. <?php echo $row['city']; ?>, <?php echo $row['state']; ?></p>
 
                     <h3>Status</h3>
                     <p><?php echo $row['assessmentStatus']; ?></p>

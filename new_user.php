@@ -8,14 +8,41 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/toolStyle.css">
+        <link rel="stylesheet" href="styles/navbar.css">
         <link rel="stylesheet" href="jquery-ui.css">
         <link rel="stylesheet" href="styles/indexStyle.css">
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="jquery-ui.css"></script>
         <script src="script.js"></script>
         <title>Login</title>
-
+        <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     </head>
+    <style>
+        .container
+        {
+            background-color: #bfbfbf;
+            border: 1px solid #bfbfbf;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+        }
+
+        .submitButton{
+            background-color: #09c;
+            color: white;
+            border: none;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 25px;
+            transition: background-color 0.2s, transform 0.1s;
+            height: 35px;
+            text-align: center;
+        }
+        
+    </style>
     <?php include "navbar.php" ?>
 <body>
 
@@ -33,11 +60,7 @@
 	<label for="psw2"><b>Confirm Password</b></label>
 	<input type="password" placeholder="Repeat Password" name="psw2" required>
 
-        <button type="submit" name="submit">Create New User</button>
-
-    </div>
-
-    <div class="container" style="background-color: whitesmoke">
+        <button type="submit" name="submit" class="submitButton">Create New User</button>
 
     </div>
 </form>
