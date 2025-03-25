@@ -8,7 +8,7 @@ $(document).ready(function () {
         constructor(iconId, alertType, photoData, notesData, x_pos, y_pos) {
             this.iconId = iconId;
             this.assignmentID = assignmentID;
-            this.type = alertType;
+            this.type = alertType || null;
             this.photo = photoData;
             this.notes = notesData;
             this.x_pos = x_pos
@@ -63,49 +63,33 @@ $(document).ready(function () {
     }
 
     function getIconImageByType(type) {
-
+        if (!type || type === "null") {
+            return 'images/alert-icon.png'; 
+        }
         if (type && type.includes('-')) {
             const [baseType, priority] = type.split('-');
 
-            if (priority === 'low') {
-                return 'images/alert-icon.png';
-            } else if (priority === 'medium') {
-                return 'images/alert-moderate-icon.png';
-            } else if (priority === 'high') {
-                return 'images/alert-sever-icon.png';
+            let component = "";
+            switch (baseType) {
+                case '1': component = "window"; break;
+                case '2': component = "door"; break;
+                case '5': component = "stairs"; break;
+                case '6': component = "deck"; break;
+                case '7': component = "hvac"; break;
+                case '8': component = "plumbing"; break;
+                case '9': component = "electrical"; break;
+                case '11': component = "tree"; break;
+                default: component = ""; break;
+            }
+            
+            if (component) {
+                return `images/${priority}-priority-${component}-icon.png`;
             }
         }
-
+    
         switch (type) {
-            case '1':   // Windows
-                return 'images/alert-icon.png';
-            case '2':   // Doors
-                return 'images/alert-icon.png';
-            case '3':   // Siding
-                return 'images/alert-icon.png';
-            case '4':   // Porch
-                return 'images/alert-icon.png';
-            case '5':   // Stairs
-                return 'images/alert-moderate-icon.png';
-            case '6':   // Deck
-                return 'images/alert-moderate-icon.png';
-            case '7':   // Mechanical
-                return 'images/alert-moderate-icon.png';
-            case '8':   // Plumbing
-                return 'images/alert-moderate-icon.png';
-            case '9':   // Electrical
-                return 'images/alert-moderate-icon.png';
-            case '10':  // Flatwork
-                return 'images/alert-sever-icon.png';
-            case '11':  // Tree Maintenance
-                return 'images/alert-sever-icon.png';
-            case '12':  // Roofing
-                return 'images/alert-sever-icon.png';
-            case 'other':
-                return 'images/alert-sever-icon.png';
-            default:
-                // If no recognized type, use a default alert icon
-                return 'images/alert-icon.png';
+            case '1': return 'images/alert-icon.png';
+            default: return 'images/alert-icon.png';
         }
     }
 
@@ -428,6 +412,7 @@ $(document).ready(function () {
     $(document).on("mousedown", ".assessmentArea", function (event) {
         if (isSelectMode && activeButtonId) {
             var iconId = "icon-" + Date.now();
+            console.log("Creating icon with type:", selectedIconType);
 
             var $assessmentArea = $(".assessmentArea");
             var rect = $assessmentArea[0].getBoundingClientRect();
