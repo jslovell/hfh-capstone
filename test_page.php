@@ -290,14 +290,16 @@ mysqli_close($conn);
             top: 54%;
             left: 0;
             transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
+            display: grid;
             align-items: center;
             background-color: #f1f1f1;
             border-right: 1px solid #ccc;
             border-radius: 10px;
-            padding: 2px;
+            padding: 6px;
             z-index: 1;
+            grid-template-columns: repeat(2,58px);
+            grid-gap: 5px;
+            width: auto;
         }
 
         .sidebar-button {
@@ -320,17 +322,20 @@ mysqli_close($conn);
 
         @media screen and (max-width: 600px) {
             .sidebar {
-                width: 60px;
+                width: 90px;
             }
             .sidebar button {
                 width: 30px;
                 height: 30px;
             }
+            .popup-menu {
+                left: 90px;
+            }
         }
 
         .popup-menu {
             position: absolute;
-            left: 65px;
+            left: 140px;
             background-color:rgb(255, 255, 255);
             border: 1px solid #ddd;
             border-radius: 8px;
