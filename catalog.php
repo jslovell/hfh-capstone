@@ -16,9 +16,7 @@
         $query = "SELECT * FROM form_entries WHERE $statusCondition";
 
         if (strlen($teamMember) >= 0) {
-            $query .= " AND (CONCAT(firstname, ' ', lastname) LIKE '%$teamMember%'
-                         OR firstname LIKE '%$teamMember%'
-                         OR lastname LIKE '%$teamMember%')";
+            $query .= " AND username LIKE '%$teamMember%'";
         }
 
         if (strlen($address) >=0) {
@@ -40,10 +38,10 @@
                     <p class="assignment-id"><?php echo $row['id']; ?></p>
 
                     <h3>Team Member</h3>
-                    <p class="team-member"><?php echo $row['firstname'] . ' ' . $row['lastname']; ?></p>
+                    <p class="team-member"><?php echo $row['username']; ?></p>
 
                     <h3>Address</h3>
-                    <p class="address"><?php echo $row['address']; ?></p>
+                    <p class="address"><?php echo $row['address']; ?>, <?php echo $row['city']; ?>, <?php echo $row['state']; ?></p>
 
                     <h3>Status</h3>
                     <p><?php echo $row['assessmentStatus']; ?></p>
