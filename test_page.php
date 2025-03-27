@@ -89,19 +89,8 @@ mysqli_close($conn);
         #alert-severe-button {
             background-image: url("images/alert-severe-button.png");
         }
-        #alert-moderate-button {
-            background-image: url("images/alert-moderate-button.png");
-        }
-        #alert-button {
-            background-image: url("images/alert-button.png");
-        }
-        #photo-button {
-            background-image: url("images/picture-button.png");
-        }
-        #note-button {
-            background-image: url("images/note-button.png");
-        }
-        #clearButton, #select-button, #photo-button, #alert-moderate-button, #alert-severe-button, #alert-button, #removal-button, #note-button {
+
+        #clearButton, #select-button, #alert-severe-button {
             background-repeat: no-repeat;
             background-size: contain;
             width: 58px;
@@ -113,20 +102,8 @@ mysqli_close($conn);
         .alert-severe-icon {
             background-image: url("images/alert-sever-icon.png");
         }
-        .alert-moderate-icon {
-            background-image: url("images/alert-moderate-icon.png");
-        }
-        .alert-icon {
-            background-image: url("images/alert-icon.png");
-        }
-        .picture-icon {
-            background-image: url("images/picture-icon.png");
-        }
-        .note-icon {
-            background-image: url("images/note-icon.png");
-        }
 
-        .alert-icon, .alert-moderate-icon, .alert-severe-icon, .note-icon, .picture-icon {
+        .alert-severe-icon {
             position: relative;
             cursor: pointer;
             background-repeat: no-repeat;
@@ -136,11 +113,7 @@ mysqli_close($conn);
             height: 32px;
             pointer-events: auto;
         }
-        
-        #removal-button {
-            background-image: url("images/removal-button.png");
 
-        }
         .picture{
             display:none;
             width:30%;
@@ -151,6 +124,7 @@ mysqli_close($conn);
             position: absolute;
             width: 32px;
             height: 32px;
+            transform: translate(-50%, -50%);
         }
 
 
@@ -223,14 +197,14 @@ mysqli_close($conn);
         .formInfo{
             color: black;
         }
-        
+
         .info-container {
             display: flex;
             justify-content: center;
-            align-items: center;  
+            align-items: center;
             margin-bottom: 20px;
-            flex-wrap: nowrap;  
-            width: 100%;    
+            flex-wrap: nowrap;
+            width: 100%;
             gap: 50px;
         }
 
@@ -274,12 +248,12 @@ mysqli_close($conn);
         <h2 class="assessmentInfo">Assessment ID:
             <span class="formInfo">
                 <?php echo htmlspecialchars($id); ?>
-            </span> 
+            </span>
         </h2>
         <h2 class="assessmentInfo">Homeowner:
             <span class="formInfo">
                 <?php echo htmlspecialchars($name); ?>
-            </span> 
+            </span>
         </h2>
         <h2 class="assessmentInfo">Address:
             <span class="formInfo">
@@ -305,11 +279,12 @@ mysqli_close($conn);
         <div class="assessmentArea">
             <style>
                 .assessmentArea {
-                position: relative;  /* Required to contain absolute children */
-                width: 100%;         /* Adjust to your layout */
-                height: 100%;        /* Adjust to your layout */
-                overflow: hidden;    /* Ensures icons do not overflow */
-                }   
+                    position: relative;  /* Required to contain absolute children */
+                    display: inline-block;
+                    width: 100%;         /* Adjust to your layout */
+                    height: 100%;        /* Adjust to your layout */
+                    overflow: hidden;    /* Ensures icons do not overflow */
+                }
             </style>
             <img src="<?php echo $layout_path; ?>" alt="Home Layout" id="testBlueprint" style="width: 800px; height: 800px">
             <style>
@@ -328,10 +303,6 @@ mysqli_close($conn);
     <button id="clearButton"></button>
     <button id="select-button"></button>
     <button id="alert-severe-button"></button>
-    <button id="alert-moderate-button"></button>
-    <button id="alert-button"></button>
-    <button id="photo-button"></button>
-    <button id="note-button"></button>
 </div>
 
 <!-- Pass Icons Data to JavaScript -->
