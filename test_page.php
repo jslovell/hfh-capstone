@@ -37,6 +37,7 @@ mysqli_close($conn);
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="stylesheet" href="./styles/toolStyle.css">
     <link rel="stylesheet" href="./styles/tabToolStyle.css">
+    <link rel="stylesheet" href="./styles/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="jquery-ui.js"></script>
     <script>
@@ -54,8 +55,32 @@ mysqli_close($conn);
         #alert-severe-button {
             background-image: url("images/alert-severe-button.png");
         }
+        #electrical-button {
+            background-image: url("images/electrical.png");
+        }
+        #plumbing-button {
+            background-image: url("images/plumbing.png");
+        }
+        #hvac-button {
+            background-image: url("images/HVAC.png");
+        }
+        #door-button {
+            background-image: url("images/door.png");
+        }
+        #stairs-button {
+            background-image: url("images/stairs-button.png");
+        }
+        #window-button {
+            background-image: url("images/window.png");
+        }
+        #tree-button {
+            background-image: url("images/tree.png");
+        }
+        #deck-button {
+            background-image: url("images/deck.jpg");
+        }
         
-        #clearButton, #select-button, #alert-severe-button {
+        #clearButton, #select-button,#deck-button,#tree-button,#window-button,#stairs-button,#door-button,#hvac-button,#plumbing-button, #alert-severe-button,#electrical-button {
             background-repeat: no-repeat;
             background-size: contain;
             width: 58px;
@@ -67,8 +92,94 @@ mysqli_close($conn);
         .alert-severe-icon {
             background-image: url("images/alert-sever-icon.png");
         }
+        .low-priority-stairs-icon{
+            background-image: url("images/low-priority-stairs-icon.png");
+        }
+        .medium-priority-stairs-icon{
+            background-image: url("images/medium-priority-stairs-icon.png");
+        }
+        .high-priority-stairs-icon{
+            background-image: url("images/high-priority-stairs-icon.png");
+        }
+
+        .low-priority-electrical-icon{
+            background-image: url("images/low-priority-electrical-icon.png");
+        }
+        .medium-priority-electrical-icon{
+            background-image: url("images/medium-priority-electrical-icon.png");
+        }
+        .high-priority-electrical-icon{
+            background-image: url("images/high-priority-electrical-icon.png");
+        }
+
+        .low-priority-plumbing-icon{
+            background-image: url("images/low-priority-plumbing-icon.png");
+        }
+        .medium-priority-plumbing-icon{
+            background-image: url("images/medium-priority-plumbing-icon.png");
+        }
+        .high-priority-plumbing-icon{
+            background-image: url("images/high-priority-plumbing-icon.png");
+        }
+
+        .low-priority-hvac-icon{
+            background-image: url("images/low-priority-hvac-icon.png");
+        }
+        .medium-priority-hvac-icon{
+            background-image: url("images/medium-priority-hvac-icon.png");
+        }
+        .high-priority-hvac-icon{
+            background-image: url("images/high-priority-hvac-icon.png");
+        }
+
+        .low-priority-door-icon{
+            background-image: url("images/low-priority-door-icon.png");
+        }
+        .medium-priority-door-icon{
+            background-image: url("images/medium-priority-door-icon.png");
+        }
+        .high-priority-door-icon{
+            background-image: url("images/high-priority-door-icon.png");
+        }
+
+        .low-priority-window-icon{
+            background-image: url("images/low-priority-window-icon.png");
+        }
+        .medium-priority-window-icon{
+            background-image: url("images/medium-priority-window-icon.png");
+        }
+        .high-priority-window-icon{
+            background-image: url("images/high-priority-window-icon.png");
+        }
+
+        .low-priority-tree-icon{
+            background-image: url("images/low-priority-tree-icon.png");
+        }
+        .medium-priority-tree-icon{
+            background-image: url("images/medium-priority-tree-icon.png");
+        }
+        .high-priority-tree-icon{
+            background-image: url("images/high-priority-tree-icon.png");
+        }
+
+        .low-priority-deck-icon{
+            background-image: url("images/low-priority-deck-icon.png");
+        }
+        .medium-priority-deck-icon{
+            background-image: url("images/medium-priority-deck-icon.png");
+        }
+        .high-priority-deck-icon{
+            background-image: url("images/high-priority-deck-icon.png");
+        }
         
-        .alert-severe-icon {
+        
+        .high-priority-electrical-icon, .medium-priority-electrical-icon, .low-priority-electrical-icon, .alert-severe-icon, .low-priority-deck-icon, .medium-priority-deck-icon, .high-priority-deck-icon, 
+        .low-priority-tree-icon, .medium-priority-tree-icon, .high-priority-tree-icon, 
+        .low-priority-window-icon, .medium-priority-window-icon, .high-priority-window-icon, 
+        .low-priority-plumbing-icon, .medium-priority-plumbing-icon, .high-priority-plumbing-icon, 
+        .low-priority-hvac-icon, .medium-priority-hvac-icon, .high-priority-hvac-icon, 
+        .low-priority-door-icon, .medium-priority-door-icon, .high-priority-door-icon, 
+        .low-priority-stairs-icon, .medium-priority-stairs-icon, .high-priority-stairs-icon {
             position: relative;
             cursor: pointer;
             background-repeat: no-repeat;
@@ -109,7 +220,8 @@ mysqli_close($conn);
             left: 0;
             transform: translateY(-50%);
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            width: 120px;
             align-items: center;
             background-color: #f1f1f1;
             border-right: 1px solid #ccc;
@@ -144,6 +256,49 @@ mysqli_close($conn);
                 width: 30px;
                 height: 30px;
             }
+        }
+
+        .popup-menu {
+            position: absolute;
+            left: 140px;
+            background-color:rgb(255, 255, 255);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s;
+            z-index: 1000;
+        }
+        
+        .popup-menu.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-icon {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .popup-menu::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent #ddd transparent transparent;
+        }
+
+        .popup-menu .popup-icon {
+            pointer-events: auto;
         }
         
     </style>
@@ -188,7 +343,173 @@ mysqli_close($conn);
     <button id="clearButton"></button>
     <button id="select-button"></button>
     <button id="alert-severe-button"></button>
+    <button id="electrical-button" class="sidebar-icon">
+        <div class="popup-menu" id="electrical-popup">
+            <div class="popup-icon low-priority-electrical-icon"></div>
+            <div class="popup-icon medium-priority-electrical-icon"></div>
+            <div class="popup-icon high-priority-electrical-icon"></div>
+        </div>
+    </button>
+    <button id="plumbing-button" class="sidebar-icon">
+        <div class="popup-menu" id="plumbing-popup">
+            <div class="popup-icon low-priority-plumbing-icon"></div>
+            <div class="popup-icon medium-priority-plumbing-icon"></div>
+            <div class="popup-icon high-priority-plumbing-icon"></div>
+        </div>
+    </button>
+    <button id="hvac-button" class="sidebar-icon">
+        <div class="popup-menu" id="hvac-popup">
+            <div class="popup-icon low-priority-hvac-icon"></div>
+            <div class="popup-icon medium-priority-hvac-icon"></div>
+            <div class="popup-icon high-priority-hvac-icon"></div>
+        </div>
+    </button>
+    <button id="door-button" class="sidebar-icon">
+        <div class="popup-menu" id="door-popup">
+            <div class="popup-icon low-priority-door-icon"></div>
+            <div class="popup-icon medium-priority-door-icon"></div>
+            <div class="popup-icon high-priority-door-icon"></div>
+        </div>
+    </button>
+    <button id="stairs-button" class="sidebar-icon">
+        <div class="popup-menu" id="stairs-popup">
+            <div class="popup-icon low-priority-stairs-icon"></div>
+            <div class="popup-icon medium-priority-stairs-icon"></div>
+            <div class="popup-icon high-priority-stairs-icon"></div>
+        </div>
+    </button>
+    <button id="window-button" class="sidebar-icon">
+        <div class="popup-menu" id="window-popup">
+            <div class="popup-icon low-priority-window-icon"></div>
+            <div class="popup-icon medium-priority-window-icon"></div>
+            <div class="popup-icon high-priority-window-icon"></div>
+        </div>
+    </button>
+    <button id="deck-button" class="sidebar-icon">
+        <div class="popup-menu" id="deck-popup">
+            <div class="popup-icon low-priority-deck-icon"></div>
+            <div class="popup-icon medium-priority-deck-icon"></div>
+            <div class="popup-icon high-priority-deck-icon"></div>
+        </div>
+    </button>
+    <button id="tree-button" class="sidebar-icon">
+        <div class="popup-menu" id="tree-popup">
+            <div class="popup-icon low-priority-tree-icon"></div>
+            <div class="popup-icon medium-priority-tree-icon"></div>
+            <div class="popup-icon high-priority-tree-icon"></div>
+        </div>
+    </button>
 </div>
+
+<script>
+$(document).ready(function() {
+
+    $(".sidebar-icon").on("click", function(e) {
+
+        const popup = $(this).find('.popup-menu');
+        
+        if (!popup.length) return;
+
+        $(".popup-menu.visible").not(popup).removeClass("visible");
+
+        popup.toggleClass("visible");
+
+        const $button = $(this);
+        const buttonPosition = $button.position();
+        popup.css("top", buttonPosition.top + "px");
+
+        e.stopPropagation();
+    });
+
+    $(document).on("click", function(e) {
+        if (!$(e.target).closest('.popup-menu, .sidebar-icon').length) {
+            $(".popup-menu.visible").removeClass("visible");
+        }
+    });
+
+    $(".popup-icon").on("click", function(e) {
+        const priorityClass = $(this).attr("class").split(" ")[1]; 
+        const parentButtonId = $(this).closest('.sidebar-icon').attr('id');
+        activeButtonId = parentButtonId;
+
+        let iconTypeNumber;
+
+        console.log(`Clicked ${priorityClass} in ${parentButtonId}`);
+        
+        if (parentButtonId === "electrical-button") {
+        if (priorityClass === "low-priority-electrical-icon") {
+            iconTypeNumber = "9-low";
+        } else if (priorityClass === "medium-priority-electrical-icon") {
+            iconTypeNumber = "9-medium";
+        } else if (priorityClass === "high-priority-electrical-icon") {
+            iconTypeNumber = "9-high";
+        }
+        } else if (parentButtonId === "plumbing-button") {
+            if (priorityClass === "low-priority-plumbing-icon") {
+                iconTypeNumber = "8-low";
+            } else if (priorityClass === "medium-priority-plumbing-icon") {
+                iconTypeNumber = "8-medium";
+            } else if (priorityClass === "high-priority-plumbing-icon") {
+                iconTypeNumber = "8-high";
+            }
+        } else if (parentButtonId === "hvac-button") {
+            if (priorityClass === "low-priority-hvac-icon") {
+                iconTypeNumber = "7-low";
+            } else if (priorityClass === "medium-priority-hvac-icon") {
+                iconTypeNumber = "7-medium";
+            } else if (priorityClass === "high-priority-hvac-icon") {
+                iconTypeNumber = "7-high";
+            }
+        } else if (parentButtonId === "door-button") {
+            if (priorityClass === "low-priority-door-icon") {
+                iconTypeNumber = "2-low";
+            } else if (priorityClass === "medium-priority-door-icon") {
+                iconTypeNumber = "2-medium";
+            } else if (priorityClass === "high-priority-door-icon") {
+                iconTypeNumber = "2-high";
+            }
+        } else if (parentButtonId === "stairs-button") {
+            if (priorityClass === "low-priority-stairs-icon") {
+                iconTypeNumber = "5-low";
+            } else if (priorityClass === "medium-priority-stairs-icon") {
+                iconTypeNumber = "5-medium";
+            } else if (priorityClass === "high-priority-stairs-icon") {
+                iconTypeNumber = "5-high";
+            }
+        } else if (parentButtonId === "window-button") {
+            if (priorityClass === "low-priority-window-icon") {
+                iconTypeNumber = "1-low";
+            } else if (priorityClass === "medium-priority-window-icon") {
+                iconTypeNumber = "1-medium";
+            } else if (priorityClass === "high-priority-window-icon") {
+                iconTypeNumber = "1-high";
+            }
+        } else if (parentButtonId === "deck-button") {
+            if (priorityClass === "low-priority-deck-icon") {
+                iconTypeNumber = "6-low";
+            } else if (priorityClass === "medium-priority-deck-icon") {
+                iconTypeNumber = "6-medium";
+            } else if (priorityClass === "high-priority-deck-icon") {
+                iconTypeNumber = "6-high";
+            }
+        } else if (parentButtonId === "tree-button") {
+            if (priorityClass === "low-priority-tree-icon") {
+                iconTypeNumber = "11-low";
+            } else if (priorityClass === "medium-priority-tree-icon") {
+                iconTypeNumber = "11-medium";
+            } else if (priorityClass === "high-priority-tree-icon") {
+                iconTypeNumber = "11-high";
+            }
+        }
+
+        selectedIconType = iconTypeNumber;
+        console.log("Set selectedIconType to:", selectedIconType);
+
+        $(this).closest('.popup-menu').removeClass("visible");
+        e.stopPropagation();
+    });
+});
+</script>
 
 <!-- Pass Icons Data to JavaScript -->
 <script>
