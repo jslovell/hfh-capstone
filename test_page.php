@@ -427,86 +427,26 @@ $(document).ready(function() {
         }
     });
 
-    $(".popup-icon").on("click", function(e) {
-        const priorityClass = $(this).attr("class").split(" ")[1]; 
-        const parentButtonId = $(this).closest('.sidebar-icon').attr('id');
-        activeButtonId = parentButtonId;
-
-        let iconTypeNumber;
-
-        console.log(`Clicked ${priorityClass} in ${parentButtonId}`);
+    $(".popup-icon").on("click", function() {
+        const popupId = $(this).closest(".popup-menu").attr("id");
+        activeCategory = popupId.replace("-popup", "");
         
-        if (parentButtonId === "electrical-button") {
-        if (priorityClass === "low-priority-electrical-icon") {
-            iconTypeNumber = "9-low";
-        } else if (priorityClass === "medium-priority-electrical-icon") {
-            iconTypeNumber = "9-medium";
-        } else if (priorityClass === "high-priority-electrical-icon") {
-            iconTypeNumber = "9-high";
+        if ($(this).hasClass("low-priority-" + activeCategory + "-icon")) {
+            activePriority = "low";
+        } else if ($(this).hasClass("medium-priority-" + activeCategory + "-icon")) {
+            activePriority = "medium";
+        } else if ($(this).hasClass("high-priority-" + activeCategory + "-icon")) {
+            activePriority = "high";
         }
-        } else if (parentButtonId === "plumbing-button") {
-            if (priorityClass === "low-priority-plumbing-icon") {
-                iconTypeNumber = "8-low";
-            } else if (priorityClass === "medium-priority-plumbing-icon") {
-                iconTypeNumber = "8-medium";
-            } else if (priorityClass === "high-priority-plumbing-icon") {
-                iconTypeNumber = "8-high";
-            }
-        } else if (parentButtonId === "hvac-button") {
-            if (priorityClass === "low-priority-hvac-icon") {
-                iconTypeNumber = "7-low";
-            } else if (priorityClass === "medium-priority-hvac-icon") {
-                iconTypeNumber = "7-medium";
-            } else if (priorityClass === "high-priority-hvac-icon") {
-                iconTypeNumber = "7-high";
-            }
-        } else if (parentButtonId === "door-button") {
-            if (priorityClass === "low-priority-door-icon") {
-                iconTypeNumber = "2-low";
-            } else if (priorityClass === "medium-priority-door-icon") {
-                iconTypeNumber = "2-medium";
-            } else if (priorityClass === "high-priority-door-icon") {
-                iconTypeNumber = "2-high";
-            }
-        } else if (parentButtonId === "stairs-button") {
-            if (priorityClass === "low-priority-stairs-icon") {
-                iconTypeNumber = "5-low";
-            } else if (priorityClass === "medium-priority-stairs-icon") {
-                iconTypeNumber = "5-medium";
-            } else if (priorityClass === "high-priority-stairs-icon") {
-                iconTypeNumber = "5-high";
-            }
-        } else if (parentButtonId === "window-button") {
-            if (priorityClass === "low-priority-window-icon") {
-                iconTypeNumber = "1-low";
-            } else if (priorityClass === "medium-priority-window-icon") {
-                iconTypeNumber = "1-medium";
-            } else if (priorityClass === "high-priority-window-icon") {
-                iconTypeNumber = "1-high";
-            }
-        } else if (parentButtonId === "deck-button") {
-            if (priorityClass === "low-priority-deck-icon") {
-                iconTypeNumber = "6-low";
-            } else if (priorityClass === "medium-priority-deck-icon") {
-                iconTypeNumber = "6-medium";
-            } else if (priorityClass === "high-priority-deck-icon") {
-                iconTypeNumber = "6-high";
-            }
-        } else if (parentButtonId === "tree-button") {
-            if (priorityClass === "low-priority-tree-icon") {
-                iconTypeNumber = "11-low";
-            } else if (priorityClass === "medium-priority-tree-icon") {
-                iconTypeNumber = "11-medium";
-            } else if (priorityClass === "high-priority-tree-icon") {
-                iconTypeNumber = "11-high";
-            }
-        }
-
-        selectedIconType = iconTypeNumber;
-        console.log("Set selectedIconType to:", selectedIconType);
-
-        $(this).closest('.popup-menu').removeClass("visible");
-        e.stopPropagation();
+        
+        activeButtonId = "place";
+        
+        $(".sidebar-icon").removeClass("active");
+        $("#" + activeCategory + "-button").addClass("active");
+        
+        $(".popup-menu").removeClass("visible");
+        
+        console.log(`Ready to place ${activePriority} priority ${activeCategory} icon`);
     });
 });
 </script>

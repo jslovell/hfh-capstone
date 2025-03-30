@@ -6,7 +6,8 @@
 #login-button {
 	background: #0099CC;
 	color: white;
-	height: 30px;
+	height: 45px;
+	padding: 0 10px;
 }
 
 form {

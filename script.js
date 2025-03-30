@@ -1,15 +1,19 @@
 $(document).ready(function () {
     var activeButtonId = null;
+    var activeCategory = null; 
+    var activePriority = null;
 
     class Icon {
-        constructor(iconId, alertType, photoData, notesData, x_pos, y_pos) {
+        constructor(iconId, category, priority, type, photoData, notesData, x_pos, y_pos) {
             this.iconId = iconId;
             this.assignmentID = assignmentID;
-            this.type = alertType;
+            this.category = category;
+            this.priority = priority;
+            this.type = type;
             this.photo = photoData;
             this.notes = notesData;
-            this.x_pos = x_pos
-            this.y_pos = y_pos
+            this.x_pos = x_pos;
+            this.y_pos = y_pos;
         }
     }
 
@@ -31,22 +35,20 @@ $(document).ready(function () {
                 console.log("Raw Response:", xhr.responseText);
 
                 try {
-                    response = JSON.parse(xhr.responseText);
+                    const parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    
+                    if (parsedResponse.success && parsedResponse.data && parsedResponse.data.length > 0) {
+                        console.log("Icons data received:", parsedResponse.data);
+                        localStorage.setItem('iconData', JSON.stringify(parsedResponse.data));
+                        parsedResponse.data.forEach(icon => {
+                            placeIcon(icon);
+                        });
+                    } else {
+                        console.warn("No icons found or error loading icons:", 
+                            parsedResponse.error || "Invalid response format");
+                    }
                 } catch (e) {
-                    console.error("Error parsing JSON:", e);
-                    return;
-                }
-
-                if (response.success && response.data.length > 0) {
-                    console.log("Icons data received:", response.data);
-
-                    localStorage.setItem('iconData', JSON.stringify(response.data));
-
-                    response.data.forEach(icon => {
-                        placeIcon(icon);
-                    });
-                } else {
-                    console.warn("No icons found or error loading icons:", response.error || "Invalid response format");
+                    console.error("Error processing response:", e);
                 }
             },
             error: function (xhr, status, error) {
@@ -94,52 +96,78 @@ $(document).ready(function () {
     }
 
     // Ensure icons load on page load
-    $(document).ready(function () {
-        setTimeout(function () {
-            console.log("Checking assignmentID before fetching icons:", assignmentID);
+    setTimeout(function () {
+        console.log("Checking assignmentID before fetching icons:", assignmentID);
 
-            if (typeof assignmentID !== "undefined" && assignmentID !== null) {
-                console.log("Fetching icons for assignmentID:", assignmentID);
-                fetchAndPlaceIcons();
-            } else {
-                console.error("assignmentID is not defined or is null!");
-            }
-        }, 10);
-    });
+        if (typeof assignmentID !== "undefined" && assignmentID !== null) {
+            console.log("Fetching icons for assignmentID:", assignmentID);
+            fetchAndPlaceIcons();
+        } else {
+            console.error("assignmentID is not defined or is null!");
+        }
+    }, 100);
 
     function placeIcon(icon) {
         console.log("Placing icon:", icon);
-
-        const { iconId, type, x_pos, y_pos } = icon;
-
+    
+        const { iconId, category, priority, x_pos, y_pos } = icon;
+        
         if (!iconId) {
             console.error("Error: Attempted to place an icon without an iconId!");
             return;
         }
-
-        let $iconDiv = $("<div class='box-alert'><div class='alerts-icon'><img></div></div>");
-        $iconDiv.attr("iconId", iconId); // Ensure iconId is set
-
-        const $img = $iconDiv.find("img");
-        const iconSrc = getIconImageByType(type);
-        $img.attr("src", iconSrc);
+        
+        let $iconDiv = $("<div class='box'></div>");
+        $iconDiv.attr("iconId", iconId);
+        
+        let iconClass;
+        
+        if (category === "alert-severe") {
+            iconClass = "alert-severe-icon";
+        } else if (category && priority) {
+            iconClass = `${priority}-priority-${category}-icon`;
+        } else if (icon.type) {
+            const iconSrc = getIconImageByType(icon.type);
+            let $innerDiv = $("<div class='alerts-icon'></div>");
+            let $img = $("<img>").attr("src", iconSrc);
+            $innerDiv.append($img);
+            $iconDiv.append($innerDiv);
+            $iconDiv.data("iconInstance", icon);
+            
+            var $assessmentArea = $(".assessmentArea");
+            $assessmentArea.append($iconDiv);
+            
+            $iconDiv.css({
+                left: `${x_pos}%`,
+                top: `${y_pos}%`
+            });
+            
+            console.log(`Legacy icon ${iconId} placed at (${x_pos}%, ${y_pos}%)`);
+            return;
+        } else {
+            console.error("Error: Icon has no valid category/priority or type.");
+            return;
+        }
+        
+        let $innerDiv = $("<div></div>").addClass(iconClass);
+        $iconDiv.append($innerDiv);
+        
         $iconDiv.data("iconInstance", icon);
-
+        
         var $assessmentArea = $(".assessmentArea");
         if ($assessmentArea.length === 0) {
             console.error("Error: .assessmentArea not found!");
             return;
         }
-
-        console.log("Appending icon:", iconId, "to", $assessmentArea);
+        
         $assessmentArea.append($iconDiv);
-
+        
         $iconDiv.css({
             left: `${x_pos}%`,
             top: `${y_pos}%`
         });
-
-        console.log(`Icon ${iconId} placed at (${x_pos}%, ${y_pos}%)`);
+        
+        console.log(`Icon ${iconId} (${priority} ${category}) placed at (${x_pos}%, ${y_pos}%)`);
     }
 
     function saveIconToDatabase(icon) {
@@ -147,21 +175,23 @@ $(document).ready(function () {
             console.error('Error: Missing icon ID when saving:', icon);
             return;
         }
-
+    
         const formData = new FormData();
         formData.append("iconId", icon.iconId);
         formData.append("assignmentID", assignmentID);
-        formData.append("type", icon.type);
+        formData.append("category", icon.category || "");
+        formData.append("priority", icon.priority || "");
+        formData.append("type", icon.type || "");
         formData.append("notes", icon.notes || "");
         formData.append("x_pos", icon.x_pos);
         formData.append("y_pos", icon.y_pos);
-
+    
         if (icon.photoData) {
             formData.append("photo", icon.photoData);
         }
-
-        console.log("Sending icon data to save:", Object.fromEntries(formData.entries()));
-
+    
+        console.log("Sending icon data to save:", formData);
+    
         $.ajax({
             url: './php_scripts/save_icon.php',
             method: 'POST',
@@ -170,7 +200,7 @@ $(document).ready(function () {
             contentType: false,
             success: function (response) {
                 try {
-                    let r = JSON.parse(response);
+                    let r = typeof response === 'string' ? JSON.parse(response) : response;
                     if (r.success && r.fileName) {
                         icon.picture = r.fileName;
                         let icons = JSON.parse(localStorage.getItem('iconData')) || [];
@@ -178,7 +208,12 @@ $(document).ready(function () {
                         if (i > -1) icons[i].picture = r.fileName;
                         localStorage.setItem('iconData', JSON.stringify(icons));
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.error("Error processing save response:", e);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error saving icon:", error);
             }
         });
     }
@@ -198,7 +233,7 @@ $(document).ready(function () {
             icons.push(icon);
         }
         localStorage.setItem('iconData', JSON.stringify(icons));
-        console.log("LocalStorage updated:",icons);
+        console.log("LocalStorage updated:", icons);
 
         saveIconToDatabase(icon);
     }
@@ -236,25 +271,22 @@ $(document).ready(function () {
                 console.log("Delete response:", response);
 
                 try {
-                    response = JSON.parse(response);
+                    let parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    
+                    if (parsedResponse.success) {
+                        console.log(`Successfully deleted icon ${iconId} from the database.`);
+
+                        let icons = JSON.parse(localStorage.getItem('iconData')) || [];
+                        icons = icons.filter(icon => icon.iconId !== iconId);
+                        localStorage.setItem('iconData', JSON.stringify(icons));
+
+                        $(`[iconId="${iconId}"]`).remove();
+                        console.log(`Icon ${iconId} removed from screen.`);
+                    } else {
+                        console.error(`Error deleting icon ${iconId}:`, parsedResponse.error);
+                    }
                 } catch (e) {
                     console.error("Error parsing JSON response from delete:", e);
-                    return;
-                }
-
-                if (response.success) {
-                    console.log(`Successfully deleted icon ${iconId} from the database.`);
-
-                    // Remove from localStorage
-                    let icons = JSON.parse(localStorage.getItem('iconData')) || [];
-                    icons = icons.filter(icon => icon.iconId !== iconId);
-                    localStorage.setItem('iconData', JSON.stringify(icons));
-
-                    // Remove from the DOM
-                    $(`[iconId="${iconId}"]`).remove();
-                    console.log(`Icon ${iconId} removed from screen.`);
-                } else {
-                    console.error(`Error deleting icon ${iconId}:`, response.error);
                 }
             },
             error: function (xhr, status, error) {
@@ -263,7 +295,6 @@ $(document).ready(function () {
         });
     }
 
-    // Currently unused, to be used for trash can icon in future sidebar
     function deleteAllIconsFromDatabase() {
         $.ajax({
             url: './php_scripts/delete_all_icons.php',
@@ -271,10 +302,12 @@ $(document).ready(function () {
             data: JSON.stringify({ assignmentID }),
             contentType: 'application/json',
             success: function (response) {
-                if (response.success) {
-                    console.log('All icons deleted successfully:', response.message);
+                let parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                
+                if (parsedResponse.success) {
+                    console.log('All icons deleted successfully:', parsedResponse.message);
                 } else {
-                    console.error('Error deleting all icons:', response.error);
+                    console.error('Error deleting all icons:', parsedResponse.error);
                 }
             },
             error: function (xhr, status, error) {
@@ -285,7 +318,7 @@ $(document).ready(function () {
 
     $(document).on("click", ".alerts-icon", function (e) {
         e.preventDefault();
-        var $iconDiv = $(this).closest('.box-alert');
+        var $iconDiv = $(this).closest('.box');
         var iconId = $iconDiv.attr("iconId");
 
         if (!iconId) {
@@ -408,22 +441,36 @@ $(document).ready(function () {
         });
     }
 
+    // Fixed mousedown event handler for assessment area
     $(document).on("mousedown", ".assessmentArea", function (event) {
-        if (activeButtonId == "place") {
+        if (activeButtonId === "place" && activeCategory && activePriority) {
+            console.log(`Creating new ${activePriority} priority ${activeCategory} icon`);
+            
             var iconId = "icon-" + Date.now();
-
             var $assessmentArea = $(".assessmentArea");
             var rect = $assessmentArea[0].getBoundingClientRect();
             var areaWidth = rect.width;
             var areaHeight = rect.height;
-
+            
             var x = ((event.clientX - rect.left) / areaWidth) * 100;
             var y = ((event.clientY - rect.top) / areaHeight) * 100;
-
-            const newIcon = new Icon(iconId, null, null, null, x, y);
-
+            
+            // Create new icon with correct parameters
+            const newIcon = {
+                iconId: iconId,
+                assignmentID: assignmentID,
+                category: activeCategory,
+                priority: activePriority,
+                type: null,
+                photo: null,
+                notes: "",
+                x_pos: x,
+                y_pos: y
+            };
+            
             saveIconData(newIcon);
             placeIcon(newIcon);
+            console.log(`Placed ${activePriority} priority ${activeCategory} icon at (${x}%, ${y}%)`);
         }
     });
 
@@ -454,13 +501,12 @@ $(document).ready(function () {
         }
     });
 
-    // Updates sidebar button pictures logically based on current active button ID
     function updateSidebar() {
-        if (activeButtonId == "select") {
+        if (activeButtonId === "select") {
             $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
-        } else if (activeButtonId == "place") {
+        } else if (activeButtonId === "place") {
             $("#select-button").css("background-image", "url('images/select-button.png')");
-        } else if (activeButtonId == "delete") {
+        } else if (activeButtonId === "delete") {
             $("#select-button").css("background-image", "url('images/select-button.png')");
             $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
             activeButtonId = null;
@@ -468,7 +514,7 @@ $(document).ready(function () {
     }
 
     $("#select-button").click(function () {
-        if (activeButtonId == "select") {
+        if (activeButtonId === "select") {
             $("#select-button").css("background-image", "url('images/select-button.png')");
             activeButtonId = null;
         } else {
@@ -479,11 +525,13 @@ $(document).ready(function () {
     });
 
     $("#alert-severe-button").on("click", function () {
-        if (activeButtonId == "place"){
-            activeButtonId == null;
+        if (activeButtonId === "place") {
+            activeButtonId = null;  // Fixed syntax error (was using == instead of =)
             $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
         } else {
             activeButtonId = "place";
+            activeCategory = "alert-severe";
+            activePriority = "high";
             $("#alert-severe-button").css("background-image", "url('images/alert-severe-button-active.png')");
             updateSidebar();    // Update other buttons
         }
@@ -498,5 +546,27 @@ $(document).ready(function () {
             activeButtonId = "delete";
             updateSidebar();    // Update other buttons
         }
+    });
+
+    $(".popup-icon").on("click", function() {
+        const popupId = $(this).closest(".popup-menu").attr("id");
+        activeCategory = popupId.replace("-popup", "");
+        
+        if ($(this).hasClass("low-priority-" + activeCategory + "-icon")) {
+            activePriority = "low";
+        } else if ($(this).hasClass("medium-priority-" + activeCategory + "-icon")) {
+            activePriority = "medium";
+        } else if ($(this).hasClass("high-priority-" + activeCategory + "-icon")) {
+            activePriority = "high";
+        }
+        
+        activeButtonId = "place";
+        
+        $(".sidebar-icon").removeClass("active");
+        $("#" + activeCategory + "-button").addClass("active");
+        
+        $(".popup-menu").removeClass("visible");
+        
+        console.log(`Ready to place ${activePriority} priority ${activeCategory} icon`);
     });
 });
