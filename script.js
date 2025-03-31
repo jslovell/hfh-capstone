@@ -316,17 +316,15 @@ $(document).ready(function () {
         });
     }
 
-    $(document).on("click", ".alerts-icon", function (e) {
-        e.preventDefault();
-        var $iconDiv = $(this).closest('.box');
-        var iconId = $iconDiv.attr("iconId");
-
-        if (!iconId) {
-            console.error("Error: Clicked an icon but it has no valid iconId.");
-            return;
-        }
-
-        if (activeButtonId == "select") {
+    $(document).on("click", ".box", function (e) {
+        if (activeButtonId === "select") {
+            var iconId = $(this).attr("iconId");
+            
+            if (!iconId) {
+                console.error("Error: Clicked an icon but it has no valid iconId.");
+                return;
+            }
+        
             openEditPopup(iconId);
         }
     });
