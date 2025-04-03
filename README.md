@@ -1,4 +1,4 @@
-# CS-490-Capstone
+# hfh-capstone
 
 Home assessment tool for the Habitat for Humanity Aging in Place Program, Des Moines IA.
 This is used to annotate home layouts with information that may be needed by contractors.
