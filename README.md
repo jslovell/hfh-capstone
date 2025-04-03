@@ -51,11 +51,20 @@ hfh-capstone/
 
 ## Usage
 
-For developers, follow these steps to run the application:
+### For Developers
+
+Follow these steps to run the application:
 1. Start the XAMPP Apache and MySQL modules.
 2. Connect to the application using `http://localhost/hfh-capstone/`.
 
-A link to a full user manual can be found in the navbar.
+You may need to create a new account from the home page.
+Also a full user manual can be found in the navbar.
+
+### User Management
+
+Currently, there is nothing in place to authorize the creation of new accounts.
+Also, the only way to either delete or edit existing accounts is to manually edit the database.
+These issues have been marked for future development.
 
 ## Code Documentation
 
