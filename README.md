@@ -29,6 +29,8 @@ The "Localhost Database Variables" often work by default.
 
 ## Codebase Structure
 
+<details>
+<summary>Collapse codebase structure</summary>
 ```md
 hfh-capstone/
 ├── assets/
@@ -38,16 +40,67 @@ hfh-capstone/
 ├── images/
 │   └── # These are various images used by the application.
 ├── php_scripts/
-│   └──
+│   ├── add_user.php
+│   ├── bk_failure.php
+│   ├── bk_password_mismatch.php
+│   ├── bk_password_simple.php
+│   ├── bk_success.php
+│   ├── db.php
+│   ├── delete_all_icons.php
+│   ├── delete_form.php
+│   ├── delete_icon.php
+│   ├── form.php
+│   ├── load_icons.php
+│   ├── login_page.php
+│   ├── login.php
+│   ├── print_to_pdf.php
+│   ├── save_icon.php
+│   ├── session.php
+│   └── update_status.php
 ├── styles/
-│   └──
+│   ├── aboutProjectStyle.css
+│   ├── aboutUsStyle.css
+│   ├── catalog.css
+│   ├── index.css
+│   ├── indexBGnew.jpg
+│   ├── indexStyle.css
+│   ├── jquery-ui.structure.css
+│   ├── jquery-ui.structure.min.css
+│   ├── jquery-ui.theme.css
+│   ├── jquery-ui-theme.min.css
+│   ├── navbar.css
+│   ├── tabToolStyle.css
+│   └── toolStyle.css
 ├── uploads/
 │   ├── layouts/ # Directory for uploaded home layouts.
 │   └── photos/ # Directory for uploaded images for icons.
-├── file1
-└── file2
-
+├── .gitignore
+├── about_project.php
+├── about_us.php
+├── appMenu.php
+├── bk_test_page.php
+├── catalog.php
+├── hfh.sql
+├── homepage.php
+├── houseAssesmentTool.php
+├── houseAssessmentTool.php
+├── index.php
+├── jquery-ui.css
+├── jquery-ui.js
+├── jquery-ui.min.css
+├── jquery-ui.min.js
+├── login_page_failure.php
+├── login_screen.php
+├── navbar.php
+├── new_user_failure.php
+├── new_user_simple.php
+├── new_user.php
+├── README.md
+├── script.js
+├── tempHAStyle.css
+└── test_page.php
 ```
+</details>
 
 ## Usage
 
