@@ -421,10 +421,9 @@ $(document).ready(function () {
 
             let newIcon = new Icon(iconId, null, null, null, null, x, y);
 
-            if (selectedType != null) {
-                newIcon.type = selectedType;
-                newIcon.severity = selectedSeverity;
-                console.log("placing with types hopefully");
+            if (selectedType != null && selectedSeverity != null) {
+                newIcon.type = `${selectedType}-${selectedSeverity}`;
+                console.log("placing with type and severity:", newIcon.type);
             }
 
             saveIconData(newIcon);
