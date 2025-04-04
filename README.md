@@ -31,6 +31,7 @@ The "Localhost Database Variables" often work by default.
 
 <details>
 <summary>Collapse codebase structure</summary>
+
 ```md
 hfh-capstone/
 ├── assets/
