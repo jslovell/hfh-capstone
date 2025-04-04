@@ -319,11 +319,11 @@ mysqli_close($conn);
         <div class="assessmentArea">
             <style>
                 .assessmentArea {
-                    position: relative;  /* Required to contain absolute children */
+                    position: relative;
                     display: inline-block;
-                    width: 100%;         /* Adjust to your layout */
-                    height: 100%;        /* Adjust to your layout */
-                    overflow: hidden;    /* Ensures icons do not overflow */
+                    width: 100%;        
+                    height: 100%;       
+                    overflow: hidden;   
                 }   
             </style>
             <img src="<?php echo $layout_path; ?>" alt="Home Layout" id="testBlueprint" style="width: 800px; height: 800px">
@@ -331,7 +331,7 @@ mysqli_close($conn);
                 .clickableArea img {
                     max-width: 100%;
                     max-height: 100%;
-                    object-fit: absolute; /* Ensures image resizes while keeping proportions */
+                    object-fit: absolute;
                 }
             </style>
         </div>
@@ -400,116 +400,6 @@ mysqli_close($conn);
         </div>
     </button>
 </div>
-
-<script>
-$(document).ready(function() {
-
-    $(".sidebar-icon").on("click", function(e) {
-
-        const popup = $(this).find('.popup-menu');
-        
-        if (!popup.length) return;
-
-        $(".popup-menu.visible").not(popup).removeClass("visible");
-
-        popup.toggleClass("visible");
-
-        const $button = $(this);
-        const buttonPosition = $button.position();
-        popup.css("top", buttonPosition.top + "px");
-
-        e.stopPropagation();
-    });
-
-    $(document).on("click", function(e) {
-        if (!$(e.target).closest('.popup-menu, .sidebar-icon').length) {
-            $(".popup-menu.visible").removeClass("visible");
-        }
-    });
-
-    $(".popup-icon").on("click", function(e) {
-        const priorityClass = $(this).attr("class").split(" ")[1]; 
-        const parentButtonId = $(this).closest('.sidebar-icon').attr('id');
-        activeButtonId = parentButtonId;
-
-        let iconTypeNumber;
-
-        console.log(`Clicked ${priorityClass} in ${parentButtonId}`);
-        
-        if (parentButtonId === "electrical-button") {
-        if (priorityClass === "low-priority-electrical-icon") {
-            iconTypeNumber = "9-low";
-        } else if (priorityClass === "medium-priority-electrical-icon") {
-            iconTypeNumber = "9-medium";
-        } else if (priorityClass === "high-priority-electrical-icon") {
-            iconTypeNumber = "9-high";
-        }
-        } else if (parentButtonId === "plumbing-button") {
-            if (priorityClass === "low-priority-plumbing-icon") {
-                iconTypeNumber = "8-low";
-            } else if (priorityClass === "medium-priority-plumbing-icon") {
-                iconTypeNumber = "8-medium";
-            } else if (priorityClass === "high-priority-plumbing-icon") {
-                iconTypeNumber = "8-high";
-            }
-        } else if (parentButtonId === "hvac-button") {
-            if (priorityClass === "low-priority-hvac-icon") {
-                iconTypeNumber = "7-low";
-            } else if (priorityClass === "medium-priority-hvac-icon") {
-                iconTypeNumber = "7-medium";
-            } else if (priorityClass === "high-priority-hvac-icon") {
-                iconTypeNumber = "7-high";
-            }
-        } else if (parentButtonId === "door-button") {
-            if (priorityClass === "low-priority-door-icon") {
-                iconTypeNumber = "2-low";
-            } else if (priorityClass === "medium-priority-door-icon") {
-                iconTypeNumber = "2-medium";
-            } else if (priorityClass === "high-priority-door-icon") {
-                iconTypeNumber = "2-high";
-            }
-        } else if (parentButtonId === "stairs-button") {
-            if (priorityClass === "low-priority-stairs-icon") {
-                iconTypeNumber = "5-low";
-            } else if (priorityClass === "medium-priority-stairs-icon") {
-                iconTypeNumber = "5-medium";
-            } else if (priorityClass === "high-priority-stairs-icon") {
-                iconTypeNumber = "5-high";
-            }
-        } else if (parentButtonId === "window-button") {
-            if (priorityClass === "low-priority-window-icon") {
-                iconTypeNumber = "1-low";
-            } else if (priorityClass === "medium-priority-window-icon") {
-                iconTypeNumber = "1-medium";
-            } else if (priorityClass === "high-priority-window-icon") {
-                iconTypeNumber = "1-high";
-            }
-        } else if (parentButtonId === "deck-button") {
-            if (priorityClass === "low-priority-deck-icon") {
-                iconTypeNumber = "6-low";
-            } else if (priorityClass === "medium-priority-deck-icon") {
-                iconTypeNumber = "6-medium";
-            } else if (priorityClass === "high-priority-deck-icon") {
-                iconTypeNumber = "6-high";
-            }
-        } else if (parentButtonId === "tree-button") {
-            if (priorityClass === "low-priority-tree-icon") {
-                iconTypeNumber = "11-low";
-            } else if (priorityClass === "medium-priority-tree-icon") {
-                iconTypeNumber = "11-medium";
-            } else if (priorityClass === "high-priority-tree-icon") {
-                iconTypeNumber = "11-high";
-            }
-        }
-
-        selectedIconType = iconTypeNumber;
-        console.log("Set selectedIconType to:", selectedIconType);
-
-        $(this).closest('.popup-menu').removeClass("visible");
-        e.stopPropagation();
-    });
-});
-</script>
 
 <!-- Pass Icons Data to JavaScript -->
 <script>

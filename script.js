@@ -2,10 +2,11 @@ $(document).ready(function () {
     var activeButtonId = null;
 
     class Icon {
-        constructor(iconId, alertType, photoData, notesData, x_pos, y_pos) {
+        constructor(iconId, alertType, severity, photoData, notesData, x_pos, y_pos) {
             this.iconId = iconId;
             this.assignmentID = assignmentID;
             this.type = alertType;
+            this.severity = severity;
             this.photo = photoData;
             this.notes = notesData;
             this.x_pos = x_pos
@@ -110,7 +111,7 @@ $(document).ready(function () {
     function placeIcon(icon) {
         console.log("Placing icon:", icon);
 
-        const { iconId, type, x_pos, y_pos } = icon;
+        const { iconId, type, severity, x_pos, y_pos } = icon;
 
         if (!iconId) {
             console.error("Error: Attempted to place an icon without an iconId!");
@@ -152,6 +153,7 @@ $(document).ready(function () {
         formData.append("iconId", icon.iconId);
         formData.append("assignmentID", assignmentID);
         formData.append("type", icon.type);
+        formData.append("severity", icon.severity);
         formData.append("notes", icon.notes || "");
         formData.append("x_pos", icon.x_pos);
         formData.append("y_pos", icon.y_pos);
@@ -263,7 +265,6 @@ $(document).ready(function () {
         });
     }
 
-    // Currently unused, to be used for trash can icon in future sidebar
     function deleteAllIconsFromDatabase() {
         $.ajax({
             url: './php_scripts/delete_all_icons.php',
@@ -420,7 +421,7 @@ $(document).ready(function () {
             var x = ((event.clientX - rect.left) / areaWidth) * 100;
             var y = ((event.clientY - rect.top) / areaHeight) * 100;
 
-            const newIcon = new Icon(iconId, null, null, null, x, y);
+            const newIcon = new Icon(iconId, null, null, null, null, x, y);
 
             saveIconData(newIcon);
             placeIcon(newIcon);

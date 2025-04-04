@@ -6,6 +6,7 @@ $response = ["success" => false];
 $iconId       = trim($_POST['iconId'] ?? '');
 $assignmentID = (int)($_POST['assignmentID'] ?? 0);
 $type         = trim($_POST['type'] ?? '');
+$severity     = (int)($_POST['severity'] ?? 0);
 $notes        = trim($_POST['notes'] ?? '');
 $x_pos        = (int)($_POST['x_pos'] ?? 0);
 $y_pos        = (int)($_POST['y_pos'] ?? 0);
@@ -31,7 +32,7 @@ if (!empty($_FILES['photo']['name'])) {
 
 $existingRow = null;
 if ($iconId !== '') {
-    $readQuery = "SELECT assignmentID, type, picture, notes, x_pos, y_pos
+    $readQuery = "SELECT assignmentID, type, severity, picture, notes, x_pos, y_pos
                   FROM icons
                   WHERE iconId = ?
                   LIMIT 1";
@@ -63,6 +64,7 @@ if ($existingRow) {
         SET
           assignmentID = ?,
           type         = ?,
+          severity     = ?,
           picture      = ?,
           notes        = ?,
           x_pos        = ?,
@@ -71,9 +73,10 @@ if ($existingRow) {
     ";
     if ($updateStmt = $conn->prepare($updateQuery)) {
         $updateStmt->bind_param(
-            "isssiis",
+            "isissiis",
             $assignmentID,
             $type,
+            $severity,
             $photoPath,
             $notes,
             $x_pos,
@@ -97,16 +100,17 @@ if ($existingRow) {
     // =========== INSERT Path ==============
     $insertQuery = "
         INSERT INTO icons
-          (iconId, assignmentID, type, picture, notes, x_pos, y_pos)
+          (iconId, assignmentID, type, severity, picture, notes, x_pos, y_pos)
         VALUES
-          (?, ?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?, ?)
     ";
     if ($insertStmt = $conn->prepare($insertQuery)) {
         $insertStmt->bind_param(
-            "sisssii",
+            "sisissii",
             $iconId,
             $assignmentID,
             $type,
+            $severity,
             $photoPath,
             $notes,
             $x_pos,
