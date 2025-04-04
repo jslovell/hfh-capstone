@@ -1,5 +1,7 @@
 $(document).ready(function () {
     var activeButtonId = null;
+    var selectedSeverity = null;
+    var selectedType = null;
 
     class Icon {
         constructor(iconId, alertType, severity, photoData, notesData, x_pos, y_pos) {
@@ -432,7 +434,13 @@ $(document).ready(function () {
             var x = ((event.clientX - rect.left) / areaWidth) * 100;
             var y = ((event.clientY - rect.top) / areaHeight) * 100;
 
-            const newIcon = new Icon(iconId, null, null, null, null, x, y);
+            let newIcon = new Icon(iconId, null, null, null, null, x, y);
+
+            if (selectedType != null) {
+                newIcon.type = selectedType;
+                newIcon.severity = selectedSeverity;
+                console.log("placing with types hopefully");
+            }
 
             saveIconData(newIcon);
             placeIcon(newIcon);
@@ -511,4 +519,56 @@ $(document).ready(function () {
             updateSidebar();    // Update other buttons
         }
     });
+
+    $(".sidebar-icon").on("click", function(e) {
+        
+        const popup = $(this).find('.popup-menu');
+        
+        if (!popup.length) return;
+
+        $(".popup-menu.visible").not(popup).removeClass("visible");
+
+        popup.toggleClass("visible");
+
+        const $button = $(this);
+        const buttonPosition = $button.position();
+        popup.css("top", buttonPosition.top + "px");
+
+
+        e.stopPropagation();
+    });
+
+    $(document).on("click", function(e) {
+        if (!$(e.target).closest('.popup-menu, .sidebar-icon').length) {
+            $(".popup-menu.visible").removeClass("visible");
+        }
+    });
+
+    $(".popup-icon").on("click", function() {
+        const classes = $(this).attr("class").split(" ");
+        let priority = null;
+        let category = null;
+        
+        classes.forEach(className => {
+            if (className.includes("-priority-") && className.includes("-icon")) {
+                const parts = className.split("-priority-");
+                priority = parts[0]; 
+                category = parts[1].replace("-icon", "");
+            }
+        });
+        
+        if (category && priority) {
+            const typeString = `${category}-${priority}`;
+            console.log(`Selected icon type: ${typeString}`);
+            
+            // Set active button ID to "place"
+            activeButtonId = "place";
+            selectedSeverity = priority;
+            selectedType = category;
+            
+            // Close popup
+            $(this).closest(".popup-menu").hide();
+        }
+    });
+
 });

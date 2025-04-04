@@ -6,7 +6,7 @@ $response = ["success" => false];
 $iconId       = trim($_POST['iconId'] ?? '');
 $assignmentID = (int)($_POST['assignmentID'] ?? 0);
 $type         = trim($_POST['type'] ?? '');
-$severity     = (int)($_POST['severity'] ?? 0);
+$severity     = trim($_POST['severity'] ?? '');
 $notes        = trim($_POST['notes'] ?? '');
 $x_pos        = (int)($_POST['x_pos'] ?? 0);
 $y_pos        = (int)($_POST['y_pos'] ?? 0);
@@ -73,7 +73,7 @@ if ($existingRow) {
     ";
     if ($updateStmt = $conn->prepare($updateQuery)) {
         $updateStmt->bind_param(
-            "isissiis",
+            "issssiis",
             $assignmentID,
             $type,
             $severity,
@@ -106,7 +106,7 @@ if ($existingRow) {
     ";
     if ($insertStmt = $conn->prepare($insertQuery)) {
         $insertStmt->bind_param(
-            "sisissii",
+            "sissssii",
             $iconId,
             $assignmentID,
             $type,
