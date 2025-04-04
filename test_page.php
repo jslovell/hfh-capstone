@@ -401,6 +401,63 @@ mysqli_close($conn);
     </button>
 </div>
 
+<script>
+$(document).ready(function() {
+
+    $(".sidebar-icon").on("click", function(e) {
+        
+        const popup = $(this).find('.popup-menu');
+        
+        if (!popup.length) return;
+
+        $(".popup-menu.visible").not(popup).removeClass("visible");
+
+        popup.toggleClass("visible");
+
+        const $button = $(this);
+        const buttonPosition = $button.position();
+        popup.css("top", buttonPosition.top + "px");
+
+
+        e.stopPropagation();
+    });
+
+    $(document).on("click", function(e) {
+        if (!$(e.target).closest('.popup-menu, .sidebar-icon').length) {
+            $(".popup-menu.visible").removeClass("visible");
+        }
+    });
+
+    $(".popup-icon").on("click", function() {
+        const classes = $(this).attr("class").split(" ");
+        let priority = null;
+        let category = null;
+        
+        classes.forEach(className => {
+            if (className.includes("-priority-") && className.includes("-icon")) {
+                const parts = className.split("-priority-");
+                priority = parts[0]; 
+                category = parts[1].replace("-icon", "");
+            }
+        });
+        
+        if (category && priority) {
+            const typeString = `${category}-${priority}`;
+            console.log(`Selected icon type: ${typeString}`);
+            
+            // Set active button ID to "place"
+            activeButtonId = "place";
+            
+            // Store selected type for later use
+            $(this).closest(".sidebar-icon").data("selectedType", typeString);
+            
+            // Close popup
+            $(this).closest(".popup-menu").hide();
+        }
+    });
+});
+</script>
+
 <!-- Pass Icons Data to JavaScript -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {

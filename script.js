@@ -60,38 +60,49 @@ $(document).ready(function () {
         });
     }
 
+    function getCategoryFromType(type) {
+        if (!type) return 'other';
+        return type.split('-')[0];
+    }
+
+    function getPriorityFromType(type) {
+        if (!type) return 'medium';
+        const parts = type.split('-');
+        return parts.length > 1 ? parts[1] : 'medium';
+    }
+
+    function createTypeString(category, priority) {
+        return `${category || 'other'}-${priority || 'medium'}`;
+    }
+
     function getIconImageByType(type) {
-        switch (type) {
-            case '1':   // Windows
-                return 'images/alert-icon.png';
-            case '2':   // Doors
-                return 'images/alert-icon.png';
-            case '3':   // Siding
-                return 'images/alert-icon.png';
-            case '4':   // Porch
-                return 'images/alert-icon.png';
-            case '5':   // Stairs
-                return 'images/alert-moderate-icon.png';
-            case '6':   // Deck
-                return 'images/alert-moderate-icon.png';
-            case '7':   // Mechanical
-                return 'images/alert-moderate-icon.png';
-            case '8':   // Plumbing
-                return 'images/alert-moderate-icon.png';
-            case '9':   // Electrical
-                return 'images/alert-moderate-icon.png';
-            case '10':  // Flatwork
-                return 'images/alert-sever-icon.png';
-            case '11':  // Tree Maintenance
-                return 'images/alert-sever-icon.png';
-            case '12':  // Roofing
-                return 'images/alert-sever-icon.png';
-            case 'other':
-                return 'images/alert-sever-icon.png';
-            default:
-                // If no recognized type, use a default alert icon
-                return 'images/alert-icon.png';
+        const category = getCategoryFromType(type);
+        const priority = getPriorityFromType(type);
+        
+        let imagePath = "images/alert-icon.png";  
+        
+        if (category !== 'other') {
+            // trying to set to standardized image format - ie. low-priority-hvac-icon.png
+            imagePath = `images/${priority}-priority-${category}-icon.png`;
+            console.log(`Using icon image: ${imagePath} for type: ${type}`);
+        } else {
+            // Use old icons still being used
+            switch (priority) {
+                case 'high':
+                    imagePath = "images/alert-severe-icon.png";
+                    break;
+                case 'medium':
+                    imagePath = "images/alert-moderate-icon.png";
+                    break;
+                case 'low':
+                    imagePath = "images/alert-icon.png";
+                    break;
+                default:
+                    imagePath = "images/alert-icon.png";
+            }
         }
+        
+        return imagePath;
     }
 
     // Ensure icons load on page load
