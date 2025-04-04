@@ -83,25 +83,10 @@ $(document).ready(function () {
         
         let imagePath = "images/alert-icon.png";  
         
-        if (category !== 'other') {
+        if (category) {
             // trying to set to standardized image format - ie. low-priority-hvac-icon.png
             imagePath = `images/${priority}-priority-${category}-icon.png`;
             console.log(`Using icon image: ${imagePath} for type: ${type}`);
-        } else {
-            // Use old icons still being used
-            switch (priority) {
-                case 'high':
-                    imagePath = "images/alert-severe-icon.png";
-                    break;
-                case 'medium':
-                    imagePath = "images/alert-moderate-icon.png";
-                    break;
-                case 'low':
-                    imagePath = "images/alert-icon.png";
-                    break;
-                default:
-                    imagePath = "images/alert-icon.png";
-            }
         }
         
         return imagePath;
@@ -329,18 +314,18 @@ $(document).ready(function () {
             <div id="edit-popup">
                 <label for="alert-type">Icon Type:</label>
                 <select id='alert-type'>
-                    <option value='1'>Window(s)</option>
-                    <option value='2'>Door(s)</option>
-                    <option value='3'>Siding</option>
-                    <option value='4'>Porch</option>
-                    <option value='5'>Stairs</option>
-                    <option value='6'>Deck</option>
-                    <option value='7'>Mechanical (HVAC)</option>
-                    <option value='8'>Plumbing</option>
-                    <option value='9'>Electrical</option>
-                    <option value='10'>Flatwork</option>
-                    <option value='11'>Tree Maintenance</option>
-                    <option value='12'>Roofing</option>
+                    <option value='window'>Window(s)</option>
+                    <option value='door'>Door(s)</option>
+                    <option value='siding'>Siding</option>
+                    <option value='porch'>Porch</option>
+                    <option value='stairs'>Stairs</option>
+                    <option value='deck'>Deck</option>
+                    <option value='hvac'>Mechanical (HVAC)</option>
+                    <option value='plumbing'>Plumbing</option>
+                    <option value='electrical'>Electrical</option>
+                    <option value='flatworks'>Flatwork</option>
+                    <option value='tree'>Tree Maintenance</option>
+                    <option value='roofing'>Roofing</option>
                     <option value='other'>Other</option>
                 </select><br>
                 ${iconInstance.picture ? `<img id="icon-preview" src="${imagePath}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
