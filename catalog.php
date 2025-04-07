@@ -62,13 +62,16 @@
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/indexStyle.css">
     <link rel="stylesheet" href="styles/toolStyle.css">
+    <link rel="stylesheet" href="styles/catalog.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!--<script src="jquery-ui.css"></script>-->
     <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico">
     <title>Assessment Catalog</title>
+    
+    <!--
     <style>
     .search-container {
-        background: #bfbfbf;
+        background: white;
         padding: 20px 40px;
         margin: 20px;
         border-radius: 8px;
@@ -94,7 +97,7 @@
     }
 
     .content-container {
-        background: #bfbfbf;
+        background: white;
         padding: 20px;
         margin: 30px;
         border-radius: 8px;
@@ -149,8 +152,9 @@
     #search-title{
         color: #0099cc;
     }
+    </style>
+-->
 
-</style>
 
 </head>
 <?php include "navbar.php" ?>
