@@ -174,12 +174,12 @@
         <div class="search-field-group">
             <label>Status</label>
             <select id="assessmentStatusFilter" class="search-field">
+                <option value="all-statuses" selected>All Statuses</option>
                 <option value="needs assessment" >Needs Assessment</option>
                 <option value="needs bidding" >Needs Bidding</option>
-                <option value="all-statuses" selected>All Statuses</option>
+                <option value="archived">Archived</option>
             </select>
         </div>
-        <div class="needsBiddingCount" style="font-weight: bold; margin-bottom: 10px;">Total Number of Assessments: </div>
         <a href="about_project.php">First time using this tool? Click here for help.</a>
     </div>
 

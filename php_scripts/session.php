@@ -8,7 +8,7 @@ if (isset($_GET['logout'])) {
 }
 
 $currentPage = basename($_SERVER['PHP_SELF']);
-$publicPages = ['index.php', 'login.php', 'login_screen.php', 'new_user.php'];
+$publicPages = ['index.php', 'login.php', 'login_screen.php', 'new_user.php', 'add_user.php'];
 
 if (!in_array($currentPage, $publicPages)) {
     if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {

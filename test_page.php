@@ -264,6 +264,7 @@ mysqli_close($conn);
         <select id="statusDropdown" data-id="<?php echo $id; ?>">
             <option id="statuses"value="Needs Assessment" <?php echo ($assessmentStatus === 'Needs Assessment') ? 'selected' : ''; ?>>Needs Assessment</option>
             <option id="statuses"value="Needs Bidding" <?php echo ($assessmentStatus === 'Needs Bidding') ? 'selected' : ''; ?>>Needs Bidding</option>
+            <option id="statuses"value="Archived" <?php echo ($assessmentStatus === 'Archived') ? 'selected' : ''; ?>>Archive</option>
         </select>
     </div>
 

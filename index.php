@@ -1,8 +1,4 @@
 <?php require_once './php_scripts/session.php'; ?>
-
-<?php
-
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,20 +21,31 @@
             padding: 25px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            font-weight: bold;
+            display: block; 
+        }
 
+        #uname-error{
+            margin-bottom: 10px;
+        }
     </style>
     </head>
     <?php include "navbar.php"; ?>
 <body>
 
 <!-- Login Form -->
-<form action="./php_scripts/login.php" method="post">
+<form action="./php_scripts/login.php" id="login-form" method="post">
     <div class="container">
         <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required>
+        <input type="text" placeholder="Enter Username" name="uname" id = "uname" required>
+        <span class="error-message" id="uname-error"></span>
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required>
+        <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+        <span class="error-message" id="psw-error"></span>
 
         <button type="submit" name="submit" id="login-button" >Login</button>
         <label>
@@ -48,21 +55,46 @@
 
     <div class="container">
         <button type="button" class="cancelbtn" onclick="location.href='./index.php'" id="cancel-button">Cancel</button>
-    <!-- <button type"button" class="cancelbtn">New User<a href="https://hfh-capstone.bradley.edu/new_user"></a>
-	-->
 	<span class="psw">
         <a href="./new_user.php">New user?</a>
         <a href="#">Forgot password?</a>
     </span>
     </div>
 </form>
+<script>
+    document.getElementById("login-form").addEventListener("submit", function(event) {
+        event.preventDefault();
 
-<!-- Code Below is for the image to pop out when clicked inside the edit icon pop up (Can't get that working as of now)-->
-<!-- Modal for Enlarged Image
-<div id="image-modal" class="modal">
-    <span class="close">&times;</span>
-    <img class="modal-content" id="modal-image" alt="Enlarged icon">
-</div> -->
+        let formData = new FormData(this);
 
+        fetch("./php_scripts/login.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.querySelectorAll(".error-message").forEach(el => el.innerHTML = "");
+
+            if (data.status === "error") {
+                for (const [key, messages] of Object.entries(data.errors)) {
+                    let errorContainer = document.getElementById(`${key}-error`);
+
+                    if (errorContainer) {
+                        errorContainer.innerHTML = '';
+                        messages.forEach(message => {
+                            let errorSpan = document.createElement("span");
+                            errorSpan.className = "error-message";
+                            errorSpan.innerText = message;
+                            errorContainer.appendChild(errorSpan);
+                        });
+                    }
+                }
+            } else if (data.status === "success") {
+                window.location.href = "./catalog.php"; // Redirect to catalog on success
+            }
+        })
+        .catch(error => console.error("Login error:", error));
+    });
+</script>
 </body>
 </html>

@@ -13,17 +13,33 @@
 
 .member {
     text-align: center;
-    margin: 0 10px;
     max-width: 240px;
     font-size: 20px;
-    border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 20px;
-    flex: 0 0 calc(20% - 20px);
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.member-info{
+    margin: 6px 0;
+    font-size: 16px;
+}
+.member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .member img {
-    display: none;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 3px solid black;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .member-row:first-child {
@@ -88,4 +104,8 @@ p {
 #mainimage {
     max-width: 60%;
     max-height: 60%;
+}
+
+.oldTeams{
+    text-align: center;
 }

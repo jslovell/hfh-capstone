@@ -1,45 +1,54 @@
-<?php require_once 'session.php'; ?>
-
 <?php
-
+session_start();
 require_once "db.php";
 
-$uname = $_POST['uname'];
-$psw = $_POST['psw'];
+header('Content-Type: application/json');
 
-// Validate user exists
-$sql = "SELECT password FROM hfh.accounts WHERE username='$uname';";
-$result = mysqli_query($conn, $sql);
+$uname = $_POST['uname'] ?? '';
+$psw = $_POST['psw'] ?? '';
+$errors = [];
 
-if(mysqli_num_rows($result) == 0) {
+// Check if username exists and fetch the password hash
+$sql = "SELECT password FROM accounts WHERE username = ?";
+$stmt = mysqli_prepare($conn, $sql);
 
-    // User does not exist
-    // include failure.php
-    header('Location: ../login_page_failure.php');
-    exit();
+if (!$stmt) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Database query failed.'
+    ]);
+    exit;
+}
 
+mysqli_stmt_bind_param($stmt, 's', $uname);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_store_result($stmt);
+
+if (mysqli_stmt_num_rows($stmt) === 0) {
+    // Username doesn't exist
+    $errors['uname'][] = "Username does not exist. Please try again or create a new account.";
 } else {
+    // Username exists fetch the password
+    mysqli_stmt_bind_result($stmt, $hashed_password);
+    mysqli_stmt_fetch($stmt);
 
-    // User exists, fetch the hashed password
-    $row = mysqli_fetch_assoc($result);
-    $stored_hash = $row['password'];
-
-    // Validate password
-    $bool = password_verify($psw, $stored_hash);
-
-    if($bool){
-	$_SESSION['authenticated'] = true;
-    $_SESSION['username'] = $uname;
-	// include succes.php
-  	header('Location: ../catalog.php');
-	exit();
-    } else {
-	// include failure.php
-	header('Location: ../login_page_failure.php');
-	exit();
+    // Verify password
+    if (!password_verify($psw, $hashed_password)) {
+        $errors['psw'][] = "Incorrect password. Please try again.";
     }
 }
 
-mysqli_close($conn);
+mysqli_stmt_close($stmt);
 
-?>
+// Returns any errors
+if (!empty($errors)) {
+    echo json_encode(['status' => 'error', 'errors' => $errors]);
+    exit;
+}
+
+// If everything passes log the user in
+$_SESSION['authenticated'] = true;
+$_SESSION['username'] = $uname;
+
+echo json_encode(['status' => 'success', 'message' => 'Login successful.']);
+exit;

@@ -1,42 +1,77 @@
 <?php
+session_start();
 
 // Connection to the SQL database
-require_once "db.php";
+require_once 'db.php';
 
+$errors = [];
+$uname = $_POST['uname'] ?? '';
+$psw = $_POST['psw'] ?? '';
+$psw2 = $_POST['psw2'] ?? '';
 
-// Relevant variables
+// Function to validate the password
+function validate_password($psw, $psw2) {
+    global $errors;
 
-$uname = $_POST['uname'];
-$psw = $_POST['psw'];
-$psw2 = $_POST['psw2'];
+    // Password confirmation check
+    if ($psw != $psw2) {
+        $errors['psw'][] = "Passwords do not match. ";
+    }
 
-$hash = password_hash($psw, PASSWORD_DEFAULT);
+    // Password length check
+    if (strlen($psw) < 8 || strlen($psw2) < 8) {
+        $errors['psw'][] = "Password must be at least 8 characters long. ";
+    }
 
-// Check for a capital letter
-$pswLow = strtolower($psw);
+    // Password uppercase letter check
+    if (strtolower($psw) == $psw) {
+        $errors['psw'][] = "Password must contain at least one uppercase letter. ";
+    }
 
+    // Password number check
+    if (!preg_match('~[0-9]+~', $psw)) {
+        $errors['psw'][] = "Password must contain at least one number. ";
+    }
 
-if($psw != $psw2){
-	header('Location: ../new_user_failure.php');
-	exit();
+    // Password special character check
+    if (!preg_match("~[`'\~!@#$%^&*()<>:;{}\|]+~", $psw)) {
+        $errors['psw'][] = "Password must contain at least one special character. ";
+    }
 }
-else if( (strlen($psw) < 8)
-	or ($pswLow==$psw)
-	or (!(preg_match('~[0-9]+~',$psw)))
-	or (!(preg_match("[[`'\~!@# $*()<>,:;{}\|]]",$psw)))
-){
-		header('Location: ../new_user_simple.php');
-		exit();
-}
-else {
-	$sql = "INSERT INTO hfh.accounts(username, password) VALUES ('$uname', '$hash');";
 
-	$rs = mysqli_query($conn, $sql);
+// Validate the password
+validate_password($psw, $psw2);
 
-	header('Location: ../index.php');
-	exit();
+// Check if the username already exists
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM accounts WHERE username = :username");
+$stmt->bindParam(':username', $uname);
+$stmt->execute();
+$count = $stmt->fetchColumn();
+
+if ($count > 0) {
+    $errors['uname'][] = "Username already exists. Please choose a different username.";
 }
 
+if (!empty($errors)) {
+    echo json_encode(['status' => 'error', 'errors' => $errors]);
+    exit; 
+}
 
+// If no errors proceed with inserting into the database
+try {
+    $stmt = $pdo->prepare("INSERT INTO accounts (username, password) VALUES (:username, :password)");
 
+    $hashed_password = password_hash($psw, PASSWORD_DEFAULT);
+
+    $stmt->bindParam(':username', $uname);
+    $stmt->bindParam(':password', $hashed_password);
+
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Account successfully created.']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'There was an error creating the account.']);
+    }
+} catch (PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+}
 ?>

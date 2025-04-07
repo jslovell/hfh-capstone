@@ -20,11 +20,89 @@
         <div class="center">
             <img src="assets/Bradley_Hall.jpeg" id="mainimage">
         </div>
-        <h1>Computer Science Team</h1>
+        <h1>Current Team</h1>
         <br>
         <div class="member-profiles">
             <div class="member">
-                <img src="assets/blankprofile.png" alt="Member 1">
+                <img src="assets/jlovell.jpg" alt="Member 1">
+                <div class="member-info">
+                    <p><strong>Role: </strong>Team Leader</p>
+                    <p><strong>First Name: </strong>Josh</p>
+                    <p><strong>Last Name: </strong>Lovell</p>
+                    <p><strong>Email: </strong>jlovell@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p>
+                    <p><strong>Minor: </strong></p> -->
+                </div>
+            </div>
+
+            <div class="member">
+                <img src="assets/bbeardsley.png" alt="Member 2">
+                <div class="member-info">
+                    <p><strong>First Name: </strong>Brenton</p>
+                    <p><strong>Last Name: </strong>Beardsley</p>
+                    <p><strong>Email: </strong>babeardsley@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p> -->
+                </div>
+            </div>
+
+            <div class="member">
+                <img src="assets/ejstreitmatter.png" alt="Member 3">
+                <div class="member-info">
+                    <p><strong>First Name: </strong>Erik</p>
+                    <p><strong>Last Name: </strong>Streitmatter</p>
+                    <p><strong>Email: </strong>ejstreitmatter@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p>
+                    <p><strong>Minor: </strong>Cybersecurity</p> -->
+                </div>
+            </div>
+
+            <div class="member">
+                <img src="assets/aspence.png" alt="Member 4">
+                <div class="member-info">
+                    <p><strong>First Name: </strong>Andrew</p>
+                    <p><strong>Last Name: </strong>Spence</p>
+                    <p><strong>Email: </strong>aspence@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p> -->
+                </div>
+            </div>
+
+            <div class="member">
+                <img src="assets/isullivan.png" alt="Member 5">
+                <div class="member-info">
+                    <p><strong>First Name: </strong>Isaac</p>
+                    <p><strong>Last Name: </strong>Sullivan</p>
+                    <p><strong>Email: </strong>isullivan@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p>
+                    <p><strong>Minor: </strong>Cybersecurity</p> -->
+                </div>
+            </div>
+            <div class="member">
+                <img src="assets/tpennacchia.jpg" alt="Member 5">
+                <div class="member-info">
+                    <p><strong>First Name: </strong>Tony</p>
+                    <p><strong>Last Name: </strong>Pennacchia</p>
+                    <p><strong>Email: </strong>apennacchia@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p>
+                    <p><strong>Minor: </strong>Cybersecurity</p> -->
+                </div>
+            </div>
+            <div class="member">
+                <img src="assets/agrandsard.jpg" alt="Member 5">
+                <div class="member-info">
+                    <p><strong>First Name: </strong>Andrew</p>
+                    <p><strong>Last Name: </strong>Grandsard</p>
+                    <p><strong>Email: </strong>agrandsard@mail.bradley.edu</p>
+                    <!-- <p><strong>Major: </strong>Computer Science</p>
+                    <p><strong>Minor: </strong>Cybersecurity</p> -->
+                </div>
+            </div>
+        </div>
+        <h1>Previous Team</h1>
+        <h2 class="oldTeams">Computer Science Team</h2>
+        <br>
+        <div class="member-profiles">
+            <div class="member">
+                <!-- <img src="assets/blankprofile.png" alt="Member 1"> -->
                 <div class="member-info">
                     <p><strong>Role: </strong>Team Leader</p>
                     <p><strong>First Name: </strong>Elizabetha</p>
@@ -36,7 +114,7 @@
             </div>
 
             <div class="member">
-                <img src="assets/blankprofile.png" alt="Member 2">
+                <!-- <img src="assets/blankprofile.png" alt="Member 2"> -->
                 <div class="member-info">
                     <p><strong>First Name: </strong>Cooper</p>
                     <p><strong>Last Name: </strong>Denault</p>
@@ -46,7 +124,7 @@
             </div>
 
             <div class="member">
-                <img src="assets/blankprofile.png" alt="Member 3">
+                <!-- <img src="assets/blankprofile.png" alt="Member 3"> -->
                 <div class="member-info">
                     <p><strong>First Name: </strong>Thomas</p>
                     <p><strong>Last Name: </strong>Janssen</p>
@@ -57,7 +135,7 @@
             </div>
 
             <div class="member">
-                <img src="assets/blankprofile.png" alt="Member 4">
+                <!-- <img src="assets/blankprofile.png" alt="Member 4"> -->
                 <div class="member-info">
                     <p><strong>First Name: </strong>Osvaldo</p>
                     <p><strong>Last Name: </strong>Guzman</p>
@@ -67,7 +145,7 @@
             </div>
 
             <div class="member">
-                <img src="assets/blankprofile.png" alt="Member 5">
+                <!-- <img src="assets/blankprofile.png" alt="Member 5"> -->
                 <div class="member-info">
                     <p><strong>First Name: </strong>Tatyana</p>
                     <p><strong>Last Name: </strong>Pacheco</p>
@@ -77,7 +155,7 @@
                 </div>
             </div>
         </div>
-        <h1>Business Team</h1>
+        <h2 class="oldTeams">Business Team</h2>
 
         <div class="member-profiles">
             <div class="member">
