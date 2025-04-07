@@ -95,8 +95,6 @@ class PDF extends FPDF {
         if (!empty($icon['type']) && $icon['type'] !== 'null') {
             if (!empty($icon['severity']) && $icon['severity'] !== 'null') {
                 $imagePath = "../images/{$icon['severity']}-priority-{$icon['type']}-icon.png";
-            } else {
-                $imagePath = "../images/{$icon['type']}-icon.png";
             }
         }
         return $imagePath;
