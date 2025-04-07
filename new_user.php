@@ -11,12 +11,7 @@
     <title>Create New User</title>
     <link rel="icon" type="image/x-icon" href="/hfh-capstone/images/favicon.ico" />
     <style>
-        .container {
-            background-color: #bfbfbf;
-            border: 1px solid #bfbfbf;
-            padding: 25px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
-        }
+        
         .submitButton {
             background-color: #09c;
             color: white;
