@@ -13,7 +13,7 @@ $assignmentID = intval($_GET['id']);
 // Debugging: Log received ID
 error_log("Fetching icons for assignmentID: " . $assignmentID);
 
-$sql = "SELECT iconId, assignmentID, type, picture, notes, x_pos, y_pos FROM icons WHERE assignmentID = ?";
+$sql = "SELECT iconId, assignmentID, type, severity, picture, notes, x_pos, y_pos FROM icons WHERE assignmentID = ?";
 $stmt = $conn->prepare($sql);
 
 if (!$stmt) {
