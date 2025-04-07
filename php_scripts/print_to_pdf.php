@@ -37,7 +37,7 @@ if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     }
 
     // Get icon data
-    $sqlIcons = "SELECT type, picture, notes, x_pos, y_pos FROM icons WHERE assignmentID = $id";
+    $sqlIcons = "SELECT type, severity, picture, notes, x_pos, y_pos FROM icons WHERE assignmentID = $id";
     $resultIcons = mysqli_query($conn, $sqlIcons);
     $icons = [];
     if ($resultIcons && mysqli_num_rows($resultIcons) > 0) {
@@ -90,42 +90,22 @@ class PDF extends FPDF {
             $this->PageNo() . '/{nb}',0,0,'C');
     }
 
-    function GetIconInfoByType($type) {
-        switch ($type) {
-            case '1': // Windows
-                return array('../images/alert-icon.png', 'Windows');
-            case '2': // Doors
-                return array('../images/alert-icon.png', 'Doors');
-            case '3': // Siding
-                return array('../images/alert-icon.png', 'Siding');
-            case '4': // Porch
-                return array('../images/alert-icon.png', 'Porch');
-            case '5': // Stairs
-                return array('../images/alert-moderate-icon.png', 'Stairs');
-            case '6': // Deck
-                return array('../images/alert-moderate-icon.png', 'Deck');
-            case '7': // Mechanical
-                return array('../images/alert-moderate-icon.png', 'Mechanical');
-            case '8': // Plumbing
-                return array('../images/alert-moderate-icon.png', 'Plumbing');
-            case '9': // Electrical
-                return array('../images/alert-moderate-icon.png', 'Electrical');
-            case '10': // Flatwork
-                return array('../images/alert-sever-icon.png', 'Flatwork');
-            case '11': // Tree Maintenance
-                return array('../images/alert-sever-icon.png', 'Tree Maintenance');
-            case '12': // Roofing
-                return array('../images/alert-sever-icon.png', 'Roofing');
-            case 'other': // Other
-                return array('../images/alert-sever-icon.png', 'Other');
-            default: // If no recognized type, use a default alert icon
-                return array('../images/alert-icon.png', 'Unknown');
+    function getIconImagePath($icon) {
+        $imagePath = '../images/alert-icon.png';
+        if (!empty($icon['type']) && $icon['type'] !== 'null') {
+            if (!empty($icon['severity']) && $icon['severity'] !== 'null') {
+                $imagePath = "../images/{$icon['severity']}-priority-{$icon['type']}-icon.png";
+            } else {
+                $imagePath = "../images/{$icon['type']}-icon.png";
+            }
         }
-    }
+        return $imagePath;
+    }    
 
     // Icon
-    function DrawIcon($w, $h, $txt='', $type='') {
-        $this->Image($this->GetIconInfoByType($type)[0], $w-1, $h-1, 7, 7);
+    function DrawIcon($w, $h, $txt='', $icon=[]) {
+        $imagePath = $this->getIconImagePath($icon);
+        $this->Image($imagePath, $w-1, $h-1, 7, 7);
         $this->Rect($w+6, $h+5, 2+strlen($txt)*2.3, -5, 'F');
         $this->Text($w+7, $h+4, $txt);
     }
@@ -151,7 +131,7 @@ $pdf->Cell($w + $originX, $w, "", 0, 1, 'C',$pdf->Image($layout_path,$originX,$o
 $pdf->SetFillColor(255, 255, 255);
 $iconNum = 0;
 foreach($icons as $icon) {
-    $pdf->DrawIcon($originX + ($icon['x_pos'] / 100.0) * $w, $originY + ($icon['y_pos'] / 100.0) * $w, ++$iconNum, $icon['type']);
+    $pdf->DrawIcon($originX + ($icon['x_pos'] / 100.0) * $w, $originY + ($icon['y_pos'] / 100.0) * $w, ++$iconNum, $icon);
 }
 
 // Home Info
@@ -177,7 +157,7 @@ $iconNum = 0;
 foreach($icons as $icon) {
     $row = array(++$iconNum, $icon['type'], $icon['picture'], $icon['notes']);
     $pdf->Cell($colWidths[0],6,$row[0],1);
-    $pdf->Cell($colWidths[1],6,$pdf->GetIconInfoByType($row[1])[1],1);
+    $pdf->Cell($colWidths[1],6,$row[1],1);
     $pdf->MultiCell($colWidths[2],6,$row[3],1);
     //$pdf->Ln();
     // Image

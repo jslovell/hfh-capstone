@@ -62,67 +62,6 @@ $(document).ready(function () {
         });
     }
 
-    function updateSidebarVisuals() {
-        // For each sidebar button, figure out what severity and type it corresponds to.
-        // Then decide if it’s “active” and swap image paths accordingly.
-        $(".sidebar-icon").each(function() {
-            const $button = $(this);
-            
-            // Grab all classes on this element
-            const classes = $button.attr("class").split(/\s+/);
-            let iconSeverity = null;
-            let iconType = null;
-    
-            // Look for something like "low-priority-electrical-icon"
-            classes.forEach(c => {
-                const match = c.match(/^(low|medium|high)-priority-(.+)-icon$/);
-                if (match) {
-                    iconSeverity = match[1];
-                    iconType = match[2];
-                }
-            });
-    
-            // If we couldn't find severity/type from the class, skip
-            if (!iconSeverity || !iconType) {
-                return;
-            }
-    
-            // Decide if this button should be "active".
-            // It's "active" if we're in 'place' mode AND
-            // the severity/type matches the currently selected severity/type.
-            let shouldBeActive = false;
-            if (activeButtonId === "place" &&
-                selectedSeverity === iconSeverity &&
-                selectedType === iconType) {
-                shouldBeActive = true;
-            }
-    
-            // Find the <img> within the sidebar button (or you could use the .sidebar-icon as <img> itself)
-            const $img = $button.find("img");
-            if ($img.length === 0) return;
-    
-            // Build the *base* image path: e.g. "images/low-priority-electrical-icon.png"
-            // then append "-active" if it should be active.
-            let basePath = `images/${iconSeverity}-priority-${iconType}-icon`;
-            if (shouldBeActive) {
-                basePath += "-active";
-            }
-            basePath += ".png";
-    
-            $img.attr("src", basePath);
-        });
-    
-        // If you also want to show whether the “select” button itself is active, handle it separately:
-        if (activeButtonId === "select") {
-            // Example: if you have an <img id="selectButton" src="images/select.png">
-            // you can swap to “select-active.png”
-            $("#selectButton").attr("src", "images/select-active.png");
-        } else {
-            $("#selectButton").attr("src", "images/select.png");
-        }
-    }
-    
-
     function getIconImagePath(icon) {
         
         let imagePath = "images/alert-icon.png";  
@@ -130,7 +69,6 @@ $(document).ready(function () {
         if (icon.type != null || icon.type != "null") {
             // trying to set to standardized image format - ie. low-priority-hvac-icon.png
             imagePath = `images/${icon.severity}-priority-${icon.type}-icon.png`;
-            console.log(`Using icon image: ${imagePath} for type: ${icon.type}`);
         }
         
         return imagePath;
@@ -372,7 +310,7 @@ $(document).ready(function () {
                     <option value='roofing'>Roofing</option>
                     <option value='null'>Other</option>
                 </select><br>
-                ${iconInstance.picture ? `<img id="icon-preview" src="${imagePath}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
+                ${oldFileName ? `<img id="icon-preview" src="${imagePath}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
                 <input type='file' id='icon-photo' accept='image/*' style="display:block;margin:10px auto;">
                 <label for="icon-notes">Notes:</label>
                 <textarea id="icon-notes" style="display:block;margin:10px auto;">${iconInstance.notes || ''}</textarea>
