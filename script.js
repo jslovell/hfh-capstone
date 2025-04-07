@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var activeButtonId = null;
-    var selectedSeverity = null;
     var selectedType = null;
+    var selectedSeverity = null;
 
     class Icon {
         constructor(iconId, alertType, severity, photoData, notesData, x_pos, y_pos) {
@@ -62,31 +62,75 @@ $(document).ready(function () {
         });
     }
 
-    function getCategoryFromType(type) {
-        if (!type) return 'other';
-        return type.split('-')[0];
+    function updateSidebarVisuals() {
+        // For each sidebar button, figure out what severity and type it corresponds to.
+        // Then decide if it’s “active” and swap image paths accordingly.
+        $(".sidebar-icon").each(function() {
+            const $button = $(this);
+            
+            // Grab all classes on this element
+            const classes = $button.attr("class").split(/\s+/);
+            let iconSeverity = null;
+            let iconType = null;
+    
+            // Look for something like "low-priority-electrical-icon"
+            classes.forEach(c => {
+                const match = c.match(/^(low|medium|high)-priority-(.+)-icon$/);
+                if (match) {
+                    iconSeverity = match[1];
+                    iconType = match[2];
+                }
+            });
+    
+            // If we couldn't find severity/type from the class, skip
+            if (!iconSeverity || !iconType) {
+                return;
+            }
+    
+            // Decide if this button should be "active".
+            // It's "active" if we're in 'place' mode AND
+            // the severity/type matches the currently selected severity/type.
+            let shouldBeActive = false;
+            if (activeButtonId === "place" &&
+                selectedSeverity === iconSeverity &&
+                selectedType === iconType) {
+                shouldBeActive = true;
+            }
+    
+            // Find the <img> within the sidebar button (or you could use the .sidebar-icon as <img> itself)
+            const $img = $button.find("img");
+            if ($img.length === 0) return;
+    
+            // Build the *base* image path: e.g. "images/low-priority-electrical-icon.png"
+            // then append "-active" if it should be active.
+            let basePath = `images/${iconSeverity}-priority-${iconType}-icon`;
+            if (shouldBeActive) {
+                basePath += "-active";
+            }
+            basePath += ".png";
+    
+            $img.attr("src", basePath);
+        });
+    
+        // If you also want to show whether the “select” button itself is active, handle it separately:
+        if (activeButtonId === "select") {
+            // Example: if you have an <img id="selectButton" src="images/select.png">
+            // you can swap to “select-active.png”
+            $("#selectButton").attr("src", "images/select-active.png");
+        } else {
+            $("#selectButton").attr("src", "images/select.png");
+        }
     }
+    
 
-    function getPriorityFromType(type) {
-        if (!type) return 'medium';
-        const parts = type.split('-');
-        return parts.length > 1 ? parts[1] : 'medium';
-    }
-
-    function createTypeString(category, priority) {
-        return `${category || 'other'}-${priority || 'medium'}`;
-    }
-
-    function getIconImageByType(type) {
-        const category = getCategoryFromType(type);
-        const priority = getPriorityFromType(type);
+    function getIconImagePath(icon) {
         
         let imagePath = "images/alert-icon.png";  
         
-        if (category) {
+        if (icon.type != null || icon.type != "null") {
             // trying to set to standardized image format - ie. low-priority-hvac-icon.png
-            imagePath = `images/${priority}-priority-${category}-icon.png`;
-            console.log(`Using icon image: ${imagePath} for type: ${type}`);
+            imagePath = `images/${icon.severity}-priority-${icon.type}-icon.png`;
+            console.log(`Using icon image: ${imagePath} for type: ${icon.type}`);
         }
         
         return imagePath;
@@ -120,7 +164,7 @@ $(document).ready(function () {
         $iconDiv.attr("iconId", iconId); // Ensure iconId is set
 
         const $img = $iconDiv.find("img");
-        const iconSrc = getIconImageByType(type);
+        const iconSrc = getIconImagePath(icon);
         $img.attr("src", iconSrc);
         $iconDiv.data("iconInstance", icon);
 
@@ -323,10 +367,10 @@ $(document).ready(function () {
                     <option value='hvac'>Mechanical (HVAC)</option>
                     <option value='plumbing'>Plumbing</option>
                     <option value='electrical'>Electrical</option>
-                    <option value='flatworks'>Flatwork</option>
+                    <option value='flatwork'>Flatwork</option>
                     <option value='tree'>Tree Maintenance</option>
                     <option value='roofing'>Roofing</option>
-                    <option value='other'>Other</option>
+                    <option value='null'>Other</option>
                 </select><br>
                 ${iconInstance.picture ? `<img id="icon-preview" src="${imagePath}" style="max-width:90%;margin:20px auto;display:block;">` : ''}
                 <input type='file' id='icon-photo' accept='image/*' style="display:block;margin:10px auto;">
@@ -369,71 +413,28 @@ $(document).ready(function () {
         $("#save-button").on("click", function () {
             iconInstance.type = $("#alert-type").val();
             iconInstance.notes = $("#icon-notes").val();
-
+        
             const file = $("#icon-photo")[0].files[0];
-            let isValidFile = true;
-
             if (file) {
                 iconInstance.photoData = file;
-                // Check for correct file types
-                let extension = iconInstance.photoData.name.substring(iconInstance.photoData.name.length - 4);
-                if (extension != ".jpg" && extension != "jpeg" && extension != ".png") {
-                    console.error("Error: Invalid image type: " + extension);
-                    alert("Error: Invalid image type: " + extension);
-                    isValidFile = false;
-                } else {
-                    isValidFile = true;
+                if (!/\.(jpg|jpeg|png)$/i.test(file.name)) {
+                    alert("Invalid image type.");
+                    return;
                 }
-            } else {
-                iconInstance.picture = oldFileName;
-                isValidFile = true;
             }
-
-            if (isValidFile) {
-                saveIconData(iconInstance);
-
-                let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
-                $iconDiv.find("img").attr("src", getIconImageByType(iconInstance.type));
-                $("#edit-popup").dialog('close');
-                setTimeout(function() {
-                    fetchAndPlaceIcons();
-                  }, 300);
-            }
-        });
+        
+            saveIconData(iconInstance);
+        
+            let $iconDiv = $(`[iconId="${iconInstance.iconId}"]`);
+            $iconDiv.find("img").attr("src", getIconImagePath(iconInstance));
+        
+            $("#edit-popup").dialog('close');
+        });        
 
         $("#delete-button").on("click", function () {
             deleteIconFromDatabase(iconId);
             $("#edit-popup").dialog('close');
         });
-    }
-
-    $(document).on("mousedown", ".assessmentArea", function (event) {
-        if (activeButtonId == "place") {
-            var iconId = "icon-" + Date.now();
-
-            var $assessmentArea = $(".assessmentArea");
-            var rect = $assessmentArea[0].getBoundingClientRect();
-            var areaWidth = rect.width;
-            var areaHeight = rect.height;
-
-            var x = ((event.clientX - rect.left) / areaWidth) * 100;
-            var y = ((event.clientY - rect.top) / areaHeight) * 100;
-
-            let newIcon = new Icon(iconId, null, null, null, null, x, y);
-
-            if (selectedType != null && selectedSeverity != null) {
-                newIcon.type = `${selectedType}-${selectedSeverity}`;
-                console.log("placing with type and severity:", newIcon.type);
-            }
-
-            saveIconData(newIcon);
-            placeIcon(newIcon);
-        }
-    });
-
-    // Navbar and side navigation functionality
-    function toggleSideNav() {
-        $(".side_nav,.nav-overlay").toggleClass("active");
     }
 
     $(".nav_ico").click(function () {
@@ -456,103 +457,157 @@ $(document).ready(function () {
             $(".nav_ico").removeClass("active");
             toggleSideNav();
         }
-    });
-
-    // Updates sidebar button pictures logically based on current active button ID
-    function updateSidebar() {
-        if (activeButtonId == "select") {
-            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
-        } else if (activeButtonId == "place") {
-            $("#select-button").css("background-image", "url('images/select-button.png')");
-        } else if (activeButtonId == "delete") {
-            $("#select-button").css("background-image", "url('images/select-button.png')");
-            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
-            activeButtonId = null;
-        }
-    }
-
-    $("#select-button").click(function () {
-        if (activeButtonId == "select") {
-            $("#select-button").css("background-image", "url('images/select-button.png')");
-            activeButtonId = null;
-        } else {
-            $("#select-button").css("background-image", "url('images/select-button-active.png')");
-            activeButtonId = "select";
-            updateSidebar(); // Update other buttons
-        }
-    });
-
-    $("#alert-severe-button").on("click", function () {
-        if (activeButtonId == "place"){
-            activeButtonId == null;
-            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button.png')");
-        } else {
-            activeButtonId = "place";
-            $("#alert-severe-button").css("background-image", "url('images/alert-severe-button-active.png')");
-            updateSidebar();    // Update other buttons
-        }
-    });
-
-    $("#clearButton").on("click", function () {
-        let text = "Warning: All icons will be deleted\n";
-        if (confirm(text)) {
-            $(".box, .box-alert, .box-note").remove();
-            deleteAllIconsFromDatabase();
-            localStorage.clear();
-            activeButtonId = "delete";
-            updateSidebar();    // Update other buttons
-        }
-    });
-
-    $(".sidebar-icon").on("click", function(e) {
-        
-        const popup = $(this).find('.popup-menu');
-        
-        if (!popup.length) return;
-
-        $(".popup-menu.visible").not(popup).removeClass("visible");
-
-        popup.toggleClass("visible");
-
-        const $button = $(this);
-        const buttonPosition = $button.position();
-        popup.css("top", buttonPosition.top + "px");
-
-
-        e.stopPropagation();
-    });
+    });   
 
     $(document).on("click", function(e) {
-        if (!$(e.target).closest('.popup-menu, .sidebar-icon').length) {
-            $(".popup-menu.visible").removeClass("visible");
+        if (!$(e.target).closest('.popout-menu, .sidebar-icon').length) {
+            $(".popout-menu").removeClass("visible");
         }
     });
-
-    $(".popup-icon").on("click", function() {
-        const classes = $(this).attr("class").split(" ");
-        let priority = null;
-        let category = null;
-        
-        classes.forEach(className => {
-            if (className.includes("-priority-") && className.includes("-icon")) {
-                const parts = className.split("-priority-");
-                priority = parts[0]; 
-                category = parts[1].replace("-icon", "");
+    
+    function handlePopoutIconClick(e) {
+        e.stopPropagation();
+        console.log("popout-icon clicked");
+    
+        const classes = $(this).attr("class").split(/\s+/);
+        let sv = null, tp = null;
+        classes.forEach(c => {
+            const m = c.match(/^(low|medium|high)-priority-(.+)-icon$/);
+            if (m) {
+                sv = m[1];
+                tp = m[2];
             }
         });
-        
-        if (category && priority) {
-            const typeString = `${category}-${priority}`;
-            console.log(`Selected icon type: ${typeString}`);
-            
-            // Set active button ID to "place"
-            activeButtonId = "place";
-            selectedSeverity = priority;
-            selectedType = category;
-            
-            // Close popup
-            $(this).closest(".popup-menu").hide();
+        if (!sv || !tp) return;
+    
+        selectedSeverity = sv;
+        selectedType = tp;
+        activeButtonId = "place";
+    
+        $(this).closest(".popup-menu").removeClass("visible");
+    }
+    
+    function handleClearButtonClick(e) {
+        e.stopPropagation();
+        const $btn = $(this);
+        const currentBg = $btn.css("background-image");
+    
+        if (currentBg.includes("-active.png")) {
+            $btn.css("background-image", currentBg.replace("-active.png", ".png"));
+            return;
         }
-    });
+    
+        $btn.css("background-image", currentBg.replace(".png", "-active.png"));
+    
+        // Delay so icon has chance to update before popup appears
+        setTimeout(() => {
+            const confirmDelete = confirm("Delete all icons on this page?");
+            if (confirmDelete) {
+                $(".box-alert").remove();
+                localStorage.setItem("iconData", JSON.stringify([]));
+                deleteAllIconsFromDatabase();
+            }
+            const bg2 = $btn.css("background-image");
+            if (bg2.includes("-active.png")) {
+                $btn.css("background-image", bg2.replace("-active.png", ".png"));
+            }
+        }, 150);
+    }
+    
+    function handleSelectButtonClick(e) {
+        e.stopPropagation();
+        const $btn = $(this);
+        const currentBg = $btn.css("background-image");
+    
+        // If it's already active, revert and clear activeButtonId
+        if (currentBg.includes("-active.png")) {
+            $btn.css("background-image", currentBg.replace("-active.png", ".png"));
+            activeButtonId = null;
+            return;
+        }
+    
+        // Otherwise, revert all other icons to normal
+        $(".sidebar-icon, #select-button, #clear-button").each(function() {
+            const bg = $(this).css("background-image");
+            if (bg && bg.includes("-active.png")) {
+                $(this).css("background-image", bg.replace("-active.png", ".png"));
+            }
+        });
+    
+        $btn.css("background-image", currentBg.replace(".png", "-active.png"));
+        activeButtonId = "select";
+    }
+    
+    function handleSidebarIconClick(e) {
+        e.stopPropagation();
+        const btnId = $(this).attr("id");
+        console.log("sidebar-icon clicked:", btnId);
+    
+        if (activeButtonId === "select" && btnId !== "select-button" && btnId !== "clear-button") {
+            const selectBg = $("#select-button").css("background-image");
+            if (selectBg && selectBg.includes("-active.png")) {
+                $("#select-button").css("background-image", selectBg.replace("-active.png", ".png"));
+            }
+            activeButtonId = null;
+        }
+    
+        const currentBg = $(this).css("background-image");
+        if (currentBg && currentBg.includes("-active.png")) {
+            $(this).css("background-image", currentBg.replace("-active.png", ".png"));
+            $(this).children(".popup-menu").removeClass("visible");
+        } else {
+            $(".popup-menu").removeClass("visible");
+            $(".sidebar-icon").each(function() {
+                const bg = $(this).css("background-image");
+                if (bg && bg.includes("-active.png")) {
+                    $(this).css("background-image", bg.replace("-active.png", ".png"));
+                }
+            });
+            $(this).css("background-image", currentBg.replace(".png", "-active.png"));
+            $(this).children(".popup-menu").addClass("visible");
+        }
+    }
+    
+
+    function handleAssessmentAreaMousedown(e) {
+        if (activeButtonId !== "place" || !selectedSeverity || !selectedType) return;
+    
+        const $area = $(".assessmentArea");
+        const rect = $area[0].getBoundingClientRect();
+        const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+        const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+    
+        const iconId = "icon-" + Date.now();
+        const newIcon = new Icon(
+            iconId,
+            selectedType,
+            selectedSeverity,
+            null,
+            null,
+            xPercent,
+            yPercent
+        );
+    
+        saveIconData(newIcon);
+        placeIcon(newIcon);
+    
+        activeButtonId = null;
+        selectedType = null;
+        selectedSeverity = null;
+    
+        $(".sidebar-icon").each(function() {
+            const bg = $(this).css("background-image");
+            if (bg && bg.includes("-active.png")) {
+                $(this).css("background-image", bg.replace("-active.png", ".png"));
+            }
+        });
+    }
+    
+    // bind everything
+    $(document).on("mousedown", ".assessmentArea", handleAssessmentAreaMousedown);
+    $(document).on("click", "#clear-button", handleClearButtonClick);
+    $(document).on("click", "#select-button", handleSelectButtonClick);
+    $(document).on("click", ".sidebar-icon", handleSidebarIconClick);
+    $(document).on("click", ".popup-icon", handlePopoutIconClick);        
 
 });

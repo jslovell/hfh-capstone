@@ -46,14 +46,14 @@ mysqli_close($conn);
 
     <script src="script.js"></script>
     <style>
-        #clearButton {
-            background-image: url("images/clear-button.png");
+        #clear-button {
+            background-image: url("images/clear.png");
         }
         #select-button {
-            background-image: url("images/select-button.png");
+            background-image: url("images/select.png");
         }
-        #alert-severe-button {
-            background-image: url("images/alert-severe-button.png");
+        #null-button {
+            background-image: url("images/null.png");
         }
         #electrical-button {
             background-image: url("images/electrical.png");
@@ -62,13 +62,13 @@ mysqli_close($conn);
             background-image: url("images/plumbing.png");
         }
         #hvac-button {
-            background-image: url("images/HVAC.png");
+            background-image: url("images/hvac.png");
         }
         #door-button {
             background-image: url("images/door.png");
         }
         #stairs-button {
-            background-image: url("images/stairs-button.png");
+            background-image: url("images/stairs.png");
         }
         #window-button {
             background-image: url("images/window.png");
@@ -77,10 +77,10 @@ mysqli_close($conn);
             background-image: url("images/tree.png");
         }
         #deck-button {
-            background-image: url("images/deck.jpg");
+            background-image: url("images/deck.png");
         }
         
-        #clearButton, #select-button,#deck-button,#tree-button,#window-button,#stairs-button,#door-button,#hvac-button,#plumbing-button, #alert-severe-button,#electrical-button {
+        #clear-button, #null-button, #select-button,#deck-button,#tree-button,#window-button,#stairs-button,#door-button,#hvac-button,#plumbing-button, #null-button,#electrical-button {
             background-repeat: no-repeat;
             background-size: contain;
             width: 58px;
@@ -89,7 +89,7 @@ mysqli_close($conn);
         }
 
 
-        .alert-severe-icon {
+        .null-icon {
             background-image: url("images/alert-sever-icon.png");
         }
         .low-priority-stairs-icon{
@@ -171,15 +171,30 @@ mysqli_close($conn);
         .high-priority-deck-icon{
             background-image: url("images/high-priority-deck-icon.png");
         }
+
+        .low-priority-null-icon{
+            background-image: url("images/low-priority-null-icon.png");
+        }
+
+        .medium-priority-null-icon{
+            background-image: url("images/medium-priority-null-icon.png");
+        }
+
+        .high-priority-null-icon{
+            background-image: url("images/high-priority-null-icon.png");
+        }
+
+
         
         
-        .high-priority-electrical-icon, .medium-priority-electrical-icon, .low-priority-electrical-icon, .alert-severe-icon, .low-priority-deck-icon, .medium-priority-deck-icon, .high-priority-deck-icon, 
+        .high-priority-electrical-icon, .medium-priority-electrical-icon, .low-priority-electrical-icon, .null-icon, .low-priority-deck-icon, .medium-priority-deck-icon, .high-priority-deck-icon, 
         .low-priority-tree-icon, .medium-priority-tree-icon, .high-priority-tree-icon, 
         .low-priority-window-icon, .medium-priority-window-icon, .high-priority-window-icon, 
         .low-priority-plumbing-icon, .medium-priority-plumbing-icon, .high-priority-plumbing-icon, 
         .low-priority-hvac-icon, .medium-priority-hvac-icon, .high-priority-hvac-icon, 
         .low-priority-door-icon, .medium-priority-door-icon, .high-priority-door-icon, 
-        .low-priority-stairs-icon, .medium-priority-stairs-icon, .high-priority-stairs-icon {
+        .low-priority-stairs-icon, .medium-priority-stairs-icon, .high-priority-stairs-icon, .low-priority-null-icon,
+        .medium-priority-null-icon, .high-priority-null-icon {
             position: relative;
             cursor: pointer;
             background-repeat: no-repeat;
@@ -340,59 +355,65 @@ mysqli_close($conn);
 
 <!-- Sidebar with Buttons -->
 <div class="sidebar">
-    <button id="clearButton"></button>
-    <button id="select-button"></button>
-    <button id="alert-severe-button"></button>
-    <button id="electrical-button" class="sidebar-icon">
+    <button id="clear-button" ></button>
+    <button id="select-button" ></button>
+    <button id="null-button" class="sidebar-icon" >
+        <div class="popup-menu" id="null-popup">
+            <div class="popup-icon low-priority-null-icon"></div>
+            <div class="popup-icon medium-priority-null-icon"></div>
+            <div class="popup-icon high-priority-null-icon"></div>
+        </div>
+    </button>
+    <button id="electrical-button" class="sidebar-icon" >
         <div class="popup-menu" id="electrical-popup">
             <div class="popup-icon low-priority-electrical-icon"></div>
             <div class="popup-icon medium-priority-electrical-icon"></div>
             <div class="popup-icon high-priority-electrical-icon"></div>
         </div>
     </button>
-    <button id="plumbing-button" class="sidebar-icon">
+    <button id="plumbing-button" class="sidebar-icon" >
         <div class="popup-menu" id="plumbing-popup">
             <div class="popup-icon low-priority-plumbing-icon"></div>
             <div class="popup-icon medium-priority-plumbing-icon"></div>
             <div class="popup-icon high-priority-plumbing-icon"></div>
         </div>
     </button>
-    <button id="hvac-button" class="sidebar-icon">
+    <button id="hvac-button" class="sidebar-icon" >
         <div class="popup-menu" id="hvac-popup">
             <div class="popup-icon low-priority-hvac-icon"></div>
             <div class="popup-icon medium-priority-hvac-icon"></div>
             <div class="popup-icon high-priority-hvac-icon"></div>
         </div>
     </button>
-    <button id="door-button" class="sidebar-icon">
+    <button id="door-button" class="sidebar-icon" >
         <div class="popup-menu" id="door-popup">
             <div class="popup-icon low-priority-door-icon"></div>
             <div class="popup-icon medium-priority-door-icon"></div>
             <div class="popup-icon high-priority-door-icon"></div>
         </div>
     </button>
-    <button id="stairs-button" class="sidebar-icon">
+    <button id="stairs-button" class="sidebar-icon" >
         <div class="popup-menu" id="stairs-popup">
             <div class="popup-icon low-priority-stairs-icon"></div>
             <div class="popup-icon medium-priority-stairs-icon"></div>
             <div class="popup-icon high-priority-stairs-icon"></div>
         </div>
     </button>
-    <button id="window-button" class="sidebar-icon">
+    <button id="window-button" class="sidebar-icon" >
         <div class="popup-menu" id="window-popup">
             <div class="popup-icon low-priority-window-icon"></div>
             <div class="popup-icon medium-priority-window-icon"></div>
             <div class="popup-icon high-priority-window-icon"></div>
         </div>
     </button>
-    <button id="deck-button" class="sidebar-icon">
+    <button id="deck-button" class="sidebar-icon" >
         <div class="popup-menu" id="deck-popup">
             <div class="popup-icon low-priority-deck-icon"></div>
             <div class="popup-icon medium-priority-deck-icon"></div>
             <div class="popup-icon high-priority-deck-icon"></div>
         </div>
     </button>
-    <button id="tree-button" class="sidebar-icon">
+    <button id="tree-button" class="sidebar-icon" >
         <div class="popup-menu" id="tree-popup">
             <div class="popup-icon low-priority-tree-icon"></div>
             <div class="popup-icon medium-priority-tree-icon"></div>
