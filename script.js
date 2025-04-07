@@ -367,6 +367,7 @@ $(document).ready(function () {
             $iconDiv.find("img").attr("src", getIconImagePath(iconInstance));
         
             $("#edit-popup").dialog('close');
+            fetchAndPlaceIcons();
         });        
 
         $("#delete-button").on("click", function () {
