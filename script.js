@@ -467,7 +467,6 @@ $(document).ready(function () {
     
     function handlePopoutIconClick(e) {
         e.stopPropagation();
-        console.log("popout-icon clicked");
     
         const classes = $(this).attr("class").split(/\s+/);
         let sv = null, tp = null;
@@ -491,6 +490,16 @@ $(document).ready(function () {
         e.stopPropagation();
         const $btn = $(this);
         const currentBg = $btn.css("background-image");
+
+        // close popups if one is currently active
+        $(".popup-menu").removeClass("visible")
+        // update visuals if another tool is currently active
+        $(".sidebar-icon").each(function() {
+            const bg = $(this).css("background-image")
+            if (bg && bg.includes("-active.png")) {
+                $(this).css("background-image", bg.replace("-active.png", ".png"))
+            }
+        })
     
         if (currentBg.includes("-active.png")) {
             $btn.css("background-image", currentBg.replace("-active.png", ".png"));
@@ -518,6 +527,16 @@ $(document).ready(function () {
         e.stopPropagation();
         const $btn = $(this);
         const currentBg = $btn.css("background-image");
+
+        // close popups if one is currently active
+        $(".popup-menu").removeClass("visible")
+        // update visuals if another tool is currently active
+        $(".sidebar-icon").each(function() {
+            const bg = $(this).css("background-image")
+            if (bg && bg.includes("-active.png")) {
+                $(this).css("background-image", bg.replace("-active.png", ".png"))
+            }
+        })
     
         // If it's already active, revert and clear activeButtonId
         if (currentBg.includes("-active.png")) {
@@ -541,7 +560,6 @@ $(document).ready(function () {
     function handleSidebarIconClick(e) {
         e.stopPropagation();
         const btnId = $(this).attr("id");
-        console.log("sidebar-icon clicked:", btnId);
     
         if (activeButtonId === "select" && btnId !== "select-button" && btnId !== "clear-button") {
             const selectBg = $("#select-button").css("background-image");
@@ -552,6 +570,7 @@ $(document).ready(function () {
         }
     
         const currentBg = $(this).css("background-image");
+
         if (currentBg && currentBg.includes("-active.png")) {
             $(this).css("background-image", currentBg.replace("-active.png", ".png"));
             $(this).children(".popup-menu").removeClass("visible");
