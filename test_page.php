@@ -495,7 +495,7 @@ mysqli_close($conn);
         </div>
 
         <div class="icon-legend">
-            <img src="/hfh-capstone/images/icon-legend.png" alt="Icon Legend">
+            <img src="./images/icon-legend.png" alt="Icon Legend">
         </div>
     </div>
 </div>
