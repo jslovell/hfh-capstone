@@ -318,6 +318,8 @@ mysqli_close($conn);
             font-size: 20px;
             font-weight: bold;
             flex: 1;
+            margin-top: 0px;
+            margin-bottom: 12px;
         }
 
         .formInfo{
@@ -325,13 +327,12 @@ mysqli_close($conn);
         }
 
         .info-container {
-            display: flex;
-            justify-content: center;
             align-items: center;
             margin-bottom: 20px;
-            flex-wrap: nowrap;
             width: 100%;
             gap: 50px;
+            text-align: center;
+            margin-top: -25px;
         }
 
         .assessment-info, .icon-legend {
@@ -373,7 +374,7 @@ mysqli_close($conn);
             gap: 10px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s;
+            /* transition: opacity 0.2s ease, visibility 0.2s; */
             z-index: 1000;
         }
         
@@ -398,49 +399,107 @@ mysqli_close($conn);
             transform: translateY(-50%);
             border-width: 5px;
             border-style: solid;
-            border-color: transparent #ddd transparent transparent;
+            /* border-color: transparent #ddd transparent transparent; */
         }
 
         .popup-menu .popup-icon {
             pointer-events: auto;
         }
         
+        #currentStatus{
+            margin-top: 10px;
+            color: #002f6c;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        body{
+            margin-bottom: 100px;
+        }
+
+        @media only screen 
+        and (min-width: 744px)and (max-width: 1420px) and (orientation: portrait) {
+            .container {
+                margin-left: 60px;
+                padding-right: 10px;
+                max-width: calc(100vw - 130px);
+                padding-bottom: 0;
+            }
+
+            .clickableArea {
+                margin-left: 100px;
+                width: calc(100vw - 200px);
+                height: calc(100vw - 200px);
+                box-sizing: border-box;
+            }
+
+            .sidebar {
+                width: 60px;
+                position: fixed;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 10;
+            }
+
+            .popup-menu {
+                margin-left: -55px;
+            }
+
+            .assessmentArea{
+                width: calc(100vw - 200px);
+                box-sizing: border-box;
+                height: 650px;
+            }
+
+            .testblueprint{
+                width: 100%;
+                height: 100%;
+            }
+
+            .clickableArea img{
+                width: 100% !important;
+                height: 100% !important;
+            }
+        }
     </style>
 </head>
 <?php include "navbar.php"; ?>
 
-<body style="margin-top: 8%;">
+<body>
+<div class="container">
+    <h1 style="font-size:250%">House Assessment Tool</h1>
+    <div class="info-container">
+        <div class="assessment-info">
+            <h2 class="assessmentInfo">Assessment ID:
+                <span class="formInfo">
+                    <?php echo htmlspecialchars($id); ?>
+                </span>
+            </h2>
+            <h2 class="assessmentInfo">Homeowner:
+                <span class="formInfo">
+                    <?php echo htmlspecialchars($name); ?>
+                </span>
+            </h2>
+            <h2 class="assessmentInfo">Address:
+                <span class="formInfo">
+                    <?php echo htmlspecialchars($address); ?>
+                </span>
+            </h2>
+            <label  id="currentStatus" for="statusDropdown"><b>Current Status:</b></label>
+            <select id="statusDropdown" data-id="<?php echo $id; ?>">
+                <option id="statuses"value="Needs Assessment" <?php echo ($assessmentStatus === 'Needs Assessment') ? 'selected' : ''; ?>>Needs Assessment</option>
+                <option id="statuses"value="Needs Bidding" <?php echo ($assessmentStatus === 'Needs Bidding') ? 'selected' : ''; ?>>Needs Bidding</option>
+                <option id="statuses"value="Archived" <?php echo ($assessmentStatus === 'Archived') ? 'selected' : ''; ?>>Archive</option>
+            </select>
+        </div>
 
-<h1 style="font-size:250%">House Assessment Tool</h1>
-<div class="info-container">
-    <div class="assessment-info">
-        <h2 class="assessmentInfo">Assessment ID:
-            <span class="formInfo">
-                <?php echo htmlspecialchars($id); ?>
-            </span>
-        </h2>
-        <h2 class="assessmentInfo">Homeowner:
-            <span class="formInfo">
-                <?php echo htmlspecialchars($name); ?>
-            </span>
-        </h2>
-        <h2 class="assessmentInfo">Address:
-            <span class="formInfo">
-                <?php echo htmlspecialchars($address); ?>
-            </span>
-        </h2>
-        <label class="assessmentInfo" for="statusDropdown"><b>Current Status:</b></label>
-        <select id="statusDropdown" data-id="<?php echo $id; ?>">
-            <option id="statuses"value="Needs Assessment" <?php echo ($assessmentStatus === 'Needs Assessment') ? 'selected' : ''; ?>>Needs Assessment</option>
-            <option id="statuses"value="Needs Bidding" <?php echo ($assessmentStatus === 'Needs Bidding') ? 'selected' : ''; ?>>Needs Bidding</option>
-            <option id="statuses"value="Archived" <?php echo ($assessmentStatus === 'Archived') ? 'selected' : ''; ?>>Archive</option>
-        </select>
-    </div>
-
-    <div class="icon-legend">
-        <img src="images/icon-legend.png" alt="Icon Legend">
+        <div class="icon-legend">
+            <img src="/hfh-capstone/images/icon-legend.png" alt="Icon Legend">
+        </div>
     </div>
 </div>
+
 <br>
 
 <!-- Blueprint Image with Icons -->
