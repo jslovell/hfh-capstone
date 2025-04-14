@@ -67,7 +67,7 @@
             <div class ="inputparam text-center">
                 <label for="state">State <span class="required">*</span></label>
                 <div class ="box">
-                <input type="text" name="state" id="state" maxlength="32" required placeholder="Iowa, Illinois, etc.">
+                <input type="text" name="state" id="state" maxlength="32" required placeholder="IA, IL, etc.">
                 </div>
             </div>
             <div class ="inputparam text-center">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2025 at 10:33 PM
+-- Generation Time: Apr 08, 2025 at 06:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,7 +51,7 @@ CREATE TABLE `form_entries` (
   `parcel_number` varchar(45) DEFAULT 'N/A',
   `zip` varchar(45) DEFAULT NULL,
   `layout` varchar(45) DEFAULT NULL,
-  `assessmentStatus` enum('Needs Assessment','Needs Bidding') NOT NULL DEFAULT 'Needs Assessment',
+  `assessmentStatus` enum('Needs Assessment','Needs Bidding','Archived') NOT NULL DEFAULT 'Needs Assessment',
   `username` varchar(45) DEFAULT 'unknown user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -69,7 +69,8 @@ CREATE TABLE `icons` (
   `picture` varchar(255) DEFAULT NULL,
   `notes` text DEFAULT NULL,
   `x_pos` int(11) NOT NULL,
-  `y_pos` int(11) NOT NULL
+  `y_pos` int(11) NOT NULL,
+  `severity` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
