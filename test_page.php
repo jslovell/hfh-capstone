@@ -96,7 +96,7 @@ mysqli_close($conn);
             background-image: url("images/plumbing.png");
         }
         #hvac-button {
-            background-image: url("images/hvac.png");
+            background-image: url("images/HVAC.png");
         }
         #door-button {
             background-image: url("images/door.png");
